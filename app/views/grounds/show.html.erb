@@ -1,12 +1,4 @@
-<h1>Grounds</h1>
-<div id="grounds_editor" class="grounds_editor">package main
-
-import "fmt"
-
-func main() {
-	fmt.Println("Hello, playground")
-}
-</div>
+<%= content_tag(:div, @ground.content, id: :grounds_editor, data: @ground.editor) %>
 <%= form_for(@ground, as: :ground, url: grounds_run_path, remote: true) do |f| %>
   <%= f.hidden_field :code %>
   <%= f.submit %>
