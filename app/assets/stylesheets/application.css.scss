@@ -8,15 +8,9 @@
   border: 1px solid #DDD;
 }
 
-.bottom-rounded-panel {
-  @extend .panel;
-  border-radius: 0 0 3px 3px;
-}
-
 .rounded-panel {
   @extend .panel;
   @include radius;
-  @include solid-border;
 }
 
 .ground-editor {

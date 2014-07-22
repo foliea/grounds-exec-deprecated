@@ -30,7 +30,7 @@ var loadGroundEditor = function() {
       $("#stderr").text(error);
     }
   });
-  
+
   editor.commands.addCommand({
     name: 'Undo',
     bindKey: {win: 'Ctrl-Z',  mac: 'Command-Z'},
