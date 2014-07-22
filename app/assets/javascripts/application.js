@@ -1,2 +1,4 @@
 //= require vendor_application
-//= require grounds_editor
+//= require ground_editor
+
+$(function(){ $(document).foundation(); });
