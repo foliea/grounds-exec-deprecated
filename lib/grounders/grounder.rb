@@ -6,8 +6,8 @@ class Grounder
     @registry = 'foliea'
   end
 
-  def run(language, code)
-    container = create(language, code)
+  def exec(language, code)
+    container = sandbox(language, code)
     stdout, stderr = container.tap(&:start).attach(stdout: true, stderr: true)
     container.delete(force: true)
     [stdout, stderr]
@@ -15,8 +15,9 @@ class Grounder
 
   private
 
-  def create(language, code)
-    Docker::Container.create('Cmd' => [format_code(code)], 'Image' => "#{@registry}/#{language}:latest")
+  def sandbox(language, code)
+    Docker::Container.create('Cmd' => [format_code(code)],
+                             'Image' => "#{@registry}/#{language}:latest")
   end
 
   def format_code(code)
