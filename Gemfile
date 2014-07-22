@@ -30,6 +30,9 @@ gem 'ace-rails-ap'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+# Use Docker as sandbox environment
+gem 'docker-api', :require => 'docker'
+
 # Use unicorn as the app server
 gem 'puma'
 

@@ -1,5 +1,11 @@
 <%= content_tag(:div, @ground.content, id: :grounds_editor, data: @ground.editor) %>
+
 <%= form_for(@ground, as: :ground, url: grounds_run_path, remote: true) do |f| %>
+  <%= f.hidden_field :language, value: @ground.language %>
   <%= f.hidden_field :code %>
   <%= f.submit %>
 <% end %>
+
+<%= content_tag(:span, '', id: :stdout) %>
+<%= content_tag(:span, '', id: :stderr) %>
+
