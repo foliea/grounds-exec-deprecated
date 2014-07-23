@@ -10,7 +10,7 @@ module ExecCode
       begin
         stdout, stderr = @container.tap(&:start).attach(stdout: true, stderr: true)
       rescue
-        nil, nil
+        return [nil, nil]
       ensure
         delete
       end

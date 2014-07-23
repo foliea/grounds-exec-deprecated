@@ -1,3 +1,5 @@
+require 'container'
+
 module ExecCode
 
   Output = Struct.new(:stdout, :stderr)
@@ -7,7 +9,7 @@ module ExecCode
 
     def run(language, code)
       code = format_input(code)
-      container = Container.new("foliea/exec-#{language}", code)
+      container = ExecCode::Container.new("foliea/exec-#{language}", code)
       
       out, err = container.run
       return nil if out.nil? && err.nil?
