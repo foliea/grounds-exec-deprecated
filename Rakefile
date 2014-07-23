@@ -15,7 +15,10 @@ namespace :images do
  
     ExecCode::Images::all.each do |name|
       puts "Building image: #{name}..."
-      image = Docker::Image.build_from_dir("./dockerfiles/#{name}/")
+      Docker::Image.build_from_dir("./dockerfiles/#{name}/",
+                                   t: "foliea/#{name}:latest") do |chunk| 
+        puts chunk
+      end
       puts "Built image #{name} with success!"
     end
   end

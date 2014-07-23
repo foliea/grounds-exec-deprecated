@@ -1,4 +1,4 @@
-FROM google/golang
+FROM google/golang:latest
 
 ADD run.sh gopath/run.sh
 
