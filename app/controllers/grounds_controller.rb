@@ -4,10 +4,9 @@ class GroundsController < ApplicationController
   end
 
   def run
-    grounder = Grounder.new
-    stdout, stderr = grounder.exec(params[:ground][:language], params[:ground][:code])
+    cmd = Container::exec(params[:ground][:language], params[:ground][:code])
     respond_to do |format|
-      format.js { render json: { stdout: stdout.join, stderr: stderr.join, status: :ok } }
+      format.js { render json: { stdout: cmd.stdout, stderr: cmd.stderr, status: :ok } }
     end
   end
   

@@ -13,12 +13,18 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 group :development do
   gem 'spring'
   gem 'pry-rails'
+  gem 'dotenv'
 end
 
-gem 'puma'
+group :development, :test do
+  gem 'rspec-rails', '~> 3.0.0'
+end
+
 gem 'ace-rails-ap'
+gem 'modernizr-rails'
 gem 'foundation-rails'
 gem 'docker-api', require: 'docker'
+gem 'puma'
 
 
 

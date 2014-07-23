@@ -7,10 +7,12 @@
     <title><%= content_for?(:title) ? yield(:title) : "Grounds" %></title>
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'modernizr' %>
+    <%= csrf_meta_tag %>
   </head>
 
   <body>
     <%= yield %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   </body>
 </html>
