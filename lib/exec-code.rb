@@ -6,7 +6,7 @@ module ExecCode
     extend self
 
     def run(language, code)
-      code = format_input_code(code)
+      code = format_input(code)
       container = Container.new("foliea/exec-#{language}", code)
       
       out, err = container.run
