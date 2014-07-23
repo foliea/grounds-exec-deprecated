@@ -1,7 +1,9 @@
 #!/usr/bin/env rake
 
+$LOAD_PATH.unshift File.expand_path('./lib', __FILE__)
+
 require 'rspec/core/rake_task'
-require './lib/images'
+require 'images'
 require 'docker'
 
 RSpec::Core::RakeTask.new(:spec)
