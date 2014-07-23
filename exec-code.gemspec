@@ -20,7 +20,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'docker-api'
 
   s.files = [
-    'lib/*.rb'
+    'lib/container.rb',
+    'lib/image.rb',
+    'lib/launcher.rb'
   ]
   s.require_path = 'lib'
 end

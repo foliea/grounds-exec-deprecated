@@ -1,5 +1,5 @@
 module ExecCode
-  module Images
+  module Image
     extend self
 
     def all
