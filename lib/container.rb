@@ -1,7 +1,7 @@
 require 'docker'
 
 module ExecCode
-  module Container
+  class Container
     def initialize(image, cmd)
       @container = create(image, cmd)
     end
