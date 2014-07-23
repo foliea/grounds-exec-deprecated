@@ -26,5 +26,7 @@ gem 'foundation-rails'
 gem 'docker-api', require: 'docker'
 gem 'puma'
 
+gem 'exec-code', git: 'git://github.com/folieadrien/exec-code'
+
 
 
