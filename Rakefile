@@ -1,0 +1,41 @@
+#!/usr/bin/env rake
+
+require 'rspec/core/rake_task'
+require './lib/images'
+require 'docker'
+
+RSpec::Core::RakeTask.new(:spec)
+
+task :default => :spec
+
+namespace :images do
+  task :build do
+ 
+    ExecCode::Images::all.each do |name|
+      puts "Building image: #{name}..."
+      image = Docker::Image.build_from_dir("./dockerfiles/#{name}/")
+      puts "Built image #{name} with success!"
+    end
+  end
+
+  task :push do
+    #authenticate!
+    ExecCode::Images::all.each do |name|
+      puts "Pushing: #{name} to docker hub..."
+      puts "Pushed #{name} to docker hub with success!"
+    end
+  end
+end
+
+def authenticate!
+  puts 'Trying to authenticate to docker hub...'
+  begin 
+    Docker.authenticate!(username: ENV['DOCKER_USERNAME'], 
+                         password: ENV['DOCKER_PASSWORD'], 
+                         email:    ENV['DOCKER_EMAIL'])
+  rescue
+    puts 'Failed to authenticate to docker hub...'
+    exit
+  end
+  puts 'Authenticated to docker hub with success!'
+end
