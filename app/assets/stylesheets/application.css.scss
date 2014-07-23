@@ -45,6 +45,11 @@ $custom-border-color: #DDD;
   background-color: $custom-primary-color;
 }
 
+.custom-button {
+  @extend .button.secondary;
+  @include custom-border;
+}
+
 .rounded-panel {
   @extend .panel;
   @include radius;

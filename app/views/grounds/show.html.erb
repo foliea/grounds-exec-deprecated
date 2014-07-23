@@ -1,6 +1,6 @@
 <div class="row top-buffer bottom-buffer">
   <div class="ground-editor-header">
-    <a href="#" data-dropdown="drop" class="tiny radius button dropdown">Theme: <b>Textmate</b></a><br>
+    <a href="#" data-dropdown="drop" class="tiny radius button secondary dropdown">Theme: <b>Textmate</b></a><br>
     <ul id="drop" data-dropdown-content class="f-dropdown">
       <li><a href="#">Texmate</a></li>
       <li><a href="#">Monokai</a></li>
@@ -13,7 +13,7 @@
   <%= form_for(@ground, as: :ground, url: grounds_run_path, remote: true) do |f| %>
   <%= f.hidden_field :language, value: @ground.language %>
   <%= f.hidden_field :code %>
-  <%= button_tag(type: 'submit', class: 'small button radius') do
+  <%= button_tag(type: 'submit', class: 'small custom-button radius') do
     content_tag(:strong, 'Run')
   end %>
   <% end %>
