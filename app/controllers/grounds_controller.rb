@@ -9,9 +9,9 @@ class GroundsController < ApplicationController
     respond_to do |format|
       format.js do
         if cmd.nil?
-          render json: { stdout: cmd.stdout, stderr: cmd.stderr, status: :ok }
-        else
           render json: { status: :service_unavailable }
+        else
+          render json: { stdout: cmd.stdout, stderr: cmd.stderr, status: :ok }
         end
       end
     end

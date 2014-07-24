@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/folieadrien/exec-code
-  revision: a30be47b052350afcab504338588becce6ed8624
+  revision: 05ea38adf569d65b2248be41ef44950c4a433c13
   specs:
     exec-code (0.0.1)
       docker-api
