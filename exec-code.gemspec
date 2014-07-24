@@ -21,8 +21,9 @@ Gem::Specification.new do |s|
 
   s.files = [
     'lib/container.rb',
-    'lib/image.rb',
-    'lib/exec-code.rb'
+    'lib/error.rb',
+    'lib/exec-code.rb',
+    'lib/image.rb'
   ]
   s.require_path = 'lib'
 end

@@ -10,7 +10,7 @@ module ExecCode
       begin
         stdout, stderr = @container.tap(&:start).attach(stdout: true, stderr: true)
       rescue
-        return [nil, nil]
+        raise ExecCode::ContainerRunError
       ensure
         delete
       end
@@ -22,7 +22,7 @@ module ExecCode
       begin
         Docker::Container.create('Cmd' => [cmd], 'Image' => image)
       rescue
-        nil
+        raise ExecCode::ContainerCreateError
       end
     end
 

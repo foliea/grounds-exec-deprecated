@@ -1,5 +1,8 @@
 require 'container'
 
+# FIX: Hardcoded repository
+# FIX: Error handling
+
 module ExecCode
 
   Output = Struct.new(:stdout, :stderr)
@@ -9,11 +12,12 @@ module ExecCode
 
     def run(language, code)
       code = format_input(code)
-      container = ExecCode::Container.new("foliea/exec-#{language}", code)
-      
-      out, err = container.run
-      return nil if out.nil? && err.nil?
-      
+      begin
+        container = ExecCode::Container.new("foliea/exec-#{language}", code)
+        out, err = container.run
+      rescue
+        return nil 
+      end
       format_output(out, err)
     end
 

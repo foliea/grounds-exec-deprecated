@@ -5,5 +5,9 @@ module ExecCode
     def all
       ['exec-golang']
     end
+
+    def image_exist?(name)
+      all.include?(name)
+    end
   end 
 end
