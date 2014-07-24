@@ -2,15 +2,15 @@
   <div class="ground-editor-header">
     <a href="#" data-dropdown="drop" class="tiny radius button secondary dropdown">Theme: <b>Textmate</b></a><br>
     <ul id="drop" data-dropdown-content class="f-dropdown">
-      <li><a href="#">Texmate</a></li>
-      <li><a href="#">Monokai</a></li>
-      <li><a href="#">Forster</a></li>
+      <% @ground.themes.each do |theme| %>
+      <li><%= link_to(theme[:label], grounds_switch_editor_theme_path(theme[:code]), class: 'theme-link', method: :patch, remote: true) %></li>
+      <% end %>
     </ul>
   </div>
   <%= content_tag(:div, @ground.code, id: :ground_editor, class: 'ground-editor', data: @ground.editor) %>
 </div>
 <div class="row">
-  <%= form_for(@ground, as: :ground, url: grounds_run_path, remote: true) do |f| %>
+  <%= form_for(@ground, as: :ground, url: grounds_run_path, method: :put, remote: true) do |f| %>
   <%= f.hidden_field :language, value: @ground.language %>
   <%= f.hidden_field :code %>
   <%= button_tag(type: 'submit', class: 'small ground-button radius') do

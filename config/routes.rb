@@ -5,8 +5,8 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'grounds#show'
 
-  match 'grounds/', to: 'grounds#run', as: 'grounds_run', via: [:post]
-
+  match 'grounds/', to: 'grounds#run', as: 'grounds_run', via: :put
+  match 'grounds/:theme', to: 'grounds#switch_editor_theme', as: 'grounds_switch_editor_theme', via: :patch
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
