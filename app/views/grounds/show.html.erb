@@ -7,7 +7,7 @@
       <li><a href="#">Forster</a></li>
     </ul>
   </div>
-  <%= content_tag(:div, @ground.content, id: :ground_editor, class: 'ground-editor', data: @ground.editor) %>
+  <%= content_tag(:div, @ground.code, id: :ground_editor, class: 'ground-editor', data: @ground.editor) %>
 </div>
 <div class="row">
   <%= form_for(@ground, as: :ground, url: grounds_run_path, remote: true) do |f| %>

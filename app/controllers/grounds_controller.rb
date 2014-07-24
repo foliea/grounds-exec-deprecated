@@ -1,7 +1,7 @@
 
 class GroundsController < ApplicationController
   def show
-    @ground = GroundDecorator.new(Ground.new(language: 'golang'), view_context)
+    @ground = GroundDecorator.new(Ground.new('golang'), view_context)
   end
 
   def run
