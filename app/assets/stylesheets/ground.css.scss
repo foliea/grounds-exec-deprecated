@@ -1,0 +1,72 @@
+$ground-buffer: rem-calc(20);
+$ground-primary-color: #f2f2f2;
+$ground-primary-light-color: adjust-color($ground-primary-color, $lightness: 5%);
+$ground-primary-hover-color: adjust-color($ground-primary-color, $lightness: -15%);
+$ground-primary-active-color: adjust-color($ground-primary-color, $lightness: -25%);
+$ground-border-color: #DDD;
+$ground-font-color: #333;
+
+.top-buffer    { margin-top:    $ground-buffer }
+.bottom-buffer { margin-bottom: $ground-buffer }
+
+@mixin ground-border($sides: left top right bottom, $width: 1px, $color: $ground-border-color, $style: solid) {
+  @each $side in $sides {
+    border-#{$side}: $width $color $style;
+  }
+}
+
+.ground-editor-header {
+  background-color: $ground-primary-color;
+  border-radius: 3px 3px 0 0;
+  padding: rem-calc(10) rem-calc(10);
+  @include ground-border(left top right);
+  
+  .button {
+    margin: 0rem;
+    background-color: $ground-primary-light-color;
+    color: $ground-font-color;
+    @include ground-border($color: $ground-border-color);
+      
+    &:hover {
+      background-color: $ground-primary-hover-color;
+    }
+  }
+}
+
+.ground-editor {
+  height: rem-calc(400);
+  border-radius: 0 0 3px 3px; 
+  @include ground-border;
+}
+
+.ground-contain-to-grid {
+  @extend .contain-to-grid;
+  background-color: $ground-primary-color;
+  @include ground-border(bottom);
+}
+
+.ground-top-bar {
+  @extend .top-bar;
+  background-color: $ground-primary-color;
+  
+  .name h1 a {
+    color: $ground-font-color;
+  }
+}
+
+.ground-button {
+  @extend .button.secondary;
+  @include ground-border;
+  
+  &:hover {
+    background-color: $ground-primary-hover-color;
+  }
+  &:focus {
+    background-color: $ground-primary-active-color;
+  }
+}
+
+.ground-panel {
+  @extend .panel;
+  @include radius;
+}
