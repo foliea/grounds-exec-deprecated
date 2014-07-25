@@ -1,0 +1,13 @@
+themes:
+  textmate: 'Textmate'
+  monokai: 'Monokai'
+  tomorrow_night: 'Tomorrow Night'
+  
+indents:
+  2: '2 spaces'
+  4: '4 spaces'
+  8: '8 spaces'
+  tab: 'Tabs'
+  
+languages:
+  golang: 'Go'

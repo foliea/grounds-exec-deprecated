@@ -19,25 +19,4 @@ class GroundDecorator < BaseDecorator
   end
 end
 
-module GroundEditor
-  extend self
- 
-  def themes
-    {
-      'textmate' => 'Textmate',
-      'monokai' => 'Monokai',
-      'tomorrow_night' => 'Tomorrow Night'
-    }
-  end
-
-  def indents
-    {
-      '2' => '2 spaces',
-      '4' => '4 spaces',
-      '8' => '8 spaces',
-      'tab' => 'Tabs'
-    }
-  end
-end
-
 
