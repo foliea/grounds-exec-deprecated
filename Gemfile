@@ -18,10 +18,14 @@ group :development do
 end
 
 group :development, :test do
+  gem 'sqlite3'
   gem 'rspec-rails', '~> 3.0.0'
 end
 
-gem 'rails_12factor', group: :production
+group :production do
+  gem 'pg'
+  gem 'rails_12factor'
+end
 
 gem 'ace-rails-ap'
 gem 'modernizr-rails'

@@ -1,29 +1,43 @@
 class GroundDecorator < BaseDecorator
   def editor
     {
-      theme: h.session[:editor_theme] ||= Theme.all.first,
+      theme: h.session[:theme] ||= default_theme,
+      indent: h.session[:indent] ||= default_indent,
       language:  self.language,
       error:  'An error occured, please try again later.'
 	  }
   end
   
-  def themes
-    Theme.all
-  end
-end
-
-module Theme
-  extend self
-
-  def all
-    [
-      { label: 'Textmate', code: 'textmate' } ,
-      { label: 'Monokai', code: 'monokai' },
-      { label: 'Tomorrow Night', code: 'tomorrow_night' } 
-    ]
+  def default_theme
+    code, label = GroundEditor.themes.first
+    { code: code, label: label}
   end
   
-  def get(code)
-    all.each { |theme| return theme if theme[:code] == code  }
+  def default_indent
+    code, label = GroundEditor.indents.first
+    { code: code, label: label}
   end
 end
+
+module GroundEditor
+  extend self
+ 
+  def themes
+    {
+      'textmate' => 'Textmate',
+      'monokai' => 'Monokai',
+      'tomorrow_night' => 'Tomorrow Night'
+    }
+  end
+
+  def indents
+    {
+      '2' => '2 spaces',
+      '4' => '4 spaces',
+      '8' => '8 spaces',
+      'tab' => 'Tabs'
+    }
+  end
+end
+
+

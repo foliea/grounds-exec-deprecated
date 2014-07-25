@@ -1,17 +1,33 @@
-<div class="row top-buffer bottom-buffer">
-  <div class="ground-editor-header">
-    <a href="#" data-dropdown="drop" class="tiny radius button secondary dropdown">Theme: <b id="theme-name">Textmate</b></a><br>
-    <ul id="drop" data-dropdown-content class="f-dropdown">
-      <% @ground.themes.each do |theme| %>
-      <li><%= link_to(theme[:label], grounds_switch_theme_path(theme[:code]), 
-                      class: 'theme-link', 
-                      data: { theme: theme }, 
-                      method: :put, 
-                      remote: true) %></li>
-      <% end %>
-    </ul>
-  </div>
-  <%= content_tag(:div, @ground.code, id: :ground_editor, class: 'ground-editor', data: @ground.editor) %>
+<div class="row top-buffer ground-editor-header">
+  
+    <div class="large-3 column">
+      <a href="#" data-dropdown="themes" class="tiny radius button secondary dropdown">Theme: <b id="theme-name"></b></a><br>
+      <ul id="themes" data-dropdown-content class="f-dropdown">
+        <% GroundEditor.themes.each do |code, label| %>
+        <li><%= link_to(label, grounds_switch_theme_path(code), 
+                        class: 'theme-link', 
+    data: { theme: { code: code, label: label } }, 
+                        method: :put, 
+                        remote: true) %></li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="large-3 column">
+      <a href="#" data-dropdown="indents" class="tiny radius button secondary dropdown">Indent mode: <b id="indent-name"></b></a><br>
+      <ul id="indents" data-dropdown-content class="f-dropdown">
+        <% GroundEditor.indents.each do |code, label| %>
+        <li><%= link_to(label, grounds_switch_indent_path(code), 
+                          class: 'indent-link', 
+                          data: { indent: { code: code, label: label } }, 
+                          method: :put, 
+                          remote: true) %></li>
+        <% end %>
+      </ul>
+    </div>
+  <div class="large-6 column"></div>
+</div>
+<div class="row bottom-buffer">
+<%= content_tag(:div, @ground.code, id: :ground_editor, class: 'ground-editor', data: @ground.editor) %>
 </div>
 <div class="row">
   <%= form_for(@ground, as: :ground, url: grounds_run_path, method: :put, remote: true) do |f| %>

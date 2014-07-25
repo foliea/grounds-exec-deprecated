@@ -4,6 +4,17 @@ var loadGroundEditor = function() {
     $("#theme-name").text(theme.label);
   };
   
+  var setIndent = function(editor, indent) {
+    if (indent.code == "tab") {
+      editor.getSession().setUseSoftTabs(false);
+      editor.getSession().setTabSize(8);
+    } else {
+      editor.getSession().setUseSoftTabs(true);
+      editor.getSession().setTabSize(indent.code);
+    }
+    $("#indent-name").text(indent.label);
+  };
+  
   var setLanguage = function(editor, language) {
     editor.getSession().setMode("ace/mode/" + language);
   }
@@ -12,17 +23,6 @@ var loadGroundEditor = function() {
     // Set cursor on the last line
     editor.gotoLine(editor.session.getLength());
     editor.focus();
-  }
-
-  var bindCommands = function(editor) {
-    editor.commands.addCommand({
-      name: 'Undo',
-      bindKey: {win: 'Ctrl-Z',  mac: 'Command-Z'},
-      exec: function(editor) {
-        editor.undo();
-      },
-      readOnly: true
-    });
   }
   
   var bindFormEvents = function(editor) {
@@ -43,10 +43,14 @@ var loadGroundEditor = function() {
     });
   };
   
-  var bindThemeEvents = function(editor) {
+  var bindEditorEvents = function(editor) {
     $(".theme-link").on("click", function(event, date) {
       var theme = $(event.currentTarget).data('theme');
       setTheme(editor, theme);
+    });
+    $(".indent-link").on("click", function(event, date) {
+      var indent = $(event.currentTarget).data('indent');
+      setIndent(editor, indent);
     });
   };
 
@@ -55,16 +59,19 @@ var loadGroundEditor = function() {
     return;
   }
   var theme = $groundEditor.data("theme");
+  var indent = $groundEditor.data("indent");
   var language = $groundEditor.data("language");
   var error = $groundEditor.data("error");
   var editor = ace.edit("ground_editor");
 
   setTheme(editor, theme);
+  setIndent(editor, indent);
   setLanguage(editor, language);
   setCursor(editor);
-  bindCommands(editor);
   bindFormEvents(editor);
-  bindThemeEvents(editor);
+  bindEditorEvents(editor);
+  
+  editor.getSession().setUseWrapMode(true);
 };
 
 $(document).ready(loadGroundEditor);

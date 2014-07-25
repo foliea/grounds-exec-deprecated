@@ -1,9 +1,6 @@
 class GroundsController < ApplicationController
-  respond_to :html, only: :show
-
   def show
     @ground = GroundDecorator.new(Ground.new('golang'), view_context)
-    respond_with(@ground)
   end
 
   def run
@@ -16,11 +13,20 @@ class GroundsController < ApplicationController
   end
 
   def switch_theme
-    theme = Theme.get(params[:code])
-    session[:editor_theme] = theme if theme.present?
-    render json: { status: :ok }
+    switch_option(:theme, params[:code])
   end
   
-  def switch_language
+  def switch_indent
+    switch_option(:indent, params[:code])
+  end
+  
+  private 
+  
+  def switch_option(option, code)
+    options = GroundEditor.send(option.to_s.pluralize(2))
+    if options.has_key?(code)
+      session[option] = { code: code, label: options[code] }
+    end
+    render json: { status: :ok }
   end
 end
