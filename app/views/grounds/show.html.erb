@@ -1,29 +1,28 @@
 <div class="row top-buffer ground-editor-header">
-  
-    <div class="large-3 column">
-      <a href="#" data-dropdown="themes" class="tiny radius button secondary dropdown">Theme: <b id="theme-name"></b></a><br>
-      <ul id="themes" data-dropdown-content class="f-dropdown">
-        <% GroundEditor.themes.each do |code, label| %>
-        <li><%= link_to(label, grounds_switch_theme_path(code), 
-                        class: 'theme-link', 
-    data: { theme: { code: code, label: label } }, 
+  <div class="large-3 column">
+    <a href="#" data-dropdown="themes" class="tiny radius button secondary dropdown"><%= t('editor.select.theme') %> <b id="theme-name"></b></a><br>
+    <ul id="themes" data-dropdown-content class="f-dropdown">
+      <% GroundEditor.options(:theme).each do |code, label| %>
+      <li><%= link_to(label, grounds_switch_theme_path(code), 
+                      class: 'theme-link', 
+                      data: { theme: { code: code, label: label } }, 
+                      method: :put, 
+                      remote: true) %></li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="large-3 column">
+    <a href="#" data-dropdown="indents" class="tiny radius button secondary dropdown"><%= t('editor.select.indent') %> <b id="indent-name"></b></a><br>
+    <ul id="indents" data-dropdown-content class="f-dropdown">
+      <% GroundEditor.options(:indent).each do |code, label| %>
+      <li><%= link_to(label, grounds_switch_indent_path(code), 
+                        class: 'indent-link', 
+                        data: { indent: { code: code, label: label } }, 
                         method: :put, 
                         remote: true) %></li>
-        <% end %>
-      </ul>
-    </div>
-    <div class="large-3 column">
-      <a href="#" data-dropdown="indents" class="tiny radius button secondary dropdown">Indent mode: <b id="indent-name"></b></a><br>
-      <ul id="indents" data-dropdown-content class="f-dropdown">
-        <% GroundEditor.indents.each do |code, label| %>
-        <li><%= link_to(label, grounds_switch_indent_path(code), 
-                          class: 'indent-link', 
-                          data: { indent: { code: code, label: label } }, 
-                          method: :put, 
-                          remote: true) %></li>
-        <% end %>
-      </ul>
-    </div>
+      <% end %>
+    </ul>
+  </div>
   <div class="large-6 column"></div>
 </div>
 <div class="row bottom-buffer">
@@ -34,11 +33,11 @@
   <%= f.hidden_field :language, value: @ground.language %>
   <%= f.hidden_field :code %>
   <%= button_tag(type: 'submit', class: 'small ground-button radius') do
-    content_tag(:strong, 'Run')
+    content_tag(:strong, t('editor.run'))
   end %>
   <% end %>
   <div class="ground-panel">
-    <h5>Console</h5>
+    <h5><%= t('editor.console') %></h5>
     <%= content_tag(:span, '', id: :stdout) %>
     <%= content_tag(:span, '', id: :stderr) %>
   </div>

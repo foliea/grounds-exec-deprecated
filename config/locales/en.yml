@@ -20,4 +20,13 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  site:
+    title: 'Grounds Beta'
+  editor:
+    run: 'Run'
+    console: 'Console'
+    select:
+      language: 'Language:'
+      theme: 'Theme:'
+      indent: 'Indent mode:'
+

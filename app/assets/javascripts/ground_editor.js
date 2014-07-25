@@ -16,7 +16,7 @@ var loadGroundEditor = function() {
   };
   
   var setLanguage = function(editor, language) {
-    editor.getSession().setMode("ace/mode/" + language);
+    editor.getSession().setMode("ace/mode/" + language.code);
   }
   
   var setCursor = function(editor) {
