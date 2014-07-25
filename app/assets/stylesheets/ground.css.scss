@@ -30,6 +30,9 @@ $ground-font-color: #333;
     &:hover {
       background-color: $ground-primary-hover-color;
     }
+    &:focus {
+      background-color: $ground-primary-hover-color;
+    }
   }
 }
 

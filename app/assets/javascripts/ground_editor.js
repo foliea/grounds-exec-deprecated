@@ -1,6 +1,7 @@
 var loadGroundEditor = function() {
   var setTheme = function(editor, theme) {
-    editor.setTheme("ace/theme/" + theme);
+    editor.setTheme("ace/theme/" + theme.code);
+    $("#theme-name").text(theme.label);
   };
   
   var setLanguage = function(editor, language) {
@@ -43,11 +44,9 @@ var loadGroundEditor = function() {
   };
   
   var bindThemeEvents = function(editor) {
-    $(".theme-link").on("ajax:complete", function(event, data) {
-       if (data.status == 200) {
-         response = JSON.parse(data.responseText);
-         setTheme(editor, response.theme);
-       }
+    $(".theme-link").on("click", function(event, date) {
+      var theme = $(event.currentTarget).data('theme');
+      setTheme(editor, theme);
     });
   };
 

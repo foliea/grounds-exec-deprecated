@@ -15,8 +15,12 @@ class GroundsController < ApplicationController
     end
   end
 
-  def switch_editor_theme
-    session[:editor_theme] = params[:theme] if params[:theme].present?
-    render json: { theme: session[:editor_theme], status: :ok }
+  def switch_theme
+    theme = Theme.get(params[:code])
+    session[:editor_theme] = theme if theme.present?
+    render json: { status: :ok }
+  end
+  
+  def switch_language
   end
 end
