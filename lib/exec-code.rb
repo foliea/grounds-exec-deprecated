@@ -1,4 +1,5 @@
 require 'container'
+require 'sample'
 
 # FIX: Hardcoded repository
 # FIX: Error handling

@@ -23,7 +23,8 @@ Gem::Specification.new do |s|
     'lib/container.rb',
     'lib/error.rb',
     'lib/exec-code.rb',
-    'lib/image.rb'
+    'lib/image.rb',
+    'lib/sample.rb'
   ]
   s.require_path = 'lib'
 end

@@ -8,7 +8,7 @@ describe ExecCode::Launcher do
   end
 
   it 'gets hello world from container' do
-    code = "package main\r\n\r\nimport \"fmt\"\r\n\r\nfunc main() {\r\n\tfmt.Println(\"Hello, playground\")\r\n}\r\n"
+    code = ExecCode::Sample.golang 
     output = ExecCode::Launcher.run('golang', code)
     expect(output.stdout).to_not be_empty
   end
