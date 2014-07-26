@@ -10,11 +10,10 @@ Gem::Specification.new do |s|
   s.authors     = ['Adrien Folie']
   s.email       = 'folie.adrien@gmail.com'
   s.license     = 'MIT'
-  s.homepage    = 'https://github.com/folieadrien/exec-code'
+  s.homepage    = 'https://github.com/folieadrien/grounds/exec-code'
 
   s.add_development_dependency 'bundler', '~> 1.0'
   s.add_development_dependency 'rspec', '~> 2.3'
-  s.add_development_dependency 'pry', '~> 0.10', '>= 0.10.0'
   s.add_development_dependency 'rake', '~> 10.3', '>= 10.3.2'
 
   s.add_dependency 'docker-api'
@@ -23,7 +22,7 @@ Gem::Specification.new do |s|
     'lib/container.rb',
     'lib/error.rb',
     'lib/exec-code.rb',
-    'lib/image.rb',
+    'lib/language.rb',
     'lib/sample.rb'
   ]
   s.require_path = 'lib'

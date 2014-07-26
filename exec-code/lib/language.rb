@@ -1,15 +1,15 @@
 module ExecCode
-  module Image
+  module Language
     extend self
 
     def all
       [
-        'exec-golang',
-        'exec-ruby'
+        'golang',
+        'ruby'
       ]
     end
 
-    def image_exist?(name)
+    def language_supported?(name)
       all.include?(name)
     end
   end 

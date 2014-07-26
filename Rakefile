@@ -1,7 +1,7 @@
 #!/usr/bin/env rake
 
 namespace :images do
-  registry = ARGV[1]
+  registry = ARGV[1] || ''
 
   abort("Please specifiy a docker registry!") if registry.empty?
 
