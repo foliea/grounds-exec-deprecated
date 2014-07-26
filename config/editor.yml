@@ -11,4 +11,5 @@ indents:
   tab: 'Tabs'
  
 languages:
+  ruby: 'Ruby'
   golang: 'Go'

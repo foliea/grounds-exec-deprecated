@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/folieadrien/exec-code
-  revision: 090cd00f09d8e07181f656e4b002040ced790b25
+  revision: 81db6f40cf76d7be1e5b2b876793717a25048c8a
   specs:
     exec-code (0.0.1)
       docker-api
@@ -47,7 +47,7 @@ GEM
       execjs
     coffee-script-source (1.7.1)
     diff-lcs (1.2.5)
-    docker-api (1.13.1)
+    docker-api (1.13.2)
       archive-tar-minitar
       excon (>= 0.38.0)
       json

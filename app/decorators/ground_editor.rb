@@ -10,7 +10,7 @@ module GroundEditor
 
   def default_option(option)
     code, label = options(option).first
-    format_option(code, label) 
+    format_option(code, label) if code.present? 
   end
 
   def option(option, code)
