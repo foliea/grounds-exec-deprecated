@@ -23,6 +23,7 @@ en:
   site:
     title: 'Grounds Beta'
   editor:
+    error: 'An error occurred'
     run: 'Run'
     console: 'Console'
     select:

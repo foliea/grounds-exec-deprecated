@@ -6,7 +6,7 @@ class GroundsController < ApplicationController
   def run
     cmd = ExecCode::Launcher.run(params[:ground][:language], params[:ground][:code])
     if cmd.nil?
-      render json: { status: :service_unavailable }
+      render json: { stderr: I18n.t('editor.error'), status: :service_unavailable }
     else
       render json: { stdout: cmd.stdout, stderr: cmd.stderr, status: :ok }
     end
