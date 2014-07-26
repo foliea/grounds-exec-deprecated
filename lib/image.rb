@@ -3,7 +3,10 @@ module ExecCode
     extend self
 
     def all
-      ['exec-golang']
+      [
+        'exec-golang',
+        'exec-ruby'
+      ]
     end
 
     def image_exist?(name)
