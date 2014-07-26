@@ -8,7 +8,7 @@ describe ExecCode::Launcher do
   end
 
   it 'gets hello world from container' do
-    code = ExecCode::Sample.golang 
+    code = ExecCode::Sample.from('golang')
     output = ExecCode::Launcher.run('golang', code)
     expect(output.stdout).to_not be_empty
   end
