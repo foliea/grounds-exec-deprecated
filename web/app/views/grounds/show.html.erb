@@ -2,7 +2,7 @@
   <div class="large-3 column">
     <a href="#" data-dropdown="themes" class="tiny radius button secondary dropdown"><%= t('editor.select.theme') %> <b id="theme-name"></b></a><br>
     <ul id="themes" data-dropdown-content class="f-dropdown">
-      <% GroundEditor.options(:theme).each do |code, label| %>
+      <% @ground.themes.each do |code, label| %>
       <li><%= link_to(label, grounds_switch_theme_path(code), 
                       class: 'theme-link', 
                       data: { theme: { code: code, label: label } }, 
@@ -14,7 +14,7 @@
   <div class="large-3 column">
     <a href="#" data-dropdown="indents" class="tiny radius button secondary dropdown"><%= t('editor.select.indent') %> <b id="indent-name"></b></a><br>
     <ul id="indents" data-dropdown-content class="f-dropdown">
-      <% GroundEditor.options(:indent).each do |code, label| %>
+      <% @ground.indents.each do |code, label| %>
       <li><%= link_to(label, grounds_switch_indent_path(code), 
                         class: 'indent-link', 
                         data: { indent: { code: code, label: label } }, 

@@ -1,5 +1,6 @@
 require 'timeout'
 require 'docker'
+require 'error'
 
 module ExecCode
   class Container
@@ -17,9 +18,12 @@ module ExecCode
       !@container.nil?
     end
 
-    def run
+    def run(&block)
+      raise ExecCode::ContainerRunError unless valid?
       begin
-        stdout, stderr = Timeout::timeout(10) do
+        if block_given?
+          @container.tap(&:start).attach(&block)
+        else
           @container.tap(&:start).attach(stdout: true, stderr: true)
         end
       rescue

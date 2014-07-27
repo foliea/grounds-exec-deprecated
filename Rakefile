@@ -29,11 +29,7 @@ def images
 
   dockerfiles = File.join("#{File.dirname(__FILE__)}", 'dockerfiles')
 
-  files = Dir.entries(dockerfiles).delete_if do |file| 
-      file == '.' || file == '..'
-  end
-
-  files.each do |file|
+  Dir.entries(dockerfiles).select { |f| f != '.' && f != '..' }.each do |file|
     path = File.join(dockerfiles, file)
     if File.directory?(path)
       yield(file, path)

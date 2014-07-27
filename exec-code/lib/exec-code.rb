@@ -1,8 +1,8 @@
 require 'container'
 require 'sample'
 
-# FIX: Hardcoded repository
-# FIX: Error handling
+# FIX: Hardcoded registry
+# FIX: Language not supported / registry empty / image missing
 
 module ExecCode
 
@@ -11,11 +11,15 @@ module ExecCode
   module Launcher
     extend self
 
-    def run(language, code)
+    def service_available?(language)
+      ExecCode::Language.suppored?(language) 
+    end
+
+    def run(language, code, &block)
       code = format_input(code)
       begin
         container = ExecCode::Container.new("foliea/exec-#{language}", code)
-        out, err = container.run
+        out, err = container.run(&block)
       rescue
         return nil 
       end
