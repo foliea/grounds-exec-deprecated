@@ -2,8 +2,7 @@ require 'spec_helper'
 require 'container'
 
 describe ExecCode::Container do
-  let(:registry) { ENV['DOCKER_REGISTRY'] }
-  let(:image) { "#{registry}/exec-golang" }
+  let(:image) { "#{ExecCode.docker_registry}/exec-golang" }
 
   context 'when image exist' do
     it 'creates a container' do
@@ -31,6 +30,10 @@ describe ExecCode::Container do
     it 'raises an error during creation' do
       create = proc { ExecCode::Container.new('unknown/unknown', '42') }
       expect(create).to raise_error(ExecCode::ContainerCreateError) 
+    end
+
+    it 'raises an error during run' do
+
     end
   end
 

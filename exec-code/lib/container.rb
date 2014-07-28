@@ -5,6 +5,7 @@ require 'error'
 module ExecCode
   class Container
     def initialize(image, cmd)
+      Docker.url = ExecCode.docker_url
       begin
         Timeout::timeout(5) do
           @container = create(image, cmd)

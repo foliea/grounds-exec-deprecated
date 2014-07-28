@@ -1,32 +1,13 @@
-require 'docker'
+require 'config'
+require 'service'
 
-registry = ENV['DOCKER_REGISTRY'] || ''
-
-if registry.empty?
-  puts 'Please set DOCKER_REGISTRY first.'
-  exit
+ExecCode.config do
+  docker_registry ENV['DOCKER_REGISTRY']
+  docker_url ENV['DOCKER_INSTANCE']
 end
 
-docker_host = ENV['DOCKER_HOST'] || ''
-docker_url = ENV['DOCKER_URL'] || ''
-
-if docker_host.empty? && docker_url.empty?
-  puts 'Please set DOCKER_HOST or DOCKER_URL first.'
-  exit
-end
-
-def docker_running?
-  begin
-    Timeout::timeout(5) do
-    end 
-    true
-  rescue
-    false
-  end
-end
-
-unless docker_running?
-  puts 'Please run docker first.'
+unless ExecCode::Service.available?
+  puts 'Please verify specs configuration and if docker is running.'
   exit
 end
 
