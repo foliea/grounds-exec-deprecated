@@ -26,9 +26,22 @@ var loadGroundEditor = function() {
     editor.focus();
   }
   
+  var bindRunListener = function() {
+    var source = new EventSource('/grounds/run');
+    source.addEventListener('message', function(e) {
+      if (e.data == "stop") {
+        alert("stop");
+        source.close();
+      } else {
+        $("#console").append($('<li>').text(e.data));
+      }
+    });
+  }
+  
   var bindFormEvents = function(editor) {
     // Form submission
     $("#new_ground").submit(function() {
+      bindRunListener();
       $("#ground_code").val(editor.getValue());
       // Clean console
       $("#stdout").text('');
@@ -48,15 +61,15 @@ var loadGroundEditor = function() {
   };
   
   var bindEditorEvents = function(editor) {
-    $(".language-link").on("click", function(event, date) {
+    $(".language-link").on('click', function(event, date) {
       var language = $(event.currentTarget).data('language');
       setLanguage(editor, language);
     });
-    $(".theme-link").on("click", function(event, date) {
+    $(".theme-link").on('click', function(event, date) {
       var theme = $(event.currentTarget).data('theme');
       setTheme(editor, theme);
     });
-    $(".indent-link").on("click", function(event, date) {
+    $(".indent-link").on('click', function(event, date) {
       var indent = $(event.currentTarget).data('indent');
       setIndent(editor, indent);
     });
@@ -78,7 +91,6 @@ var loadGroundEditor = function() {
   setCursor(editor);
   bindFormEvents(editor);
   bindEditorEvents(editor);
-  
   editor.getSession().setUseWrapMode(true);
 };
 

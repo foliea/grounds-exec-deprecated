@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'grounds#show'
 
-  match 'grounds/run', to: 'grounds#run', as: 'grounds_run', via: :put
+  match 'grounds/run', to: 'grounds#run', as: 'grounds_run', via: :get
   match 'grounds/change_option/:option', to: 'grounds#change_option', as: 'grounds_change_option', via: :put
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
