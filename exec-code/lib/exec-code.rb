@@ -12,7 +12,7 @@ module ExecCode
     cmd = format_input(code)
     begin
       image = "#{docker_registry}/exec-#{language}"
-      container = ExecCode::Container.new(image, cmd)
+      container = Container.new(image, cmd)
       out, err = container.run(&block)
     rescue
       return nil 

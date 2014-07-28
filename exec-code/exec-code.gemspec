@@ -25,7 +25,8 @@ Gem::Specification.new do |s|
     'lib/error.rb',
     'lib/exec-code.rb',
     'lib/language.rb',
-    'lib/sample.rb'
+    'lib/sample.rb',
+    'lib/service.rb'
   ]
   s.require_path = 'lib'
 end

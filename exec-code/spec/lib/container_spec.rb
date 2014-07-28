@@ -7,7 +7,8 @@ describe ExecCode::Container do
   context 'when image exist' do
     it 'creates a container' do
       container = ExecCode::Container.new(image, '42')
-      expect(container).to be_valid 
+      expect(container).to be_valid
+      container.send(:delete) 
     end
 
     it 'runs a container' do
