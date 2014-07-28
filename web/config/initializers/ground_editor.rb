@@ -2,7 +2,7 @@ require 'yaml'
 
 module GroundEditor
   extend self
- 
+
   config = YAML.load_file("#{Rails.root}/config/editor.yml")
   config.each do |key, value|
     self.send(:define_method, "__#{key}__") { value }
@@ -30,6 +30,6 @@ module GroundEditor
   private
 
   def format_option(code, label)
-    { code: code, label: label} 
+    { 'code' => code, 'label' => label } 
   end
 end

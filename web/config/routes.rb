@@ -6,8 +6,7 @@ Rails.application.routes.draw do
   root 'grounds#show'
 
   match 'grounds/run', to: 'grounds#run', as: 'grounds_run', via: :put
-  match 'grounds/theme/:code', to: 'grounds#switch_theme', as: 'grounds_switch_theme', via: :put
-  match 'grounds/indent/:code', to: 'grounds#switch_indent', as: 'grounds_switch_indent', via: :put
+  match 'grounds/change_option/:option', to: 'grounds#change_option', as: 'grounds_change_option', via: :put
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

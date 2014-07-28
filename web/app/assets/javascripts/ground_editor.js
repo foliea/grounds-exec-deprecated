@@ -17,6 +17,7 @@ var loadGroundEditor = function() {
   
   var setLanguage = function(editor, language) {
     editor.getSession().setMode("ace/mode/" + language.code);
+    $("#language-name").text(language.label);
   }
   
   var setCursor = function(editor) {
@@ -47,6 +48,10 @@ var loadGroundEditor = function() {
   };
   
   var bindEditorEvents = function(editor) {
+    $(".language-link").on("click", function(event, date) {
+      var language = $(event.currentTarget).data('language');
+      setLanguage(editor, language);
+    });
     $(".theme-link").on("click", function(event, date) {
       var theme = $(event.currentTarget).data('theme');
       setTheme(editor, theme);
@@ -67,9 +72,9 @@ var loadGroundEditor = function() {
   var error = $groundEditor.data("error");
   var editor = ace.edit("ground_editor");
 
+  setLanguage(editor, language);
   setTheme(editor, theme);
   setIndent(editor, indent);
-  setLanguage(editor, language);
   setCursor(editor);
   bindFormEvents(editor);
   bindEditorEvents(editor);

@@ -15,6 +15,10 @@ class GroundDecorator < BaseDecorator
   def indents
     GroundEditor.options(:indent)
   end
+  
+  def languages
+    GroundEditor.options(:language)
+  end
 end
 
 
