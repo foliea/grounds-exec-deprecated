@@ -29,6 +29,9 @@ var loadGroundEditor = function() {
     // Form submission
     $("#new_ground").submit(function() {
       $("#ground_code").val(editor.getValue());
+      // Clean console
+      $("#stdout").text('');
+      $("#stderr").text('');
     });
     // Get response after form submission
     $("#new_ground").on("ajax:complete", function(event, data) {
