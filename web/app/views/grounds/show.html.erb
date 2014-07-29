@@ -14,19 +14,22 @@
 
 </div>
 
-<div class="row bottom-buffer">
-  
-  <%= content_tag(:div, @ground.code, id: :ground_editor, class: 'ground-editor', data: @ground.editor) %>
+<%= content_tag(:div, @ground.code, id: :ground_editor, class: 'row ground-editor', data: @ground.editor) %>
 
+<div class="row top-buffer">
+<%= form_for(@ground, as: :ground, url: grounds_run_path) do |f| %>
+  <%= f.hidden_field :language, value: @ground.language %>
+  <%= f.hidden_field :code, value: @ground.code %>
+  <%= button_tag(type: 'submit', class: 'small ground-button radius') do
+    content_tag(:strong, t('editor.run'))
+  end %>
+<% end %>
 </div>
 
-<div class="row">
+<div class="row ground-panel">
 
-  <div class="ground-panel">
-  
-    <h6><%= t('editor.console') %></h6>
-    <ul id="console"><ul>
-    
-  </div>
+  <h6><%= t('editor.console') %></h6>
+  <ul id="console"></ul>
+
 </div>
 

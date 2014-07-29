@@ -18,6 +18,7 @@ var loadGroundEditor = function() {
   var setLanguage = function(editor, language) {
     editor.getSession().setMode("ace/mode/" + language.code);
     $("#language-name").text(language.label);
+    $("#ground_language").val(JSON.stringify(language));
   }
   
   var setCursor = function(editor) {
@@ -26,6 +27,17 @@ var loadGroundEditor = function() {
     editor.focus();
   }
   
+  var cleanConsole = function() {
+    $("#console").find("li").each(function() {
+      this.remove();
+    });
+  };
+  
+  var runCode = function(socket, language, code) {
+    data = JSON.stringify({ language: language, code: code});
+    socket.send(data);
+  };
+
   var bindEditorEvents = function(editor) {
     // Refresh language
     $(".language-link").on('click', function(event, date) {
@@ -43,15 +55,31 @@ var loadGroundEditor = function() {
       setIndent(editor, indent);
     });
     // Refresh code sample
-    $(".language-link").on("ajax:complete", function(event, data) {
+    $(".language-link").on('ajax:complete', function(event, data) {
       if (data.status == 200) {
         response = JSON.parse(data.responseText);
         editor.setValue(response.custom);
         setCursor(editor);   
       } 
     });
-  };
+    // Open socket to web server
+    var socket = new WebSocket("ws://" + window.location.host + "/grounds/run");
+    socket.onmessage = function(event) {
+      if (event.data.length) {
+        $("#console").append($('<li>').text(event.data));
+      }
+    };
+    // Form submit
+    $("#new_ground").on('submit', function(event) {
+      event.preventDefault();
+      cleanConsole();
 
+      var code = editor.getValue();
+      var language = $("#ground_language").val();
+      runCode(socket, language, code);
+    });
+  };
+  
   // Return if no editor on the page
   var $groundEditor = $("#ground_editor");
   if (!$groundEditor[0]) {
@@ -63,7 +91,7 @@ var loadGroundEditor = function() {
   var language = $groundEditor.data("language");
   var error = $groundEditor.data("error");
   var editor = ace.edit("ground_editor");
-
+  
   setLanguage(editor, language);
   setTheme(editor, theme);
   setIndent(editor, indent);
