@@ -33,7 +33,6 @@ gem 'foundation-rails'
 gem 'docker-api', require: 'docker'
 gem 'puma'
 
-gem 'exec-code', path: '../exec-code' 
+gem 'exec-code', path: '../exec-code'
 
-
-
+gem 'tubesock'
