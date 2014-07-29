@@ -26,59 +26,38 @@ var loadGroundEditor = function() {
     editor.focus();
   }
   
-  var bindRunListener = function() {
-    var source = new EventSource('/grounds/run');
-    source.addEventListener('message', function(e) {
-      if (e.data == "stop") {
-        alert("stop");
-        source.close();
-      } else {
-        $("#console").append($('<li>').text(e.data));
-      }
-    });
-  }
-  
-  var bindFormEvents = function(editor) {
-    // Form submission
-    $("#new_ground").submit(function() {
-      bindRunListener();
-      $("#ground_code").val(editor.getValue());
-      // Clean console
-      $("#stdout").text('');
-      $("#stderr").text('');
-    });
-    // Get response after form submission
-    $("#new_ground").on("ajax:complete", function(event, data) {
-      if (data.status == 200) {
-        response = JSON.parse(data.responseText);
-        $("#stdout").text(response.stdout);
-        $("#stderr").text(response.stderr);
-      } else {
-        $("#stdout").text('');
-        $("#stderr").text(error);
-      }
-    });
-  };
-  
   var bindEditorEvents = function(editor) {
+    // Refresh language
     $(".language-link").on('click', function(event, date) {
       var language = $(event.currentTarget).data('language');
       setLanguage(editor, language);
     });
+    // Refresh theme
     $(".theme-link").on('click', function(event, date) {
       var theme = $(event.currentTarget).data('theme');
       setTheme(editor, theme);
     });
+    // Refresh indentation
     $(".indent-link").on('click', function(event, date) {
       var indent = $(event.currentTarget).data('indent');
       setIndent(editor, indent);
     });
+    // Refresh code sample
+    $(".language-link").on("ajax:complete", function(event, data) {
+      if (data.status == 200) {
+        response = JSON.parse(data.responseText);
+        editor.setValue(response.custom);
+        setCursor(editor);   
+      } 
+    });
   };
 
+  // Return if no editor on the page
   var $groundEditor = $("#ground_editor");
   if (!$groundEditor[0]) {
     return;
   }
+  // Load data
   var theme = $groundEditor.data("theme");
   var indent = $groundEditor.data("indent");
   var language = $groundEditor.data("language");
@@ -89,8 +68,8 @@ var loadGroundEditor = function() {
   setTheme(editor, theme);
   setIndent(editor, indent);
   setCursor(editor);
-  bindFormEvents(editor);
   bindEditorEvents(editor);
+
   editor.getSession().setUseWrapMode(true);
 };
 
