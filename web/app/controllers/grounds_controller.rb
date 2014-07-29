@@ -5,7 +5,7 @@ class GroundsController < ApplicationController
     @ground = GroundDecorator.new(Ground.new(session[:language]), view_context)
   end
  
-  def change_option
+  def switch_option
     option, value = params[:option], params[:value]
     if option.present? && value.present?
       session[option] = value
