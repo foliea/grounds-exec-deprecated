@@ -7,7 +7,5 @@ ExecCode.config do
 end
 
 unless ExecCode::Service.available?
-  puts 'Please verify specs configuration and if docker is running.'
-  exit
+  abort('Please verify specs configuration and if docker is running.')
 end
-

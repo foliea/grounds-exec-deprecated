@@ -14,6 +14,9 @@ class GroundsController < ApplicationController
           sleep 2
         end
       end
+      tubesock.onclose do
+        # Kill container if still alive
+      end
     end
   end
 

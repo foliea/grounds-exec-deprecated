@@ -9,7 +9,7 @@ var loadGround = function() {
   var theme = $groundEditor.data("theme");
   var language = $groundEditor.data("language");
   var indent = $groundEditor.data("indent");
-  var error = $groundEditor.data("error");
+  // var error = $groundEditor.data("error");
   
   // Create ground
   var ground = new Ground(editor, language, theme, indent);

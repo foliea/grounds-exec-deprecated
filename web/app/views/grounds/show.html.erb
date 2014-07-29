@@ -11,19 +11,15 @@
   <div class="large-3 column">
     <%= render 'options_dropdown', option: 'indent', options: 'indents' %>
   </div>
-
+  <div class="large-3 column"></div>       
 </div>
 
 <%= content_tag(:div, @ground.code, id: :ground_editor, class: 'row ground-editor', data: @ground.editor) %>
 
 <div class="row top-buffer">
-<%= form_for(@ground, as: :ground, url: grounds_run_path) do |f| %>
-  <%= f.hidden_field :language, value: @ground.language %>
-  <%= f.hidden_field :code, value: @ground.code %>
-  <%= button_tag(type: 'submit', class: 'small ground-button radius') do
-    content_tag(:strong, t('editor.run'))
-  end %>
-<% end %>
+<%= button_tag(type: 'button', id: :run, class: 'small ground-button radius') do
+  content_tag(:strong, t('editor.run'))
+end %>
 </div>
 
 <div class="row ground-panel">

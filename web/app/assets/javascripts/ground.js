@@ -89,10 +89,8 @@ Ground.prototype.bindEvents = function() {
     }
   };
   // Form submit
-  $("#new_ground").on('submit', function(event) {
-    event.preventDefault();
+  $("#run").on('click', function(event) {
     that.cleanConsole();
-
     var code = that.editor.getValue();
     that.runCode(code);
   });
