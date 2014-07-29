@@ -1,15 +1,32 @@
-function Ground(editor, language, code, theme, indent) {
+function Ground(editor, language, theme, indent) {
   this.editor = editor;
   this.language = language;
-  this.code = code;
   this.theme = theme;
   this.indent = indent;
+  this.socket = null;
+
+  this.initEditor();
+  this.setCursor();
+  this.setLanguage();
+  this.setTheme();
+  this.setIndent();
+  
+  this.bindEvents();
+}
+
+Ground.prototype.initEditor = function() {
+  this.editor.getSession().setUseWrapMode(true);
 }
 
 Ground.prototype.setCursor = function() {
   var lastLine = this.editor.session.getLength();
   this.editor.gotoLine(lastLine);
   this.editor.focus();
+};
+
+Ground.prototype.setLanguage = function() {
+  this.editor.getSession().setMode("ace/mode/" + this.language.code);
+  $("#language-name").text(this.language.label);
 };
 
 Ground.prototype.setTheme = function() {
@@ -28,49 +45,45 @@ Ground.prototype.setIndent = function() {
   $("#indent-name").text(this.indent.label);
 };
 
-Ground.prototype.setLanguage = function() {
-  this.editor.getSession().setMode("ace/mode/" + this.language.code);
-  $("#language-name").text(this.language.label);
-};
-
 Ground.prototype.cleanConsole = function() {
    $("#console").find("li").each(function() {
       this.remove();
    });
 };
 
-Ground.prototype.runCode = function() {
-  data = JSON.stringify({ language: this.language, code: this.code});
-  socket.send(data);
+Ground.prototype.runCode = function(code) {
+  data = JSON.stringify({ language: this.language, code: code});
+  this.socket.send(data);
 };
 
-Ground.prototype.bindEditorEvents = function() {
+Ground.prototype.bindEvents = function() {
+  var that = this;
   // Refresh language
   $(".language-link").on('click', function(event, date) {
-    this.language = $(event.currentTarget).data('language');
-    this.setLanguage();
+    that.language = $(event.currentTarget).data('language');
+    that.setLanguage();
   });
   // Refresh theme
   $(".theme-link").on('click', function(event, date) {
-    this.theme = $(event.currentTarget).data('theme');
-    this.setTheme();
+    that.theme = $(event.currentTarget).data('theme');
+    that.setTheme();
   });
   // Refresh indentation
   $(".indent-link").on('click', function(event, date) {
-    this.indent = $(event.currentTarget).data('indent');
-    this.setIndent();
+    that.indent = $(event.currentTarget).data('indent');
+    that.setIndent();
   });
   // Refresh code sample
   $(".language-link").on('ajax:complete', function(event, data) {
     if (data.status == 200) {
       response = JSON.parse(data.responseText);
-      this.editor.setValue(response.custom);
-      this.setCursor(editor);   
+      that.editor.setValue(response.custom);
+      that.setCursor();   
     } 
   });
   // Open socket to web server
-  var socket = new WebSocket("ws://" + window.location.host + "/grounds/run");
-  socket.onmessage = function(event) {
+  this.socket = new WebSocket("ws://" + window.location.host + "/grounds/run");
+  this.socket.onmessage = function(event) {
     if (event.data.length) {
       $("#console").append($('<li>').text(event.data));
     }
@@ -78,10 +91,9 @@ Ground.prototype.bindEditorEvents = function() {
   // Form submit
   $("#new_ground").on('submit', function(event) {
     event.preventDefault();
-    this.cleanConsole();
+    that.cleanConsole();
 
-    var code = this.editor.getValue();
-    var language = $("#ground_language").val();
-    this.runCode(socket, language, code);
+    var code = that.editor.getValue();
+    that.runCode(code);
   });
 };
