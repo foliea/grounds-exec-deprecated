@@ -7,7 +7,8 @@ describe ExecCode::Sandbox do
  
   it 'initializes' do
     sandbox = ExecCode::Sandbox.new(language, code)
-    expect(sandbox).to be_valid 
+    expect(sandbox).to be_valid
+    # FIX: delete sandbox 
   end
 
   it 'executes code' do

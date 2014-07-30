@@ -7,15 +7,20 @@ class GroundsController < ApplicationController
   
   def run
     hijack do |sock|
+      sandbox = nil
       sock.onmessage do |data|
         h = JSON.parse(data)
-        puts h
+        # sandbox.interrupt unless sandbox.nil?
+        # works with closure ?
+        # -> try without sandbox = nil on top
+        # -> not working: try with instance variable
         sandbox = ExecCode::Sandbox.new(h['language'], h['code'])
         sandbox.execute do |stream, chunk|
           sock.send_data(chunk)
         end
       end
       sock.onclose do
+      # sandbox.interrupt unless sandbox.nil?
       end
     end
   end
