@@ -1,3 +1,5 @@
+require 'json'
+
 class GroundsController < ApplicationController
   include Tubesock::Hijack
 
@@ -10,17 +12,14 @@ class GroundsController < ApplicationController
       sandbox = nil
       sock.onmessage do |data|
         h = JSON.parse(data)
-        # sandbox.interrupt unless sandbox.nil?
-        # works with closure ?
-        # -> try without sandbox = nil on top
-        # -> not working: try with instance variable
+        puts h
         sandbox = ExecCode::Sandbox.new(h['language'], h['code'])
         sandbox.execute do |stream, chunk|
-          sock.send_data(chunk)
+          sock.send_data({ stream: stream, chunk: chunk }.to_json)
         end
       end
       sock.onclose do
-      # sandbox.interrupt unless sandbox.nil?
+        sandbox.interrupt unless sandbox.nil?
       end
     end
   end

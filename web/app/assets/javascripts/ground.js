@@ -46,7 +46,7 @@ Ground.prototype.setIndent = function() {
 };
 
 Ground.prototype.cleanConsole = function() {
-   $("#console").find("li").each(function() {
+   $("#console").find("span").each(function() {
       this.remove();
    });
 };
@@ -85,7 +85,8 @@ Ground.prototype.bindEvents = function() {
   this.socket = new WebSocket("ws://" + window.location.host + "/grounds/run");
   this.socket.onmessage = function(event) {
     if (event.data.length) {
-      $("#console").append($('<li>').text(event.data));
+      response = JSON.parse(event.data);
+      $("#console").append($('<span class="'+ response.stream +'">').text(response.chunk));
     }
   };
   // Form submit

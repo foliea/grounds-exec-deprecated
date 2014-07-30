@@ -3,6 +3,7 @@ $ground-primary-color: #f2f2f2;
 $ground-primary-light-color: adjust-color($ground-primary-color, $lightness: 5%);
 $ground-primary-hover-color: adjust-color($ground-primary-color, $lightness: -15%);
 $ground-primary-active-color: adjust-color($ground-primary-color, $lightness: -25%);
+$ground-error-color: #c60f13;
 $ground-border-color: #DDD;
 $ground-font-color: #333;
 
@@ -60,7 +61,7 @@ $ground-font-color: #333;
 .ground-button {
   @extend .button.secondary;
   @include ground-border;
-  
+
   &:hover {
     background-color: $ground-primary-hover-color;
   }
@@ -72,4 +73,8 @@ $ground-font-color: #333;
 .ground-panel {
   @extend .panel;
   @include radius;
+  
+  .stderr {
+    color: $ground-error-color;
+  }
 }
