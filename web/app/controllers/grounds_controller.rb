@@ -12,14 +12,17 @@ class GroundsController < ApplicationController
       sandbox = nil
       sock.onmessage do |data|
         h = JSON.parse(data)
-        puts h
         sandbox = ExecCode::Sandbox.new(h['language'], h['code'])
         sandbox.execute do |stream, chunk|
           sock.send_data({ stream: stream, chunk: chunk }.to_json)
         end
       end
       sock.onclose do
-        sandbox.interrupt unless sandbox.nil?
+        # onclose trigger twice
+        unless sandbox.nil?
+          sandbox.interrupt
+          sandbox = nil
+        end
       end
     end
   end

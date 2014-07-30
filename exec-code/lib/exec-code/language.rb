@@ -9,8 +9,8 @@ module ExecCode
       ]
     end
 
-    def supported?(code)
-      all.include?(code)
+    def supported?(language)
+      all.include?(language)
     end
   end 
 end

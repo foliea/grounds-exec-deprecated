@@ -14,7 +14,7 @@ describe ExecCode::Sandbox do
   it 'executes code' do
     sandbox = ExecCode::Sandbox.new(language, code)
     enter_block = false
-    sandbox.execute do |stream, chunk|
+    sandbox.execute do
       enter_block = true
     end
     expect(enter_block).to eq true
