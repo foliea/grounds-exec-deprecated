@@ -24,6 +24,11 @@ namespace :images do
   end
 end
 
+# bundle in exe-code all dockerfiles
+# rackefile -> move to exec-code
+# keep images function
+# change task to user docker api
+
 def images
   return unless block_given?
 
