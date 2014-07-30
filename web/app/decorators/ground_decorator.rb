@@ -5,7 +5,7 @@ class GroundDecorator < BaseDecorator
       indent: h.session[:indent] ||= GroundEditor.default_option(:indent),
       language:  self.language,
       error: I18n.t('editor.error') 
-	  }
+		}
   end
 
   def themes
