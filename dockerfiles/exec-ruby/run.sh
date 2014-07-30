@@ -1,4 +1,4 @@
 #!/bin/sh
 
-echo $1 > prog.rb
+echo "\$stdout.sync = true\n$1" > prog.rb
 ruby prog.rb

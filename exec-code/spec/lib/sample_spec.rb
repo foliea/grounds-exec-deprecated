@@ -1,4 +1,4 @@
-require 'sample'
+require 'exec-code/sample'
 
 describe ExecCode::Sample do
   context 'when sample exist' do

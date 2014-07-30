@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version     = ExecCode::VERSION
   s.platform    = Gem::Platform::RUBY
   s.summary     = 'ExecCode'
-  s.description = 'Run code in sandboxes environments'
+  s.description = 'ExecCode: Run code in sandboxes environments with docker.'
   s.authors     = ['Adrien Folie']
   s.email       = 'folie.adrien@gmail.com'
   s.license     = 'MIT'
@@ -19,14 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'docker-api'
 
-  s.files = [
-    'lib/config.rb',
-    'lib/container.rb',
-    'lib/error.rb',
-    'lib/exec-code.rb',
-    'lib/language.rb',
-    'lib/sample.rb',
-    'lib/service.rb'
-  ]
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- spec/*`.split("\n") 
   s.require_path = 'lib'
 end

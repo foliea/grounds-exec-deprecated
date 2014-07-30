@@ -1,6 +1,6 @@
 require 'timeout'
 require 'docker'
-require 'config'
+require 'exec-code/config'
 
 module ExecCode
   module Service

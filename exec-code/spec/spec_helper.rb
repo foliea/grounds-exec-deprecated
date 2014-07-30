@@ -1,5 +1,4 @@
-require 'config'
-require 'service'
+require 'exec-code/service'
 
 ExecCode.config do
   docker_registry ENV['DOCKER_REGISTRY']

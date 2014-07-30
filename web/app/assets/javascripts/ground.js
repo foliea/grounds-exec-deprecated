@@ -52,7 +52,7 @@ Ground.prototype.cleanConsole = function() {
 };
 
 Ground.prototype.runCode = function(code) {
-  data = JSON.stringify({ language: this.language, code: code});
+  data = JSON.stringify({ language: this.language.code, code: code});
   this.socket.send(data);
 };
 

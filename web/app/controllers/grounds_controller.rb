@@ -6,16 +6,16 @@ class GroundsController < ApplicationController
   end
   
   def run
-    hijack do |tubesock|
-      tubesock.onmessage do |data|
-        tubesock.send_data("You're' trying to execute: #{data}")
-        5.times do
-          tubesock.send_data("Faking execution of code.")
-          sleep 2
+    hijack do |sock|
+      sock.onmessage do |data|
+        h = JSON.parse(data)
+        puts h
+        sandbox = ExecCode::Sandbox.new(h['language'], h['code'])
+        sandbox.execute do |stream, chunk|
+          sock.send_data(chunk)
         end
       end
-      tubesock.onclose do
-        # Kill container if still alive
+      sock.onclose do
       end
     end
   end
