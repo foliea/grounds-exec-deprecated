@@ -4,7 +4,7 @@ class Ground
 
   def initialize(language = nil)
     @language = language || GroundEditor.default_option(:language)
-    @code = ExecCode::Sample.from(@language['code']) || ''
+    @code = ''
   end
 
   def valid?

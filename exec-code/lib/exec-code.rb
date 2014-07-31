@@ -1,6 +1,0 @@
-require 'exec-code/config'
-require 'exec-code/error'
-require 'exec-code/language'
-require 'exec-code/sample'
-require 'exec-code/sandbox'
-require 'exec-code/service'

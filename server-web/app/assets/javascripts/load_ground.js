@@ -9,10 +9,11 @@ var loadGround = function() {
   var theme = $groundEditor.data("theme");
   var language = $groundEditor.data("language");
   var indent = $groundEditor.data("indent");
+  var host = "127.0.0.1:8080"
   // var error = $groundEditor.data("error");
   
   // Create ground
-  var ground = new Ground(editor, language, theme, indent);
+  var ground = new Ground(editor, language, theme, indent, host);
 };
 
 $(document).ready(loadGround);

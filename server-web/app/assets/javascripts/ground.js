@@ -1,9 +1,10 @@
-function Ground(editor, language, theme, indent) {
+function Ground(editor, language, theme, indent, host) {
   this.editor = editor;
   this.language = language;
   this.theme = theme;
   this.indent = indent;
   this.socket = null;
+  this.host = host;
 
   this.initEditor();
   this.setCursor();
@@ -82,7 +83,7 @@ Ground.prototype.bindEvents = function() {
     } 
   });
   // Open socket to web server
-  this.socket = new WebSocket("ws://" + window.location.host + "/grounds/run");
+  this.socket = new WebSocket("ws://" + this.host + "/grounds/run");
   this.socket.onmessage = function(event) {
     if (event.data.length) {
       response = JSON.parse(event.data);
