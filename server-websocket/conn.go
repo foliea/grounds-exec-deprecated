@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+	"io"
+	"bufio"
 
 	"github.com/folieadrien/grounds/execcode"
 	"github.com/gorilla/websocket"
@@ -16,15 +18,24 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+
+
 func readExecAndWrite(conn *websocket.Conn, exec *execcode.Client) error {
 	for {
-		messageType, p, err := conn.ReadMessage()
+		messageType, _, err := conn.ReadMessage()
 		if err != nil {
 			return err
 		}
-		err = exec.Execute("ruby", "puts \"lol\"", func() error {
-			if err := conn.WriteMessage(messageType, p); err != nil {
+		err = exec.Execute("ruby", "3.times do\\nputs \"lol\"\\nsleep 3\\nend", func (stdout, stderr io.Reader) error {
+			// Fix: Close readers
+			scanner := bufio.NewScanner(stdout)
+			for scanner.Scan() {
+				if err = conn.WriteMessage(messageType, scanner.Bytes()); err != nil {
 					return err
+				}
+			}
+			if err := scanner.Err(); err != nil {
+				return err
 			}
 			return nil
 		})
@@ -44,7 +55,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	exec, err := execcode.NewClient("http://178.62.34.175:4243") 
+	exec, err := execcode.NewClient("http://178.62.34.175:4243", "foliea") 
 	if err != nil {
 		log.Println(err)
 		return
