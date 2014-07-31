@@ -9,11 +9,11 @@ var loadGround = function() {
   var theme = $groundEditor.data("theme");
   var language = $groundEditor.data("language");
   var indent = $groundEditor.data("indent");
-  var host = "127.0.0.1:8080"
+  var socketEndpoint = "ws://foliea-golang-133007.euw1-2.nitrousbox.com:8080/ws"
   // var error = $groundEditor.data("error");
   
   // Create ground
-  var ground = new Ground(editor, language, theme, indent, host);
+  var ground = new Ground(editor, language, theme, indent, socketEndpoint);
 };
 
 $(document).ready(loadGround);

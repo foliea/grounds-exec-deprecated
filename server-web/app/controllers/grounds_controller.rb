@@ -1,7 +1,6 @@
 require 'json'
 
 class GroundsController < ApplicationController
-  include Tubesock::Hijack
 
   def show
     @ground = GroundDecorator.new(Ground.new(session[:language]), view_context)
