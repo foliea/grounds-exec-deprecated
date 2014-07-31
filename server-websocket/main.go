@@ -13,6 +13,7 @@ var (
 func main() {
 	flag.Parse()
 
+	log.Printf("Listening on: %s\n", *serveAddr)
 	http.HandleFunc("/ws", serveWs)
 	if err := http.ListenAndServe(*serveAddr, nil); err != nil {
 		log.Fatal(err)

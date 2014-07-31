@@ -16,15 +16,20 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func readExecAndWrite(conn *websocket.Conn) {
+func readExecAndWrite(conn *websocket.Conn, exec *execcode.Client) error {
 	for {
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {
-			return
+			return err
 		}
-		execcode.Execute()
-		if err = conn.WriteMessage(messageType, p); err != nil {
-			return
+		err = exec.Execute("ruby", "puts \"lol\"", func() error {
+			if err := conn.WriteMessage(messageType, p); err != nil {
+					return err
+			}
+			return nil
+		})
+		if err != nil {
+			return err
 		}
 	}
 }
@@ -39,5 +44,13 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	readExecAndWrite(conn)
+	exec, err := execcode.NewClient("http://178.62.34.175:4243") 
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	if err := readExecAndWrite(conn, exec); err != nil {
+		log.Println(err)
+		return
+	}
 }
