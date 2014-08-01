@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	"github.com/fsouza/go-dockerclient"
+	"github.com/folieadrien/grounds/utils"
 )
 
 const (
-	errorClientBusy = "execcode: client is busy"
-	errorClientNotBusy = "execcode: client is not busy"
+	errorClientBusy = "execcode: client is busy."
+	errorClientNotBusy = "execcode: client is not busy."
+	languageNotSpecified = "execcode: language not specified."
 )
 
 type Client struct {
@@ -18,6 +20,8 @@ type Client struct {
 	container *docker.Container
 	IsBusy bool
 }
+
+// IDEA STRUCT OPTS PARAMS
 
 func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
 	docker, err := docker.NewClient(dockerAddr)
@@ -36,10 +40,11 @@ func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)
 	if c.IsBusy {
 		return -1, fmt.Errorf(errorClientBusy)
 	}
-	// FIXME: utils.go to create image name
-	image := fmt.Sprintf("%s/exec-%s", c.registry, language)
+	if language == "" {
+		return -1, fmt.Errorf(languageNotSpecified)
+	}
+	image := utils.FormatImageName(c.registry, language)
 	cmd := []string{code}
-
 	if err := c.createContainer(image, cmd); err != nil {
 		return -1, err
 	}

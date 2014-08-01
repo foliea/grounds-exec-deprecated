@@ -8,6 +8,8 @@ import (
 
 var (
 	serveAddr = flag.String("p", ":8080", "Address and port to serve")
+	dockerAddr = flag.String("d", "unix:///var/run/docker.sock", "Docker host endpoint")
+	dockerRegistry = flag.String("r", "", "Docker registry used for images")
 )
 
 func main() {

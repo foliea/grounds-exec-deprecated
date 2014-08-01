@@ -6,7 +6,11 @@ import (
 	"github.com/fsouza/go-dockerclient"
 )
 
-const errorContainerNotCreated = "Container not created"
+const (
+	errorContainerNotCreated = "Container not created."
+	errorImageInvalid = "Image invalid."
+) 
+	
 
 // FakeDockerClient is a simple fake docker client, so that execcode can be run for testing without requiring a real docker setup
 type FakeDockerClient struct {
@@ -14,6 +18,9 @@ type FakeDockerClient struct {
 }
 
 func (f *FakeDockerClient) CreateContainer(c docker.CreateContainerOptions) (*docker.Container, error) {
+	if c.Config.Image == "" {
+		return nil, fmt.Errorf(errorImageInvalid)
+	}
 	f.container = &docker.Container{ID: "fake"}
 	return  f.container, nil
 }

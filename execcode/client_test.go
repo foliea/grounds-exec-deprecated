@@ -83,6 +83,20 @@ func TestExecuteBusyClient(t *testing.T) {
 	}
 }
 
+func TestExecuteEmptyLanguage(t *testing.T) {
+	client, err := NewClient(validEndpoint, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	client.docker = &FakeDockerClient{}
+	_, err = client.Execute("", "42", func(out, err io.Reader) error {
+		return nil
+	})
+	if err == nil {
+		t.Errorf("Expected error. Got nothing.")
+	}
+}
+
 func TestExecuteWithErrorBlock(t *testing.T) {
 	client, err := NewClient(validEndpoint, "")
 	if err != nil {
