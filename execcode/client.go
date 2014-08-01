@@ -36,6 +36,7 @@ func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)
 	if c.IsBusy {
 		return -1, fmt.Errorf(errorClientBusy)
 	}
+	// FIXME: utils.go to create image name
 	image := fmt.Sprintf("%s/exec-%s", c.registry, language)
 	cmd := []string{code}
 
@@ -54,7 +55,7 @@ func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)
 		return -1, err
 	}
 	c.IsBusy = true
-	f(stdoutReader, stderrReader) // FIXME: Handle f error
+	f(stdoutReader, stderrReader)
 	status, err := c.docker.WaitContainer(c.container.ID)
 	if err != nil {
 		return -1, err
