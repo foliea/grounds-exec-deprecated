@@ -29,9 +29,28 @@ type Output struct {
     Chunk string `json:"chunk"`
 }
 
+func readWriteOutputStream(conn *websocket.Conn, output io.Reader, stream string) {
+	scanner := bufio.NewScanner(output)
+	for scanner.Scan() {
+		out := Output{Stream: stream, Chunk: scanner.Text()}
+		outBytes, err := json.Marshal(out); if err != nil {
+			log.Println(err)
+			return
+		}
+		if err = conn.WriteMessage(websocket.TextMessage, outBytes); err != nil {
+			log.Println(err)
+			return
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		log.Println(err)
+		return
+	}
+}
+
 func readExecAndWrite(conn *websocket.Conn, exec *execcode.Client) error {
 	for {
-		messageType, p, err := conn.ReadMessage()
+		_, p, err := conn.ReadMessage()
 		if err != nil {
 			return err
 		}
@@ -39,29 +58,19 @@ func readExecAndWrite(conn *websocket.Conn, exec *execcode.Client) error {
 		if err = json.Unmarshal(p, &i); err != nil {
 			return err
 		}
-		_, err = exec.Execute(i.Language, i.Code, func (stdout, stderr io.Reader) error {
-			// Fix: Close readers
-			scanner := bufio.NewScanner(stdout)
-			for scanner.Scan() {
-				out := Output{Stream: "stdout", Chunk: scanner.Text()}
-				outBytes, err := json.Marshal(out); if err != nil {
-					return err
-				}
-				if err = conn.WriteMessage(messageType, outBytes); err != nil {
-					return err
-				}
-			}
-			if err := scanner.Err(); err != nil {
+		if exec.IsBusy {
+			if err = exec.Interrupt(); err != nil {
 				return err
 			}
-			log.Println("looping twice")
+		}
+		_, err = exec.Execute(i.Language, i.Code, func (stdout, stderr io.Reader) error {
+			go readWriteOutputStream(conn, stdout, "stdout")
+			go readWriteOutputStream(conn, stderr, "stderr")
 			return nil
 		})
-		log.Println("looping twice")
 		if err != nil {
 			return err
 		}
-		log.Println("looping twice")
 	}
 }
 
@@ -80,7 +89,6 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	log.Printf("New client, using docker host: %s and docker registry: %s", *dockerAddr, *dockerRegistry)
 	if err := readExecAndWrite(conn, exec); err != nil {
 		log.Println(err)
 		return

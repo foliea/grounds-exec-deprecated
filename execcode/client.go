@@ -21,8 +21,6 @@ type Client struct {
 	IsBusy bool
 }
 
-// IDEA STRUCT OPTS PARAMS
-
 func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
 	docker, err := docker.NewClient(dockerAddr)
 	if (err != nil) {
@@ -105,9 +103,9 @@ func (c *Client) attachToContainer(stdout, stderr io.Writer) error {
 		OutputStream: stdout,
 		ErrorStream: stderr,
 		Stream: true,
-		Stdin: true,
 		Stdout: true,
-	}
+		Stderr: true,
+	}	
 	if err := c.docker.AttachToContainer(opts); err != nil {
 		return err
 	}

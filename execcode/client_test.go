@@ -12,7 +12,7 @@ const (
 )
 
 // FIXME: Test container removal
-
+// FIXME: go attachTo test not failing
 func TestNewClient(t *testing.T) {
 	registry := "test"
 	client, err := NewClient(validEndpoint, registry)
