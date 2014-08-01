@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	"github.com/fsouza/go-dockerclient"
+	"github.com/folieadrien/grounds/utils"
 )
 
 const (
-	errorClientBusy = "execcode: client is busy"
-	errorClientNotBusy = "execcode: client is not busy"
+	errorClientBusy = "execcode: client is busy."
+	errorClientNotBusy = "execcode: client is not busy."
+	languageNotSpecified = "execcode: language not specified."
 )
 
 type Client struct {
@@ -36,10 +38,11 @@ func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)
 	if c.IsBusy {
 		return -1, fmt.Errorf(errorClientBusy)
 	}
-	// FIXME: utils.go to create image name
-	image := fmt.Sprintf("%s/exec-%s", c.registry, language)
+	if language == "" {
+		return -1, fmt.Errorf(languageNotSpecified)
+	}
+	image := utils.FormatImageName(c.registry, language)
 	cmd := []string{code}
-
 	if err := c.createContainer(image, cmd); err != nil {
 		return -1, err
 	}
@@ -100,9 +103,9 @@ func (c *Client) attachToContainer(stdout, stderr io.Writer) error {
 		OutputStream: stdout,
 		ErrorStream: stderr,
 		Stream: true,
-		Stdin: true,
 		Stdout: true,
-	}
+		Stderr: true,
+	}	
 	if err := c.docker.AttachToContainer(opts); err != nil {
 		return err
 	}

@@ -12,7 +12,7 @@ const (
 )
 
 // FIXME: Test container removal
-
+// FIXME: go attachTo test not failing
 func TestNewClient(t *testing.T) {
 	registry := "test"
 	client, err := NewClient(validEndpoint, registry)
@@ -80,6 +80,20 @@ func TestExecuteBusyClient(t *testing.T) {
 	}
 	if executed {
 		t.Errorf("Block was executed but it shouldn't")
+	}
+}
+
+func TestExecuteEmptyLanguage(t *testing.T) {
+	client, err := NewClient(validEndpoint, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	client.docker = &FakeDockerClient{}
+	_, err = client.Execute("", "42", func(out, err io.Reader) error {
+		return nil
+	})
+	if err == nil {
+		t.Errorf("Expected error. Got nothing.")
 	}
 }
 
