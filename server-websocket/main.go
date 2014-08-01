@@ -17,7 +17,8 @@ func main() {
 	
 	log.Printf("Using docker host: %s and docker registry: %s", *dockerAddr, *dockerRegistry)
 	log.Printf("Listening on: %s\n", *serveAddr)
-	http.HandleFunc("/ws", serveWs)
+
+	http.Handle("/ws", NewWsHandler())
 	if err := http.ListenAndServe(*serveAddr, nil); err != nil {
 		log.Fatal(err)
 	}

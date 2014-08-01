@@ -11,14 +11,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
-}
-
 type Input struct {
     Language string `json:"language"`
     Code string `json:"code"`
@@ -29,28 +21,48 @@ type Output struct {
     Chunk string `json:"chunk"`
 }
 
-func readWriteOutputStream(conn *websocket.Conn, output io.Reader, stream string) {
-	scanner := bufio.NewScanner(output)
-	for scanner.Scan() {
-		out := Output{Stream: stream, Chunk: scanner.Text()}
-		outBytes, err := json.Marshal(out); if err != nil {
-			log.Println(err)
-			return
-		}
-		if err = conn.WriteMessage(websocket.TextMessage, outBytes); err != nil {
-			log.Println(err)
-			return
-		}
+type WsHandler struct {
+	upgrader *websocket.Upgrader
+	conn	*websocket.Conn
+	execClient	*execcode.Client
+}
+
+func NewWsHandler() *WsHandler {
+	upgrader := &websocket.Upgrader{
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+			CheckOrigin: func(r *http.Request) bool {
+				return true
+			},
 	}
-	if err := scanner.Err(); err != nil {
+	return &WsHandler{upgrader: upgrader}
+}
+
+func (h *WsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", 405)
+		return
+	}
+	var err error
+	h.conn, err = h.upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	h.execClient, err = execcode.NewClient(*dockerAddr, *dockerRegistry) 
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	if err := h.readExecAndWrite(); err != nil {
 		log.Println(err)
 		return
 	}
 }
 
-func readExecAndWrite(conn *websocket.Conn, exec *execcode.Client) error {
+func (h *WsHandler) readExecAndWrite() error {
 	for {
-		_, p, err := conn.ReadMessage()
+		_, p, err := h.conn.ReadMessage()
 		if err != nil {
 			return err
 		}
@@ -58,14 +70,14 @@ func readExecAndWrite(conn *websocket.Conn, exec *execcode.Client) error {
 		if err = json.Unmarshal(p, &i); err != nil {
 			return err
 		}
-		if exec.IsBusy {
-			if err = exec.Interrupt(); err != nil {
+		if h.execClient.IsBusy {
+			if err = h.execClient.Interrupt(); err != nil {
 				return err
 			}
 		}
-		_, err = exec.Execute(i.Language, i.Code, func (stdout, stderr io.Reader) error {
-			go readWriteOutputStream(conn, stdout, "stdout")
-			go readWriteOutputStream(conn, stderr, "stderr")
+		_, err = h.execClient.Execute(i.Language, i.Code, func (stdout, stderr io.Reader) error {
+			go h.sendOutputStream(stdout, "stdout")
+			go h.sendOutputStream(stderr, "stderr")
 			return nil
 		})
 		if err != nil {
@@ -74,22 +86,20 @@ func readExecAndWrite(conn *websocket.Conn, exec *execcode.Client) error {
 	}
 }
 
-func serveWs(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", 405)
-		return
+func (h *WsHandler) sendOutputStream(output io.Reader, stream string) {
+	scanner := bufio.NewScanner(output)
+	for scanner.Scan() {
+		output := Output{Stream: stream, Chunk: scanner.Text()}
+		response, err := json.Marshal(output); if err != nil {
+			log.Println(err)
+			return
+		}
+		if err = h.conn.WriteMessage(websocket.TextMessage, response); err != nil {
+			log.Println(err)
+			return
+		}
 	}
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	exec, err := execcode.NewClient(*dockerAddr, *dockerRegistry) 
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	if err := readExecAndWrite(conn, exec); err != nil {
+	if err := scanner.Err(); err != nil {
 		log.Println(err)
 		return
 	}
