@@ -1,10 +1,10 @@
-function Ground(editor, language, theme, indent, host) {
+function Ground(editor, language, theme, indent, socketEndpoint) {
   this.editor = editor;
   this.language = language;
   this.theme = theme;
   this.indent = indent;
   this.socket = null;
-  this.host = host;
+  this.socketEndpoint = socketEndpoint;
 
   this.initEditor();
   this.setCursor();
@@ -74,16 +74,8 @@ Ground.prototype.bindEvents = function() {
     that.indent = $(event.currentTarget).data('indent');
     that.setIndent();
   });
-  // Refresh code sample
-  $(".language-link").on('ajax:complete', function(event, data) {
-    if (data.status == 200) {
-      response = JSON.parse(data.responseText);
-      that.editor.setValue(response.custom);
-      that.setCursor();   
-    } 
-  });
   // Open socket to web server
-  this.socket = new WebSocket("ws://" + this.host + "/grounds/run");
+  this.socket = new WebSocket(this.socketEndpoint);
   this.socket.onmessage = function(event) {
     if (event.data.length) {
       response = JSON.parse(event.data);
