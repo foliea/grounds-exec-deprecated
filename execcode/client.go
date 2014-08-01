@@ -8,14 +8,15 @@ import (
 )
 
 const (
-	ErrorClientBusy = "execcode: client is busy"
-	ErrorClientNotBusy = "execcode: client is not busy"
+	errorClientBusy = "execcode: client is busy"
+	errorClientNotBusy = "execcode: client is not busy"
 )
 
 type Client struct {
-	docker *docker.Client
+	docker DockerInterface
 	registry string
 	container *docker.Container
+	IsBusy bool
 }
 
 func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
@@ -27,12 +28,13 @@ func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
 		docker: docker,
 		registry: dockerRegistry,
 		container: nil,
+		IsBusy: false,
 	}, nil
 }
 
 func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader) error) error {
-	if c.IsBusy() {
-		return fmt.Errorf(ErrorClientBusy)
+	if c.IsBusy {
+		return fmt.Errorf(errorClientBusy)
 	}
 	image := fmt.Sprintf("%s/exec-%s", c.registry, language)
 	cmd := []string{code}
@@ -48,27 +50,26 @@ func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)
 
 	go c.attachToContainer(stdoutWriter, stderrWriter)
 
-	if err := c.startContainer(); err !=nil {
+	if err := c.docker.StartContainer(c.container.ID, c.container.HostConfig); err != nil {
 		return err
 	}
-	return f(stdoutReader, stderrReader)
+	c.IsBusy = true
+	f(stdoutReader, stderrReader) // FIXME: Handle f error
+	if _, err := c.docker.WaitContainer(c.container.ID); err != nil {
+		return err
+	}
+	// FIXME: do something with status
+	return nil
 }
 
 func (c *Client) Interrupt() error {
-	if !c.IsBusy() {
-		return fmt.Errorf(ErrorClientNotBusy)
+	if !c.IsBusy {
+		return fmt.Errorf(errorClientNotBusy)
 	}
 	if err := c.forceRemoveContainer(); err != nil {
 		return err
 	}
 	return nil
-}
-
-func (c *Client) IsBusy() bool {
-	if c.container == nil {
-		return false
-	}
-	return true
 }
 
 func (c *Client) createContainer(image string, cmd []string) error {
@@ -105,13 +106,6 @@ func (c *Client) attachToContainer(stdout, stderr io.Writer) error {
 	return nil
 }
 
-func (c *Client) startContainer() error {
-	if err := c.docker.StartContainer(c.container.ID, c.container.HostConfig); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (c *Client) forceRemoveContainer() error {
 	opts := docker.RemoveContainerOptions{
 		ID: c.container.ID,
@@ -120,7 +114,7 @@ func (c *Client) forceRemoveContainer() error {
 	if err := c.docker.RemoveContainer(opts); err != nil {
 		return err
 	}
-	c.container = nil
+	c.IsBusy = false
 	return nil
 }
 
