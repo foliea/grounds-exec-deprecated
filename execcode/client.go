@@ -32,7 +32,7 @@ func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)) (int, error) {
+func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader) error) (int, error) {
 	if c.IsBusy {
 		return -1, fmt.Errorf(errorClientBusy)
 	}
@@ -55,7 +55,9 @@ func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)
 		return -1, err
 	}
 	c.IsBusy = true
-	f(stdoutReader, stderrReader)
+	if err := f(stdoutReader, stderrReader); err != nil {
+		return -1, err
+	}
 	status, err := c.docker.WaitContainer(c.container.ID)
 	if err != nil {
 		return -1, err
