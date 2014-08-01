@@ -44,10 +44,12 @@ func TestExecute(t *testing.T) {
 	}
 	client.docker = &FakeDockerClient{}
 	executed := false
-	client.Execute("ruby", "42", func(out, err io.Reader) error {
+	_, err = client.Execute("ruby", "42", func(out, err io.Reader) {
 		executed = true
-		return nil
 	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	if executed == false {
 		t.Errorf("Expected executed to be true. Got false.")
 	}
@@ -61,9 +63,8 @@ func TestExecuteBusyClient(t *testing.T) {
 	client.docker = &FakeDockerClient{}
 	client.IsBusy = true
 	executed := false
-	err = client.Execute("ruby", "42", func(out, err io.Reader) error {
+	_, err = client.Execute("ruby", "42", func(out, err io.Reader) {
 		executed = true
-		return nil
 	})
 	if err == nil {
 		t.Errorf("Expected error. Got nothing.")

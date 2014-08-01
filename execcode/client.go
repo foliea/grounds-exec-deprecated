@@ -32,15 +32,15 @@ func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader) error) error {
+func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)) (int, error) {
 	if c.IsBusy {
-		return fmt.Errorf(errorClientBusy)
+		return -1, fmt.Errorf(errorClientBusy)
 	}
 	image := fmt.Sprintf("%s/exec-%s", c.registry, language)
 	cmd := []string{code}
 
 	if err := c.createContainer(image, cmd); err != nil {
-		return err
+		return -1, err
 	}
 
 	defer c.forceRemoveContainer()
@@ -51,15 +51,15 @@ func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)
 	go c.attachToContainer(stdoutWriter, stderrWriter)
 
 	if err := c.docker.StartContainer(c.container.ID, c.container.HostConfig); err != nil {
-		return err
+		return -1, err
 	}
 	c.IsBusy = true
 	f(stdoutReader, stderrReader) // FIXME: Handle f error
-	if _, err := c.docker.WaitContainer(c.container.ID); err != nil {
-		return err
+	status, err := c.docker.WaitContainer(c.container.ID)
+	if err != nil {
+		return -1, err
 	}
-	// FIXME: do something with status
-	return nil
+	return status, nil
 }
 
 func (c *Client) Interrupt() error {

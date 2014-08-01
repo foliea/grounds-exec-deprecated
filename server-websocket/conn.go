@@ -26,18 +26,17 @@ func readExecAndWrite(conn *websocket.Conn, exec *execcode.Client) error {
 		if err != nil {
 			return err
 		}
-		err = exec.Execute("ruby", "3.times do\\nputs \"lol\"\\nsleep 3\\nend", func (stdout, stderr io.Reader) error {
+		_, err = exec.Execute("ruby", "3.times do\\nputs \"lol\"\\nsleep 3\\nend", func (stdout, stderr io.Reader) {
 			// Fix: Close readers
 			scanner := bufio.NewScanner(stdout)
 			for scanner.Scan() {
 				if err = conn.WriteMessage(messageType, scanner.Bytes()); err != nil {
-					return err
+					log.Println(err)
 				}
 			}
 			if err := scanner.Err(); err != nil {
-				return err
+				log.Println(err)
 			}
-			return nil
 		})
 		if err != nil {
 			return err
