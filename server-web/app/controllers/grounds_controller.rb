@@ -8,12 +8,9 @@ class GroundsController < ApplicationController
   
   def switch_option
     option, value = params[:option], params[:value]
-    if option.present? && value.present?
-      session[option] = value
-      if option == 'language'
-        #custom = ExecCode::Sample.from(value[:code])
-      end
-    end
-    render json: { status: :ok, custom: nil }
+    session[option] = value if option.present? && value.present?
+		# verify with ground editor if option is valid
+	 	# GroundEditor.has_option?(option, value)
+    render json: { status: :ok }
   end
 end

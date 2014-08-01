@@ -74,14 +74,6 @@ Ground.prototype.bindEvents = function() {
     that.indent = $(event.currentTarget).data('indent');
     that.setIndent();
   });
-  // Refresh code sample
-  $(".language-link").on('ajax:complete', function(event, data) {
-    if (data.status == 200) {
-      response = JSON.parse(data.responseText);
-      that.editor.setValue(response.custom);
-      that.setCursor();   
-    } 
-  });
   // Open socket to web server
   this.socket = new WebSocket(this.socketEndpoint);
   this.socket.onmessage = function(event) {
