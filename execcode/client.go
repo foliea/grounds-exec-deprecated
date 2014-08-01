@@ -13,7 +13,7 @@ const (
 )
 
 type Client struct {
-	docker DockerInterface
+	docker DockerClient
 	registry string
 	container *docker.Container
 	IsBusy bool
