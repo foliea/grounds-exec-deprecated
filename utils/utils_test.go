@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	"testing"
-) 
+)
 
 func TestFormatImageName(t *testing.T) {
 	expected := fmt.Sprintf("42/%s-ruby", imagePrefix)

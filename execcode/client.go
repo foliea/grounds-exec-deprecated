@@ -1,36 +1,36 @@
 package execcode
 
 import (
-	"io"
 	"fmt"
+	"io"
 
-	"github.com/fsouza/go-dockerclient"
 	"github.com/folieadrien/grounds/utils"
+	docker "github.com/fsouza/go-dockerclient"
 )
 
 const (
-	errorClientBusy = "execcode: client is busy."
-	errorClientNotBusy = "execcode: client is not busy."
+	errorClientBusy      = "execcode: client is busy."
+	errorClientNotBusy   = "execcode: client is not busy."
 	languageNotSpecified = "execcode: language not specified."
 )
 
 type Client struct {
-	docker DockerClient
-	registry string
+	docker    DockerClient
+	registry  string
 	container *docker.Container
-	IsBusy bool
+	IsBusy    bool
 }
 
 func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
 	docker, err := docker.NewClient(dockerAddr)
-	if (err != nil) {
+	if err != nil {
 		return nil, err
 	}
 	return &Client{
-		docker: docker,
-		registry: dockerRegistry,
+		docker:    docker,
+		registry:  dockerRegistry,
 		container: nil,
-		IsBusy: false,
+		IsBusy:    false,
 	}, nil
 }
 
@@ -80,14 +80,14 @@ func (c *Client) Interrupt() error {
 
 func (c *Client) createContainer(image string, cmd []string) error {
 	config := &docker.Config{
-		Cmd: cmd,
-		Image: image,
-		AttachStdout: true,
-		AttachStderr: true,
+		Cmd:             cmd,
+		Image:           image,
+		AttachStdout:    true,
+		AttachStderr:    true,
 		NetworkDisabled: true,
 	}
 	opts := docker.CreateContainerOptions{
-		Name: "",
+		Name:   "",
 		Config: config,
 	}
 	var err error
@@ -99,13 +99,13 @@ func (c *Client) createContainer(image string, cmd []string) error {
 
 func (c *Client) attachToContainer(stdout, stderr io.Writer) error {
 	opts := docker.AttachToContainerOptions{
-		Container: c.container.ID,
+		Container:    c.container.ID,
 		OutputStream: stdout,
-		ErrorStream: stderr,
-		Stream: true,
-		Stdout: true,
-		Stderr: true,
-	}	
+		ErrorStream:  stderr,
+		Stream:       true,
+		Stdout:       true,
+		Stderr:       true,
+	}
 	if err := c.docker.AttachToContainer(opts); err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func (c *Client) attachToContainer(stdout, stderr io.Writer) error {
 
 func (c *Client) forceRemoveContainer() error {
 	opts := docker.RemoveContainerOptions{
-		ID: c.container.ID,
+		ID:    c.container.ID,
 		Force: true,
 	}
 	if err := c.docker.RemoveContainer(opts); err != nil {
@@ -123,4 +123,3 @@ func (c *Client) forceRemoveContainer() error {
 	c.IsBusy = false
 	return nil
 }
-

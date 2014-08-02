@@ -1,41 +1,51 @@
 package main
 
 import (
-	"log"
-	"encoding/json"
-	"net/http"
-	"io"
 	"bufio"
+	"encoding/json"
+	"io"
+	"log"
+	"net/http"
 
 	"github.com/folieadrien/grounds/execcode"
 	"github.com/gorilla/websocket"
 )
 
 type Input struct {
-    Language string `json:"language"`
-    Code string `json:"code"`
+	Language string `json:"language"`
+	Code     string `json:"code"`
 }
 
 type Output struct {
-    Stream string `json:"stream"`
-    Chunk string `json:"chunk"`
+	Stream string `json:"stream"`
+	Chunk  string `json:"chunk"`
 }
 
 type WsHandler struct {
-	upgrader *websocket.Upgrader
-	conn	*websocket.Conn
-	execClient	*execcode.Client
+	upgrader       *websocket.Upgrader
+	conn           *websocket.Conn
+	execClient     *execcode.Client
+	dockerAddr     string
+	dockerRegistry string
+	debug          bool
 }
 
-func NewWsHandler() *WsHandler {
+func NewWsHandler(debug bool, dockerAddr, dockerRegistry string) *WsHandler {
 	upgrader := &websocket.Upgrader{
-			ReadBufferSize:  1024,
-			WriteBufferSize: 1024,
-			CheckOrigin: func(r *http.Request) bool {
-				return true
-			},
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
 	}
-	return &WsHandler{upgrader: upgrader}
+	if debug {
+		upgrader.CheckOrigin = func(r *http.Request) bool {
+			return true
+		}
+	}
+	return &WsHandler{
+		upgrader:       upgrader,
+		dockerAddr:     dockerAddr,
+		dockerRegistry: dockerRegistry,
+		debug:          debug,
+	}
 }
 
 func (h *WsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +59,7 @@ func (h *WsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	h.execClient, err = execcode.NewClient(*dockerAddr, *dockerRegistry) 
+	h.execClient, err = execcode.NewClient(h.dockerAddr, h.dockerRegistry)
 	if err != nil {
 		log.Println(err)
 		return
@@ -75,7 +85,7 @@ func (h *WsHandler) readExecAndWrite() error {
 				return err
 			}
 		}
-		_, err = h.execClient.Execute(i.Language, i.Code, func (stdout, stderr io.Reader) error {
+		_, err = h.execClient.Execute(i.Language, i.Code, func(stdout, stderr io.Reader) error {
 			go h.sendOutputStream(stdout, "stdout")
 			go h.sendOutputStream(stderr, "stderr")
 			return nil
@@ -90,7 +100,8 @@ func (h *WsHandler) sendOutputStream(output io.Reader, stream string) {
 	scanner := bufio.NewScanner(output)
 	for scanner.Scan() {
 		output := Output{Stream: stream, Chunk: scanner.Text()}
-		response, err := json.Marshal(output); if err != nil {
+		response, err := json.Marshal(output)
+		if err != nil {
 			log.Println(err)
 			return
 		}

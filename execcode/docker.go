@@ -1,6 +1,6 @@
 package execcode
 
-import "github.com/fsouza/go-dockerclient"
+import docker "github.com/fsouza/go-dockerclient"
 
 // DockerClient is an abstract interface for testability. It abstracts the interface of docker.Client
 type DockerClient interface {

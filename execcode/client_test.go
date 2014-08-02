@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	validEndpoint = "http://localhost:4243"
+	validEndpoint   = "http://localhost:4243"
 	invalidEndpoint = ""
 )
 

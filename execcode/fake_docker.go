@@ -3,14 +3,14 @@ package execcode
 import (
 	"fmt"
 
-	"github.com/fsouza/go-dockerclient"
+	docker "github.com/fsouza/go-dockerclient"
 )
 
 const (
 	errorContainerNotCreated = "Container not created."
-	errorImageInvalid = "Image invalid."
-	errorOptsInvalid = "opts invalid."
-) 
+	errorImageInvalid        = "Image invalid."
+	errorOptsInvalid         = "opts invalid."
+)
 
 // FakeDockerClient is a simple fake docker client, so that execcode can be run for testing without requiring a real docker setup
 type FakeDockerClient struct {
@@ -25,7 +25,7 @@ func (f *FakeDockerClient) CreateContainer(c docker.CreateContainerOptions) (*do
 		return nil, fmt.Errorf("CreateContainer: %s", errorOptsInvalid)
 	}
 	f.container = &docker.Container{ID: "fake"}
-	return  f.container, nil
+	return f.container, nil
 }
 
 func (f *FakeDockerClient) StartContainer(id string, hostConfig *docker.HostConfig) error {
@@ -39,7 +39,7 @@ func (f *FakeDockerClient) AttachToContainer(opts docker.AttachToContainerOption
 	if f.container == nil {
 		return fmt.Errorf(errorContainerNotCreated)
 	}
-	if opts.Container == "" || opts.OutputStream == nil || opts.ErrorStream == nil || 
+	if opts.Container == "" || opts.OutputStream == nil || opts.ErrorStream == nil ||
 		!opts.Stream || !opts.Stdout || !opts.Stderr {
 		return fmt.Errorf("AttachToContainer: %s", errorOptsInvalid)
 	}
