@@ -1,7 +1,8 @@
 #!/usr/bin/env rake
 
 task :build do
-  sh 'go build -ldflags "-X main.Build `git rev-parse --short HEAD`" server-websocket/*.go'
+  # FIXME: get list of files without _test.go
+  sh 'go build -ldflags "-X main.Build `git rev-parse --short HEAD`"'
 end
 
 # FIXME: registry params 
