@@ -1,9 +1,15 @@
 #!/usr/bin/env rake
 
+task :build do
+  sh 'go build -ldflags "-X main.Build `git rev-parse --short HEAD`" server-websocket/*.go'
+end
+
+# FIXME: registry params 
+
 namespace :images do
   registry = ARGV[1] || ''
 
-  abort("Please specifiy a docker registry!") if registry.empty?
+#  abort("Please specifiy a docker registry!") if registry.empty?
 
   task :build do
     images do |file, path|
