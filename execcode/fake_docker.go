@@ -8,8 +8,8 @@ import (
 
 const (
 	errorContainerNotCreated = "Container not created."
-	errorImageInvalid        = "Image invalid."
-	errorOptsInvalid         = "opts invalid."
+	errorInvalidImage        = "Invalid image."
+	errorInvalidOpts         = "Invalid opts."
 )
 
 // FakeDockerClient is a simple fake docker client, so that execcode can be run for testing without requiring a real docker setup
@@ -19,10 +19,10 @@ type FakeDockerClient struct {
 
 func (f *FakeDockerClient) CreateContainer(c docker.CreateContainerOptions) (*docker.Container, error) {
 	if c.Config.Image == "" {
-		return nil, fmt.Errorf(errorImageInvalid)
+		return nil, fmt.Errorf(errorInvalidImage)
 	}
 	if !c.Config.AttachStdout || !c.Config.AttachStderr || !c.Config.NetworkDisabled {
-		return nil, fmt.Errorf("CreateContainer: %s", errorOptsInvalid)
+		return nil, fmt.Errorf("CreateContainer: %s", errorInvalidOpts)
 	}
 	f.container = &docker.Container{ID: "fake"}
 	return f.container, nil
@@ -41,7 +41,7 @@ func (f *FakeDockerClient) AttachToContainer(opts docker.AttachToContainerOption
 	}
 	if opts.Container == "" || opts.OutputStream == nil || opts.ErrorStream == nil ||
 		!opts.Stream || !opts.Stdout || !opts.Stderr {
-		return fmt.Errorf("AttachToContainer: %s", errorOptsInvalid)
+		return fmt.Errorf("AttachToContainer: %s", errorInvalidOpts)
 	}
 	return nil
 }
@@ -51,7 +51,7 @@ func (f *FakeDockerClient) RemoveContainer(opts docker.RemoveContainerOptions) e
 		return fmt.Errorf(errorContainerNotCreated)
 	}
 	if opts.ID == "" || opts.Force == false {
-		return fmt.Errorf("RemoveContainer: %s", errorOptsInvalid)
+		return fmt.Errorf("RemoveContainer: %s", errorInvalidOpts)
 	}
 	f.container = nil
 	return nil

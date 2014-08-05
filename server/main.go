@@ -9,7 +9,7 @@ import (
 var (
 	serveAddr      = flag.String("p", ":8080", "Address and port to serve")
 	dockerAddr     = flag.String("a", "unix:///var/run/docker.sock", "Docker API endpoint")
-	dockerRegistry = flag.String("r", "", "Docker registry used for images")
+	dockerRegistry = flag.String("r", "grounds", "Docker registry used for images")
 	debug          = flag.Bool("d", false, "Debug mode")
 
 	Build string
@@ -20,7 +20,7 @@ func main() {
 
 	log.Printf("Using build: %s", Build)
 	if *debug {
-		log.Printf("Warning: using debug mode")
+		log.Printf("Warning: using debug mode, origin check disabled")
 	}
 	log.Printf("Using docker host: %s and docker registry: %s", *dockerAddr, *dockerRegistry)
 	log.Printf("Listening on: %s\n", *serveAddr)

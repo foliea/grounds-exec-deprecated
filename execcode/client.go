@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	errorClientBusy      = "execcode: client is busy."
-	errorClientNotBusy   = "execcode: client is not busy."
-	languageNotSpecified = "execcode: language not specified."
+	errorClientBusy           = "execcode: client is busy."
+	errorClientNotBusy        = "execcode: client is not busy."
+	errorLanguageNotSpecified = "execcode: language not specified."
 )
 
 type Client struct {
@@ -39,7 +39,7 @@ func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)
 		return -1, fmt.Errorf(errorClientBusy)
 	}
 	if language == "" {
-		return -1, fmt.Errorf(languageNotSpecified)
+		return -1, fmt.Errorf(errorLanguageNotSpecified)
 	}
 	image := utils.FormatImageName(c.registry, language)
 	cmd := []string{code}
