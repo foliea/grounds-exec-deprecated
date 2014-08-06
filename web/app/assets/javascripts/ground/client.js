@@ -1,8 +1,9 @@
+// FIXME: Alert if browser doesn't support websockets
+// FIXME: Do something if connection to websockets is impossible
+
 function Client(endpoint) {
   this.endpoint = endpoint;
   this.socket = null;
-
-  this.connect();
 }
 
 Client.prototype.connect = function() {
@@ -26,15 +27,10 @@ Client.prototype.bindEvents = function() {
   };
 }
 
-Client.prototype.runCode = function(language, code) {
-  data = JSON.stringify({ language: language, code: code });
+Client.prototype.send = function(data) {
   if (this.socket === null) {
     this.connect();
   }
-  this.send(data);
-};
-
-Client.prototype.send = function(data) {
   var that = this;
   setTimeout(function(){
     if (that.socket.readyState === 1) {
@@ -43,5 +39,5 @@ Client.prototype.send = function(data) {
     } else {
       that.send(data); 
     }
-  }, 1);
+  }, 5);
 };

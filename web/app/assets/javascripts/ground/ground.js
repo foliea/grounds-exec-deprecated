@@ -26,6 +26,8 @@ Ground.prototype.setCursor = function() {
 
 Ground.prototype.setLanguage = function() {
   this.editor.getSession().setMode("ace/mode/" + this.language.code);
+  this.editor.setValue(GetSample(this.language.code));
+  this.setCursor();
   $("#language-name").text(this.language.label);
 };
 
@@ -72,6 +74,8 @@ Ground.prototype.bindEvents = function() {
   $("#run").on('click', function(event) {
     that.cleanConsole();
     var code = that.editor.getValue();
-    that.client.runCode(that.language.code, code);
+    var language = that.language.code;
+    data = JSON.stringify({ language: language, code: code });
+    that.client.send(data);
   });
 };
