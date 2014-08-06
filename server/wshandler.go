@@ -2,11 +2,11 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
+	"sync"
 
 	"github.com/folieadrien/grounds/execcode"
 	"github.com/gorilla/websocket"
@@ -26,6 +26,7 @@ type WsHandler struct {
 	upgrader       *websocket.Upgrader
 	conn           *websocket.Conn
 	execClient     *execcode.Client
+	mu             sync.Mutex
 	dockerAddr     string
 	dockerRegistry string
 	debug          bool
@@ -59,6 +60,9 @@ func (h *WsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
+	defer h.conn.Close()
+
 	if h.execClient, err = execcode.NewClient(h.dockerAddr, h.dockerRegistry); err != nil {
 		log.Println(err)
 		return
@@ -71,58 +75,48 @@ func (h *WsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (h *WsHandler) readExecAndSendOutput() error {
 	for {
-		_, message, err := h.conn.ReadMessage()
-		if err != nil {
-			return err
-		}
 		input := Input{}
-		if err = json.Unmarshal(message, &input); err != nil {
+		if err := h.conn.ReadJSON(&input); err != nil {
 			return err
 		}
-		// Interrupt execcode execution if already running by the client
+		// Interrupt execcode execution if already running for this client
 		if h.execClient.IsBusy {
-			if err = h.execClient.Interrupt(); err != nil {
+			if err := h.execClient.Interrupt(); err != nil {
 				return err
 			}
 		}
-		// Execute code with execcode and send output to the client
-		status, err := h.execClient.Execute(input.Language, input.Code,
-			func(out, err io.Reader) error {
-				go h.sendOutputStream("stdout", out)
-				go h.sendOutputStream("stderr", err)
-				return nil
-			})
-		if err != nil {
-			return err
-		}
-		// Send status returned from executed program
-		if err = h.sendResponse("status", strconv.Itoa(status)); err != nil {
-			return err
-		}
+		go func() {
+			// Execute code with execcode and send output to the client
+			status, err := h.execClient.Execute(input.Language, input.Code,
+				func(out, err io.Reader) {
+					h.sendOutput("stdout", out)
+					h.sendOutput("stderr", err)
+				})
+			if err != nil {
+				return
+			}
+			if !h.execClient.Interrupted() {
+				h.sendResponse("status", strconv.Itoa(status))
+			}
+		}()
 	}
 }
 
-func (h *WsHandler) sendOutputStream(stream string, output io.Reader) {
+func (h *WsHandler) sendOutput(stream string, output io.Reader) {
 	scanner := bufio.NewScanner(output)
 	for scanner.Scan() {
-		if err := h.sendResponse(stream, scanner.Text()); err != nil {
-			log.Println(err)
-			return
-		}
+		h.sendResponse(stream, scanner.Text())
 	}
 	if err := scanner.Err(); err != nil {
 		log.Println(err)
 	}
 }
 
-func (h *WsHandler) sendResponse(stream, chunk string) error {
+func (h *WsHandler) sendResponse(stream, chunk string) {
 	response := Response{Stream: stream, Chunk: chunk}
-	jsonResponse, err := json.Marshal(response)
-	if err != nil {
-		return err
+	h.mu.Lock()
+	if err := h.conn.WriteJSON(response); err != nil {
+		log.Println(err)
 	}
-	if err = h.conn.WriteMessage(websocket.TextMessage, jsonResponse); err != nil {
-		return err
-	}
-	return nil
+	h.mu.Unlock()
 }

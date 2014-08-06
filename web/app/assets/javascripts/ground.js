@@ -1,10 +1,9 @@
-function Ground(editor, language, theme, indent, socketEndpoint) {
+function Ground(editor, language, theme, indent, client) {
   this.editor = editor;
   this.language = language;
   this.theme = theme;
   this.indent = indent;
-  this.socket = null;
-  this.socketEndpoint = socketEndpoint;
+  this.client = client;
 
   this.initEditor();
   this.setCursor();
@@ -17,7 +16,7 @@ function Ground(editor, language, theme, indent, socketEndpoint) {
 
 Ground.prototype.initEditor = function() {
   this.editor.getSession().setUseWrapMode(true);
-}
+};
 
 Ground.prototype.setCursor = function() {
   var lastLine = this.editor.session.getLength();
@@ -52,11 +51,6 @@ Ground.prototype.cleanConsole = function() {
    });
 };
 
-Ground.prototype.runCode = function(code) {
-  data = JSON.stringify({ language: this.language.code, code: code});
-  this.socket.send(data);
-};
-
 Ground.prototype.bindEvents = function() {
   var that = this;
   // Refresh language
@@ -73,19 +67,11 @@ Ground.prototype.bindEvents = function() {
   $(".indent-link").on('click', function(event, date) {
     that.indent = $(event.currentTarget).data('indent');
     that.setIndent();
-  });
-  // Open socket to web server
-  this.socket = new WebSocket(this.socketEndpoint);
-  this.socket.onmessage = function(event) {
-    if (event.data.length) {
-      response = JSON.parse(event.data);
-      $("#console").append($('<span class="'+ response.stream +'">').text(response.chunk));
-    }
-  };
+  }); 
   // Form submit
   $("#run").on('click', function(event) {
     that.cleanConsole();
     var code = that.editor.getValue();
-    that.runCode(code);
+    that.client.runCode(that.language.code, code);
   });
 };
