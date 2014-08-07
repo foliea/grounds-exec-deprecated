@@ -1,8 +1,7 @@
 #!/usr/bin/env rake
 
 task :build do
-  # FIXME: get list of files without _test.go
-  sh 'go build -ldflags "-X main.Build `git rev-parse --short HEAD`"'
+  sh './hack/server.sh ./bin'
 end
 
 default_registry = 'grounds'
