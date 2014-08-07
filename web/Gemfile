@@ -14,10 +14,10 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 group :development do
   gem 'spring'
   gem 'pry-rails'
-  gem 'dotenv'
 end
 
 group :development, :test do
+  gem 'dotenv-rails'
   gem 'sqlite3'
   gem 'rspec-rails', '~> 3.0.0'
 end

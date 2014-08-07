@@ -1,7 +1,7 @@
 package execcode
 
 import (
-	"fmt"
+	"errors"
 	"io"
 	"sync"
 
@@ -9,10 +9,10 @@ import (
 	docker "github.com/fsouza/go-dockerclient"
 )
 
-const (
-	errorClientBusy           = "execcode: client is busy."
-	errorClientNotBusy        = "execcode: client is not busy."
-	errorLanguageNotSpecified = "execcode: language not specified."
+var (
+	ErrorClientBusy           = errors.New("execcode: client is busy.")
+	ErrorClientNotBusy        = errors.New("execcode: client is not busy.")
+	ErrorLanguageNotSpecified = errors.New("execcode: language not specified.")
 )
 
 type Client struct {
@@ -42,10 +42,10 @@ func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
 
 func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)) (int, error) {
 	if c.IsBusy {
-		return -1, fmt.Errorf(errorClientBusy)
+		return -1, ErrorClientBusy
 	}
 	if language == "" {
-		return -1, fmt.Errorf(errorLanguageNotSpecified)
+		return -1, ErrorLanguageNotSpecified
 	}
 	image := utils.FormatImageName(c.registry, language)
 	cmd := []string{utils.FormatCode(code)}
@@ -79,7 +79,7 @@ func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)
 
 func (c *Client) Interrupt() error {
 	if !c.IsBusy {
-		return fmt.Errorf(errorClientNotBusy)
+		return ErrorClientNotBusy
 	}
 	c.setInterrupted(true)
 	if err := c.closeRessources(); err != nil {

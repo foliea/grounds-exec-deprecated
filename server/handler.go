@@ -69,7 +69,9 @@ func (h *WsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	if err := h.readExecAndSendOutput(); err != nil {
 		log.Println(err)
-		return
+	}
+	if h.execClient.IsBusy {
+		h.execClient.Interrupt()
 	}
 }
 

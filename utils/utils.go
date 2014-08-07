@@ -27,10 +27,8 @@ func FormatImageName(registry, language string) string {
 }
 
 func FormatCode(code string) string {
-	fmt.Println(code)
 	for _, replacement := range codeReplacements {
 		code = strings.Replace(code, replacement[0], replacement[1], -1)
 	}
-	fmt.Println(code)
 	return code
 }

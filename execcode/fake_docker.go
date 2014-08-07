@@ -1,15 +1,15 @@
 package execcode
 
 import (
-	"fmt"
+	"errors"
 
 	docker "github.com/fsouza/go-dockerclient"
 )
 
-const (
-	errorContainerNotCreated = "Container not created."
-	errorInvalidImage        = "Invalid image."
-	errorInvalidOpts         = "Invalid opts."
+var (
+	ErrorContainerNotCreated = errors.New("Container not created.")
+	ErrorInvalidImage        = errors.New("Invalid image.")
+	ErrorInvalidOpts         = errors.New("Invalid opts.")
 )
 
 // FakeDockerClient is a simple fake docker client, so that execcode can be run for testing without requiring a real docker setup
@@ -19,10 +19,10 @@ type FakeDockerClient struct {
 
 func (f *FakeDockerClient) CreateContainer(c docker.CreateContainerOptions) (*docker.Container, error) {
 	if c.Config.Image == "" {
-		return nil, fmt.Errorf(errorInvalidImage)
+		return nil, ErrorInvalidImage
 	}
 	if !c.Config.AttachStdout || !c.Config.AttachStderr || !c.Config.NetworkDisabled {
-		return nil, fmt.Errorf("CreateContainer: %s", errorInvalidOpts)
+		return nil, ErrorInvalidOpts
 	}
 	f.container = &docker.Container{ID: "fake"}
 	return f.container, nil
@@ -30,28 +30,28 @@ func (f *FakeDockerClient) CreateContainer(c docker.CreateContainerOptions) (*do
 
 func (f *FakeDockerClient) StartContainer(id string, hostConfig *docker.HostConfig) error {
 	if f.container == nil {
-		return fmt.Errorf(errorContainerNotCreated)
+		return ErrorContainerNotCreated
 	}
 	return nil
 }
 
 func (f *FakeDockerClient) AttachToContainer(opts docker.AttachToContainerOptions) error {
 	if f.container == nil {
-		return fmt.Errorf(errorContainerNotCreated)
+		return ErrorContainerNotCreated
 	}
 	if opts.Container == "" || opts.OutputStream == nil || opts.ErrorStream == nil ||
 		!opts.Stream || !opts.Stdout || !opts.Stderr {
-		return fmt.Errorf("AttachToContainer: %s", errorInvalidOpts)
+		return ErrorInvalidOpts
 	}
 	return nil
 }
 
 func (f *FakeDockerClient) RemoveContainer(opts docker.RemoveContainerOptions) error {
 	if f.container == nil {
-		return fmt.Errorf(errorContainerNotCreated)
+		return ErrorContainerNotCreated
 	}
 	if opts.ID == "" || opts.Force == false {
-		return fmt.Errorf("RemoveContainer: %s", errorInvalidOpts)
+		return ErrorInvalidOpts
 	}
 	f.container = nil
 	return nil
@@ -59,7 +59,7 @@ func (f *FakeDockerClient) RemoveContainer(opts docker.RemoveContainerOptions) e
 
 func (f *FakeDockerClient) WaitContainer(id string) (int, error) {
 	if f.container == nil {
-		return -1, fmt.Errorf(errorContainerNotCreated)
+		return -1, ErrorContainerNotCreated
 	}
 	return 0, nil
 }
