@@ -5,36 +5,33 @@ task :build do
   sh 'go build -ldflags "-X main.Build `git rev-parse --short HEAD`"'
 end
 
-# FIXME: registry params 
+default_registry = 'grounds'
 
 namespace :images do
-  registry = ARGV[1] || ''
-
-#  abort("Please specifiy a docker registry!") if registry.empty?
-
-  task :build do
+  desc 'Build docker images for a given registry (default: grounds)'
+  task :build, [:registry] do |_, args|
+    registry = args[:registry] || default_registry
     images do |file, path|
       sh "docker build -t #{registry}/#{file} #{path}"
     end
   end
 
-  task :push do
-    images do |file, path|
+  desc 'Push docker images to a given registry (default: grounds)'
+  task :push, [:registry] do |_, args|
+    registry = args[:registry] || default_registry
+    images do |file, _|
       sh "docker push #{registry}/#{file}"
     end
   end
 
-  task :pull do
+  desc 'Pull docker images from a given registry (default: grounds)'
+  task :pull, [:registry] do |_, args|
+    registry = args[:registry] || default_registry
     images do |file, _|
       sh "docker pull #{registry}/#{file}"
     end
   end
 end
-
-# bundle in exe-code all dockerfiles
-# rackefile -> move to exec-code
-# keep images function
-# change task to use docker api
 
 def images
   return unless block_given?

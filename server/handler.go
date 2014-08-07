@@ -23,13 +23,13 @@ type Response struct {
 }
 
 type WsHandler struct {
+	dockerAddr     string
+	dockerRegistry string
+	debug          bool
 	upgrader       *websocket.Upgrader
 	conn           *websocket.Conn
 	execClient     *execcode.Client
 	mu             sync.Mutex
-	dockerAddr     string
-	dockerRegistry string
-	debug          bool
 }
 
 func NewWsHandler(debug bool, dockerAddr, dockerRegistry string) *WsHandler {
@@ -43,10 +43,10 @@ func NewWsHandler(debug bool, dockerAddr, dockerRegistry string) *WsHandler {
 		}
 	}
 	return &WsHandler{
-		upgrader:       upgrader,
 		dockerAddr:     dockerAddr,
 		dockerRegistry: dockerRegistry,
 		debug:          debug,
+		upgrader:       upgrader,
 	}
 }
 

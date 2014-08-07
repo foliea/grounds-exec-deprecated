@@ -9,7 +9,7 @@ var loadGround = function() {
   var theme = $groundEditor.data("theme");
   var language = $groundEditor.data("language");
   var indent = $groundEditor.data("indent");
-  var endpoint = "ws://" + $groundEditor.data("endpoint") + "/ws";
+  var endpoint = "ws://" + $groundEditor.data("endpoint");
  
   // Create ground
   var client = new Client(endpoint);

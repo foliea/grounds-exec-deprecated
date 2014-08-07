@@ -25,3 +25,11 @@ func TestFormatImageNameEmptyLanguage(t *testing.T) {
 		t.Fatalf("Expected image name '%s'. Got '%s'.", expected, imageName)
 	}
 }
+
+func TestFormatCode(t *testing.T) {
+	code := "puts \"Hello world\\n\"\r\n\t"
+	expected := "puts \"Hello world\\\\n\"\\r\\n\\t"
+	if formated := FormatCode(code); formated != expected {
+		t.Fatalf("Expected formated code '%s'. Got '%s'.", expected, formated)
+	}
+}

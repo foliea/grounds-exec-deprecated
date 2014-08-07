@@ -11,14 +11,11 @@ var (
 	dockerAddr     = flag.String("e", "unix:///var/run/docker.sock", "Docker API endpoint")
 	dockerRegistry = flag.String("r", "grounds", "Docker registry used for images")
 	debug          = flag.Bool("d", false, "Debug mode")
-
-	Build string
 )
 
 func main() {
 	flag.Parse()
 
-	log.Printf("Using build: %s", Build)
 	if *debug {
 		log.Printf("Warning: using debug mode, origin check disabled")
 	}

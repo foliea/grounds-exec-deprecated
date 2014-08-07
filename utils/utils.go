@@ -2,10 +2,19 @@ package utils
 
 import (
 	"fmt"
-	"strconv"
+	"strings"
 )
 
-const imagePrefix = "exec"
+const (
+	imagePrefix = "exec"
+)
+
+var codeReplacements = [][]string{
+	{"\\", "\\\\"},
+	{"\n", "\\n"},
+	{"\r", "\\r"},
+	{"\t", "\\t"},
+}
 
 func FormatImageName(registry, language string) string {
 	if language == "" {
@@ -18,6 +27,10 @@ func FormatImageName(registry, language string) string {
 }
 
 func FormatCode(code string) string {
-	fmt.Printf("%v", strconv.Quote(code))
-	return strconv.Quote(code)
+	fmt.Println(code)
+	for _, replacement := range codeReplacements {
+		code = strings.Replace(code, replacement[0], replacement[1], -1)
+	}
+	fmt.Println(code)
+	return code
 }
