@@ -1,7 +1,13 @@
 #!/usr/bin/env rake
 
 task :build do
-  sh './hack/server.sh ./bin'
+  sh 'docker build -t grounds .'
+  sh 'docker run --rm grounds hack/server.sh'
+  end
+
+task :dev do
+  sh 'docker build -t grounds .'
+  sh 'docker run --rm -ti grounds /bin/bash'
 end
 
 default_registry = 'grounds'

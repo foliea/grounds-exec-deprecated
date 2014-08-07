@@ -1,4 +1,4 @@
-*/bin/server
+bin/server
 *.env
 *.rbc
 *.sassc
