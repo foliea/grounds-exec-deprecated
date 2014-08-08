@@ -1,14 +1,15 @@
 #!/bin/bash
 set -e
 
-BINARY=bin/server
+NAME="server"
+BINARY="bin/$NAME"
 
 echo "Getting dependencies..."
 
-go get ./server ./...
+go get ./$NAME ./...
 
 echo "Creating binary: $BINARY"
 
-go build -o $BINARY ./server
+go build -o $BINARY ./$NAME
 
 echo "Created binary: $BINARY"

@@ -2,6 +2,8 @@ FROM ubuntu:14.04
 
 RUN apt-get update
 
+# Install dependencies
+
 RUN apt-get -y install \
     git-core \
     curl \
@@ -15,7 +17,10 @@ RUN apt-get -y install \
     libxml2-dev \
     libxslt1-dev \
     libcurl4-openssl-dev \
-    python-software-properties
+    python-software-properties \
+    nodejs
+
+# Install ruby-2.1.2
 
 RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \
     tar -xzvf ruby-2.1.2.tar.gz && \
@@ -27,8 +32,12 @@ RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \
     rm -r ruby-2.1.2 ruby-2.1.2.tar.gz && \
     echo 'gem: --no-document' > /usr/local/etc/gemrc
 
-ADD run.sh ruby/run.sh
+# Prepare rails app
 
-WORKDIR ruby
+ADD . /rails
 
-ENTRYPOINT ["/ruby/run.sh"]
+WORKDIR /rails
+
+RUN gem install bundler
+RUN bundle install --without production 
+

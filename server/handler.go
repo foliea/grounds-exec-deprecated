@@ -67,11 +67,12 @@ func (h *WsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
+	defer h.execClient.Interrupt()
+
 	if err := h.readExecAndSendOutput(); err != nil {
 		log.Println(err)
-	}
-	if h.execClient.IsBusy {
-		h.execClient.Interrupt()
+		h.sendResponse("error", err.Error())
 	}
 }
 
@@ -90,11 +91,13 @@ func (h *WsHandler) readExecAndSendOutput() error {
 		go func() {
 			// Execute code with execcode and send output to the client
 			status, err := h.execClient.Execute(input.Language, input.Code,
-				func(out, err io.Reader) {
-					h.sendOutput("stdout", out)
-					h.sendOutput("stderr", err)
+				func(stdout, stderr io.Reader) {
+					h.sendOutput("stdout", stdout)
+					h.sendOutput("stderr", stderr)
 				})
 			if err != nil {
+				log.Println(err)
+				h.sendResponse("error", err.Error())
 				return
 			}
 			if !h.execClient.Interrupted() {

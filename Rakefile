@@ -1,37 +1,53 @@
 #!/usr/bin/env rake
 
-task :build do
-  sh 'docker build -t grounds .'
-  sh 'docker run --rm grounds hack/server.sh'
+DOCKER_REGISTRY = 'grounds'
+DOCKER_BUILD_SERVER = 'docker build -t grounds-server .'
+DOCKER_BUILD_WEB = 'docker build -t grounds-web web'
+
+namespace :test do
+  task :server do
+    sh DOCKER_BUILD_SERVER
+    sh 'docker run --rm grounds-server hack/test.sh'
   end
 
-task :dev do
-  sh 'docker build -t grounds .'
-  sh 'docker run --rm -ti grounds /bin/bash'
+  task :web do
+    sh DOCKER_BUILD_WEB
+    sh 'docker run --rm grounds-web bundle exec rspec'
+  end
 end
 
-default_registry = 'grounds'
+namespace :run do
+  task :server do
+    sh DOCKER_BUILD_SERVER
+    sh "docker run -d -p 8080:8080 grounds-server hack/run.sh '-d -r #{DOCKER_REGISTRY}'"
+  end
+
+  task :web => :server do
+    sh DOCKER_BUILD_WEB
+    sh 'docker run -d -p 3000:3000 -e RUN_ENDPOINT=192.168.59.103:8080/ws grounds-web rails s -p 3000'
+  end 
+end
 
 namespace :images do
-  desc 'Build docker images for a given registry (default: grounds)'
+  desc 'Build docker images for a given registry'
   task :build, [:registry] do |_, args|
-    registry = args[:registry] || default_registry
+    registry = args[:registry] || DOCKER_REGISTRY
     images do |file, path|
       sh "docker build -t #{registry}/#{file} #{path}"
     end
   end
 
-  desc 'Push docker images to a given registry (default: grounds)'
+  desc 'Push docker images to a given registry'
   task :push, [:registry] do |_, args|
-    registry = args[:registry] || default_registry
+    registry = args[:registry] || DOCKER_REGISTRY
     images do |file, _|
       sh "docker push #{registry}/#{file}"
     end
   end
 
-  desc 'Pull docker images from a given registry (default: grounds)'
+  desc 'Pull docker images from a given registry'
   task :pull, [:registry] do |_, args|
-    registry = args[:registry] || default_registry
+    registry = args[:registry] || DOCKER_REGISTRY
     images do |file, _|
       sh "docker pull #{registry}/#{file}"
     end

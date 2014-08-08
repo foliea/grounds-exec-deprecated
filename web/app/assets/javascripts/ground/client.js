@@ -1,6 +1,6 @@
 // FIXME: Alert if browser doesn't support websockets
 // FIXME: Do something if connection to websockets is impossible
-
+// FIXME: readyState3
 function Client(endpoint) {
   this.endpoint = endpoint;
   this.socket = null;
@@ -33,7 +33,7 @@ Client.prototype.send = function(data) {
   }
   var that = this;
   setTimeout(function(){
-    if (that.socket.readyState === 1) {
+    if (that.socket !== null && that.socket.readyState === 1) {
       that.socket.send(data);
       return;
     } else {
