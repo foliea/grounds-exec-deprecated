@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	imagePrefix = "exec"
+	imagesPrefix = "exec"
 )
 
 var codeReplacements = [][]string{
@@ -21,9 +21,9 @@ func FormatImageName(registry, language string) string {
 		return ""
 	}
 	if registry == "" {
-		return fmt.Sprintf("%s-%s", imagePrefix, language)
+		return fmt.Sprintf("%s-%s", imagesPrefix, language)
 	}
-	return fmt.Sprintf("%s/%s-%s", registry, imagePrefix, language)
+	return fmt.Sprintf("%s/%s-%s", registry, imagesPrefix, language)
 }
 
 func FormatCode(code string) string {

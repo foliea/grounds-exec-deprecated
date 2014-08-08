@@ -9,7 +9,7 @@ import (
 var (
 	serveAddr      = flag.String("p", ":8080", "Address and port to serve")
 	dockerAddr     = flag.String("e", "unix:///var/run/docker.sock", "Docker API endpoint")
-	dockerRegistry = flag.String("r", "grounds", "Docker registry used for images")
+	dockerRegistry = flag.String("r", "grounds", "Docker registry to use for images")
 	debug          = flag.Bool("d", false, "Debug mode")
 )
 

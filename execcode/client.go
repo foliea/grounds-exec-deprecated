@@ -23,6 +23,7 @@ type Client struct {
 	stdout      *io.PipeWriter
 	stderr      *io.PipeWriter
 	interrupted bool
+	Status      int
 	IsBusy      bool
 }
 
@@ -36,21 +37,23 @@ func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
 		registry:    dockerRegistry,
 		container:   nil,
 		interrupted: false,
+		Status:      0,
 		IsBusy:      false,
 	}, nil
 }
 
-func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)) (int, error) {
+func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)) error {
 	if c.IsBusy {
-		return -1, ErrorClientBusy
+		return ErrorClientBusy
 	}
 	if language == "" {
-		return -1, ErrorLanguageNotSpecified
+		return ErrorLanguageNotSpecified
 	}
 	image := utils.FormatImageName(c.registry, language)
 	cmd := []string{utils.FormatCode(code)}
+
 	if err := c.createContainer(image, cmd); err != nil {
-		return -1, err
+		return err
 	}
 
 	var stdoutReader, stderrReader *io.PipeReader
@@ -65,16 +68,16 @@ func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)
 	go c.attachToContainer()
 
 	if err := c.docker.StartContainer(c.container.ID, c.container.HostConfig); err != nil {
-		return -1, err
+		return err
 	}
 
 	go f(stdoutReader, stderrReader)
 
-	status, err := c.docker.WaitContainer(c.container.ID)
-	if err != nil {
-		return -1, err
+	var err error
+	if c.Status, err = c.docker.WaitContainer(c.container.ID); err != nil {
+		return err
 	}
-	return status, nil
+	return nil
 }
 
 func (c *Client) Interrupt() error {

@@ -90,7 +90,7 @@ func (h *WsHandler) readExecAndSendOutput() error {
 		}
 		go func() {
 			// Execute code with execcode and send output to the client
-			status, err := h.execClient.Execute(input.Language, input.Code,
+			err := h.execClient.Execute(input.Language, input.Code,
 				func(stdout, stderr io.Reader) {
 					h.sendOutput("stdout", stdout)
 					h.sendOutput("stderr", stderr)
@@ -101,7 +101,7 @@ func (h *WsHandler) readExecAndSendOutput() error {
 				return
 			}
 			if !h.execClient.Interrupted() {
-				h.sendResponse("status", strconv.Itoa(status))
+				h.sendResponse("status", strconv.Itoa(h.execClient.Status))
 			}
 		}()
 	}

@@ -1,9 +1,13 @@
 <div class="row top-buffer ground-editor-header">
 
   <div class="large-12 column">
-    <%= render 'options_dropdown', option: 'language', options: 'languages' %>
-    <%= render 'options_dropdown', option: 'theme', options: 'themes' %>
-    <%= render 'options_dropdown', option: 'indent', options: 'indents' %>
+
+    <%= render 'option_dropdown', option: 'language' %>
+
+    <%= render 'option_dropdown', option: 'theme' %>
+
+    <%= render 'option_dropdown', option: 'indent' %>
+
   </div>
 
 </div>
@@ -11,14 +15,17 @@
 <%= content_tag(:div, @ground.code, id: :ground_editor, class: 'row ground-editor', data: @ground.editor) %>
 
 <div class="row top-buffer">
-<%= button_tag(type: 'button', id: :run, class: 'small ground-button radius') do
-  content_tag(:strong, t('editor.run'))
-end %>
+  
+  <%= button_tag(type: 'button', id: :run, class: 'small ground-button radius') do
+    content_tag(:strong, t('editor.run'))
+  end %>
+
 </div>
 
 <div class="row ground-panel">
 
   <h6><%= t('editor.console') %></h6>
+
   <pre id="console"></pre>
 
 </div>
