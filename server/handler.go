@@ -2,10 +2,10 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 	"sync"
 
 	"github.com/folieadrien/grounds/execcode"
@@ -68,40 +68,43 @@ func (h *WsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	defer h.execClient.Interrupt()
-
 	if err := h.readExecAndSendOutput(); err != nil {
 		log.Println(err)
-		h.sendResponse("error", err.Error())
+		return
 	}
 }
 
 func (h *WsHandler) readExecAndSendOutput() error {
+	var ID string
 	for {
 		input := Input{}
 		if err := h.conn.ReadJSON(&input); err != nil {
 			return err
 		}
 		// Interrupt execcode execution if already running for this client
-		if h.execClient.IsBusy {
-			if err := h.execClient.Interrupt(); err != nil {
-				return err
+		if ID != "" {
+			fmt.Println("Interupting ", ID)
+			err := h.execClient.Interrupt(ID)
+			if err != nil {
+				log.Println(err)
 			}
+		}
+		var err error
+		ID, err = h.execClient.Prepare(input.Language, input.Code)
+		if err != nil {
+			return err
 		}
 		go func() {
 			// Execute code with execcode and send output to the client
-			err := h.execClient.Execute(input.Language, input.Code,
-				func(stdout, stderr io.Reader) {
-					h.sendOutput("stdout", stdout)
-					h.sendOutput("stderr", stderr)
-				})
+			err := h.execClient.Execute(ID, func(stdout, stderr io.Reader) {
+				h.sendOutput("stdout", stdout)
+				h.sendOutput("stderr", stderr)
+			})
 			if err != nil {
 				log.Println(err)
-				h.sendResponse("error", err.Error())
-				return
 			}
-			if !h.execClient.Interrupted() {
-				h.sendResponse("status", strconv.Itoa(h.execClient.Status))
+			if err := h.execClient.Clean(ID); err != nil {
+				log.Println(err)
 			}
 		}()
 	}

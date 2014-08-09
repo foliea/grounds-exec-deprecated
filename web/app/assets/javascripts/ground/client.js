@@ -39,5 +39,5 @@ Client.prototype.send = function(data) {
     } else {
       that.send(data); 
     }
-  }, 5);
+  }, 1);
 };

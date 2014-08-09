@@ -3,28 +3,18 @@ package execcode
 import (
 	"errors"
 	"io"
-	"sync"
 
 	"github.com/folieadrien/grounds/utils"
 	docker "github.com/fsouza/go-dockerclient"
 )
 
 var (
-	ErrorClientBusy           = errors.New("execcode: client is busy.")
-	ErrorClientNotBusy        = errors.New("execcode: client is not busy.")
 	ErrorLanguageNotSpecified = errors.New("execcode: language not specified.")
 )
 
 type Client struct {
-	docker      DockerClient
-	registry    string
-	container   *docker.Container
-	mu          sync.Mutex
-	stdout      *io.PipeWriter
-	stderr      *io.PipeWriter
-	interrupted bool
-	Status      int
-	IsBusy      bool
+	docker   dockerClient
+	registry string
 }
 
 func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
@@ -33,88 +23,55 @@ func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
 		return nil, err
 	}
 	return &Client{
-		docker:      docker,
-		registry:    dockerRegistry,
-		container:   nil,
-		interrupted: false,
-		Status:      0,
-		IsBusy:      false,
+		docker:   docker,
+		registry: dockerRegistry,
 	}, nil
 }
 
-func (c *Client) Execute(language, code string, f func(stdout, stderr io.Reader)) error {
-	if c.IsBusy {
-		return ErrorClientBusy
-	}
+func (c *Client) Prepare(language, code string) (string, error) {
 	if language == "" {
-		return ErrorLanguageNotSpecified
+		return "", ErrorLanguageNotSpecified
 	}
 	image := utils.FormatImageName(c.registry, language)
 	cmd := []string{utils.FormatCode(code)}
 
-	if err := c.createContainer(image, cmd); err != nil {
-		return err
+	container, err := c.createContainer(image, cmd)
+	if err != nil {
+		return "", err
 	}
-
-	var stdoutReader, stderrReader *io.PipeReader
-	stdoutReader, c.stdout = io.Pipe()
-	stderrReader, c.stderr = io.Pipe()
-
-	defer c.closeRessources()
-
-	c.IsBusy = true
-	c.setInterrupted(false)
-
-	go c.attachToContainer()
-
-	if err := c.docker.StartContainer(c.container.ID, c.container.HostConfig); err != nil {
-		return err
-	}
-
-	go f(stdoutReader, stderrReader)
-
-	var err error
-	if c.Status, err = c.docker.WaitContainer(c.container.ID); err != nil {
-		return err
-	}
-	return nil
+	return container.ID, nil
 }
 
-func (c *Client) Interrupt() error {
-	if !c.IsBusy {
-		return ErrorClientNotBusy
+func (c *Client) Execute(containerID string, attach func(stdout, stderr io.Reader)) error {
+	stdoutReader, stdoutWriter := io.Pipe()
+	stderrReader, stderrWriter := io.Pipe()
+
+	defer func() {
+		stdoutWriter.Close()
+		stderrWriter.Close()
+	}()
+
+	go c.attachToContainer(containerID, stdoutWriter, stderrWriter)
+	go attach(stdoutReader, stderrReader)
+
+	if err := c.docker.StartContainer(containerID, nil); err != nil {
+		return err
 	}
-	c.setInterrupted(true)
-	if err := c.closeRessources(); err != nil {
+	if _, err := c.docker.WaitContainer(containerID); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *Client) Interrupted() bool {
-	c.mu.Lock()
-	value := c.interrupted
-	c.mu.Unlock()
-	return value
+func (c *Client) Clean(containerID string) error {
+	return c.removeContainer(containerID)
 }
 
-func (c *Client) setInterrupted(value bool) {
-	c.mu.Lock()
-	c.interrupted = value
-	c.mu.Unlock()
+func (c *Client) Interrupt(containerID string) error {
+	return c.docker.StopContainer(containerID, 0)
 }
 
-func (c *Client) closeRessources() error {
-	c.IsBusy = false
-	c.stdout.Close()
-	c.stderr.Close()
-	if err := c.forceRemoveContainer(); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *Client) createContainer(image string, cmd []string) error {
+func (c *Client) createContainer(image string, cmd []string) (*docker.Container, error) {
 	config := &docker.Config{
 		Cmd:             cmd,
 		Image:           image,
@@ -126,35 +83,25 @@ func (c *Client) createContainer(image string, cmd []string) error {
 		Name:   "",
 		Config: config,
 	}
-	var err error
-	if c.container, err = c.docker.CreateContainer(opts); err != nil {
-		return err
-	}
-	return nil
+	return c.docker.CreateContainer(opts)
 }
 
-func (c *Client) attachToContainer() error {
+func (c *Client) attachToContainer(containerID string, stdout, stderr io.Writer) error {
 	opts := docker.AttachToContainerOptions{
-		Container:    c.container.ID,
-		OutputStream: c.stdout,
-		ErrorStream:  c.stderr,
+		Container:    containerID,
+		OutputStream: stdout,
+		ErrorStream:  stderr,
 		Stream:       true,
 		Stdout:       true,
 		Stderr:       true,
 	}
-	if err := c.docker.AttachToContainer(opts); err != nil {
-		return err
-	}
-	return nil
+	return c.docker.AttachToContainer(opts)
 }
 
-func (c *Client) forceRemoveContainer() error {
+func (c *Client) removeContainer(containerID string) error {
 	opts := docker.RemoveContainerOptions{
-		ID:    c.container.ID,
-		Force: true,
+		ID:    containerID,
+		Force: false,
 	}
-	if err := c.docker.RemoveContainer(opts); err != nil {
-		return err
-	}
-	return nil
+	return c.docker.RemoveContainer(opts)
 }
