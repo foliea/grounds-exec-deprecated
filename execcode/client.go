@@ -42,7 +42,7 @@ func (c *Client) Prepare(language, code string) (string, error) {
 	return container.ID, nil
 }
 
-func (c *Client) Execute(containerID string, attach func(stdout, stderr io.Reader)) error {
+func (c *Client) Execute(containerID string, attach func(stdout, stderr io.Reader)) (int, error) {
 	stdoutReader, stdoutWriter := io.Pipe()
 	stderrReader, stderrWriter := io.Pipe()
 
@@ -55,12 +55,9 @@ func (c *Client) Execute(containerID string, attach func(stdout, stderr io.Reade
 	go attach(stdoutReader, stderrReader)
 
 	if err := c.docker.StartContainer(containerID, nil); err != nil {
-		return err
+		return 0, err
 	}
-	if _, err := c.docker.WaitContainer(containerID); err != nil {
-		return err
-	}
-	return nil
+	return c.docker.WaitContainer(containerID)
 }
 
 func (c *Client) Clean(containerID string) error {

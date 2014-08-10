@@ -4,6 +4,8 @@ import (
 	"flag"
 	"log"
 	"net/http"
+
+	"github.com/folieadrien/grounds/execcode"
 )
 
 var (
@@ -20,9 +22,13 @@ func main() {
 		log.Printf("Warning: using debug mode, origin check disabled")
 	}
 	log.Printf("Using docker host: %s and docker registry: %s", *dockerAddr, *dockerRegistry)
-	log.Printf("Listening on: %s\n", *serveAddr)
+	execClient, err := execcode.NewClient(*dockerAddr, *dockerRegistry)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	http.Handle("/ws", NewWsHandler(*debug, *dockerAddr, *dockerRegistry))
+	log.Printf("Listening on: %s\n", *serveAddr)
+	http.Handle("/ws", NewWsHandler(*debug, execClient))
 	if err := http.ListenAndServe(*serveAddr, nil); err != nil {
 		log.Fatal(err)
 	}

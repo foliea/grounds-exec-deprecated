@@ -18,7 +18,12 @@ Client.prototype.bindEvents = function() {
       if (response.stream === 'status') {
         response.chunk = "\n[Program exited with status: " + response.chunk + "]";
       }
-      $("#console").append($('<span class="'+ response.stream +'">').text(response.chunk + '\n'));
+      if (response.stream === 'executing') {
+        $("#console").find("span").each(function() {
+          this.remove();
+        });
+      }
+      $("#console").append($('<span class="'+ response.stream +'">').text(response.chunk));
     }
   };
   var that = this;
