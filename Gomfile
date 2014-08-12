@@ -1,0 +1,2 @@
+gom 'github.com/fsouza/go-dockerclient'
+gom 'github.com/gorilla/websocket'

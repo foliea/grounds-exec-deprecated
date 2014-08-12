@@ -39,10 +39,10 @@ run-web: build-web
 test: test-unit test-web
 
 test-unit: build-server
-	docker run --rm $(SERVER) hack/test.sh
+	docker run --rm $(SERVER_IMAGE) hack/test.sh
 
 test-web: build-web
-	docker run --rm $(WEB) bundle exec rspec
+	docker run --rm $(WEB_IMAGE) RAILS_ENV=test bundle exec rspec
 				
 images:
 	$(call each_exec_images,docker build -t, dir)

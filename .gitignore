@@ -1,4 +1,5 @@
 bin/server
+_vendor
 *.env
 *.rbc
 *.sassc

@@ -9,12 +9,8 @@ if [ ! "$GOPATH" ]; then
 	exit 1
 fi
 
-echo "Getting dependencies..."
-
-go get ./$NAME ./...
-
 echo "Creating binary: $BINARY"
 
-go build -o $BINARY ./$NAME
+gom build -o $BINARY ./$NAME
 
 echo "Created binary: $BINARY"

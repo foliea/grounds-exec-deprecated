@@ -6,14 +6,8 @@ if [ ! "$GOPATH" ]; then
 	exit 1
 fi
 
-echo "Getting dependencies..."
-go get ./execcode ./...
-
 echo "Testing execcode"
-go test ./execcode
-
-echo "Getting dependencies..."
-go get ./utils ./...
+gom test ./execcode
 
 echo "Testing utils"
-go test ./utils
+gom test ./utils

@@ -1,10 +1,8 @@
 FROM ubuntu:14.04
 
-RUN apt-get update
-
 # Install dependencies
-
-RUN apt-get -y install \
+RUN apt-get update -qy
+RUN apt-get -qy install \
     git-core \
     curl \
     zlib1g-dev \
@@ -21,7 +19,6 @@ RUN apt-get -y install \
     nodejs
 
 # Install ruby-2.1.2
-
 RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \
     tar -xzvf ruby-2.1.2.tar.gz && \
     cd ruby-2.1.2 && \
@@ -32,12 +29,25 @@ RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \
     rm -r ruby-2.1.2 ruby-2.1.2.tar.gz && \
     echo 'gem: --no-document' > /usr/local/etc/gemrc
 
-# Prepare rails app
+# Install bundler
+RUN gem install bundler
 
+# Copy the Gemfile and Gemfile.lock into the image.
+COPY Gemfile /rails/Gemfile
+COPY Gemfile.lock /rails/Gemfile.lock
+
+# Install bundle
+RUN cd /rails && bundle install
+
+# Everything up to here was cached. This includes
+# the bundle install, unless the Gemfiles changed.
+
+# Now copy the app into the image.
 COPY . /rails
 
+# Set the final working dir to the Rails app's location.
 WORKDIR /rails
 
-RUN gem install bundler
-RUN bundle install --without production 
+
+
 
