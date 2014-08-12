@@ -2,6 +2,7 @@ package execcode
 
 import (
 	"errors"
+	"fmt"
 	"io"
 
 	"github.com/folieadrien/grounds/utils"
@@ -51,21 +52,33 @@ func (c *Client) Execute(containerID string, attach func(stdout, stderr io.Reade
 		stderrWriter.Close()
 	}()
 
-	go c.attachToContainer(containerID, stdoutWriter, stderrWriter)
+	errs := make(chan error, 1)
+	go func() {
+		errs <- c.attachToContainer(containerID, stdoutWriter, stderrWriter)
+	}()
 	go attach(stdoutReader, stderrReader)
 
 	if err := c.docker.StartContainer(containerID, nil); err != nil {
 		return 0, err
 	}
-	return c.docker.WaitContainer(containerID)
+	status, err := c.docker.WaitContainer(containerID)
+	if err != nil {
+		return 0, err
+	}
+	if err := <-errs; err != nil {
+		return 0, err
+	}
+	return status, nil
 }
 
 func (c *Client) Clean(containerID string) error {
+	fmt.Println("Remove: ", containerID)
 	return c.removeContainer(containerID)
 }
 
 func (c *Client) Interrupt(containerID string) error {
-	return c.docker.StopContainer(containerID, 0)
+	fmt.Println("Stop: ", containerID)
+	return c.docker.StopContainer(containerID, 5)
 }
 
 func (c *Client) createContainer(image string, cmd []string) (*docker.Container, error) {
