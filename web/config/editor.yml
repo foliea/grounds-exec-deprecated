@@ -1,7 +1,7 @@
 themes:
+  tomorrow_night: 'Tomorrow Night'
   textmate: 'Textmate'
   monokai: 'Monokai'
-  tomorrow_night: 'Tomorrow Night'
   github: 'GitHub'
  
 indents:

@@ -34,7 +34,7 @@ RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \
 
 # Prepare rails app
 
-ADD . /rails
+COPY . /rails
 
 WORKDIR /rails
 

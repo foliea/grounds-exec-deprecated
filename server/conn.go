@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"log"
 	"strconv"
@@ -34,24 +35,24 @@ func (c *connection) read() {
 	for {
 		input := Input{}
 		// Read input from client
-		if err := c.ws.ReadJSON(&input); err != nil {
+		err := c.ws.ReadJSON(&input)
+		// Interrupt previous container execution
+		if containerID != "" {
+			go c.interrupt(containerID, interrupted)
+		}
+		//FIXME: timeout excess
+		if err != nil {
 			log.Println(err)
 			return
 		}
-		// Interrupt previous container execution
-		if containerID != "" {
-			go c.interrupt(interrupted)
-			if err := c.execClient.Interrupt(containerID); err != nil {
-				log.Println(err)
-			}
-		}
-		var err error
+
+		// FIXME: IF CODE > 1500 program too large
 		// Prepare a new container
 		if containerID, err = c.execClient.Prepare(input.Language, input.Code); err != nil {
 			log.Println(err)
 			continue
 		}
-		interrupted = make(chan bool)
+		interrupted = make(chan bool, 3)
 
 		// Execute code inside the new container
 		go c.exec(containerID, interrupted)
@@ -64,31 +65,35 @@ func (c *connection) exec(containerID string, interrupted chan bool) {
 		go c.broadcast("stdout", stdout, interrupted)
 		c.broadcast("stderr", stderr, interrupted)
 	})
-	if err != nil {
-		log.Println(err)
-	} else {
-		select {
-		case <-interrupted:
-			break
-		default:
+	select {
+	case <-interrupted:
+	default:
+		if err != nil {
+			log.Println(err)
+		} else {
 			c.send("status", strconv.Itoa(status))
 		}
 	}
 	// Cleanup execcode container
+	fmt.Println("Cleaning: ", containerID)
 	if err := c.execClient.Clean(containerID); err != nil {
 		log.Println(err)
 	}
 }
 
-func (c *connection) interrupt(interrupted chan bool) {
+func (c *connection) interrupt(containerID string, interrupted chan bool) {
 	interrupted <- true
 	interrupted <- true
 	interrupted <- true
+	if err := c.execClient.Interrupt(containerID); err != nil {
+		log.Println(err)
+	}
 }
 
 func (c *connection) broadcast(stream string, output io.Reader, interrupted chan bool) {
 	reader := bufio.NewReader(output)
-	buffer := make([]byte, 1024)
+	buffer := make([]byte, 1024) // check other projects and verify read size
+	// with big code example > 500 lines
 	for {
 		n, err := reader.Read(buffer)
 		if err != nil {

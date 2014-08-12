@@ -23,7 +23,8 @@ en:
   site:
     title: 'Grounds Beta'
   editor:
-    error: 'An error occurred'
+    error: 'An error occurred.'
+    waiting: 'Waiting for remote server...'
     run: 'Run'
     console: 'Console'
     select:

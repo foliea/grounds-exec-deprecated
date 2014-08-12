@@ -27,7 +27,7 @@ RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \
     rm -r ruby-2.1.2 ruby-2.1.2.tar.gz && \
     echo 'gem: --no-document' > /usr/local/etc/gemrc
 
-ADD run.sh ruby/run.sh
+COPY run.sh ruby/run.sh
 
 WORKDIR ruby
 

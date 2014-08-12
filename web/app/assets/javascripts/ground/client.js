@@ -13,15 +13,11 @@ Client.prototype.connect = function() {
 
 Client.prototype.bindEvents = function() {
   this.socket.onmessage = function(event) {
+    $("#waiting").hide();
     if (event.data.length) {
       response = JSON.parse(event.data);
       if (response.stream === 'status') {
         response.chunk = "\n[Program exited with status: " + response.chunk + "]";
-      }
-      if (response.stream === 'executing') {
-        $("#console").find("span").each(function() {
-          this.remove();
-        });
       }
       $("#console").append($('<span class="'+ response.stream +'">').text(response.chunk));
     }
@@ -33,8 +29,9 @@ Client.prototype.bindEvents = function() {
 }
 
 Client.prototype.send = function(data) {
+  $("#waiting").show();
   if (this.socket === null) {
-    this.connect();
+    this.connect(); 
   }
   var that = this;
   setTimeout(function(){

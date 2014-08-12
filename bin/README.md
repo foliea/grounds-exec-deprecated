@@ -1,2 +1,2 @@
-This is where Grounds binaries go after running `rake build` in the
+This is where Grounds binaries go after running `make binary` in the
 Grounds root directory.
