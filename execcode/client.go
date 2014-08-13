@@ -2,7 +2,6 @@ package execcode
 
 import (
 	"errors"
-	"fmt"
 	"io"
 
 	"github.com/folieadrien/grounds/utils"
@@ -72,12 +71,10 @@ func (c *Client) Execute(containerID string, attach func(stdout, stderr io.Reade
 }
 
 func (c *Client) Clean(containerID string) error {
-	fmt.Println("Remove: ", containerID)
 	return c.removeContainer(containerID)
 }
 
 func (c *Client) Interrupt(containerID string) error {
-	fmt.Println("Stop: ", containerID)
 	return c.docker.StopContainer(containerID, 5)
 }
 

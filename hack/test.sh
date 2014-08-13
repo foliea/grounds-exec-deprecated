@@ -7,7 +7,7 @@ if [ ! "$GOPATH" ]; then
 fi
 
 echo "Testing execcode"
-gom test ./execcode
+gom test -cover ./execcode
 
 echo "Testing utils"
-gom test ./utils
+gom test -cover ./utils

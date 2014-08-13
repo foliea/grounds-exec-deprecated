@@ -40,6 +40,18 @@ func TestPrepare(t *testing.T) {
 	}
 }
 
+func TestPrepareCreateFailed(t *testing.T) {
+	client := newFakeClient(t)
+	client.docker = NewFakeDockerClient(&FakeDockerClientOptions{createFail: true})
+	containerID, err := client.Prepare("ruby", "puts 42")
+	if err == nil {
+		t.Fatalf("Expected error. Got nothing.")
+	}
+	if containerID != "" {
+		t.Fatalf("Expected containerID to be empty.")
+	}
+}
+
 func TestPrepareWithEmptyLanguage(t *testing.T) {
 	client := newFakeClient(t)
 	containerID, err := client.Prepare("", "puts 42")
@@ -84,6 +96,58 @@ func TestExecute(t *testing.T) {
 	}
 }
 
+func TestExecuteNotPrepared(t *testing.T) {
+	client := newFakeClient(t)
+	attach := false
+	_, err := client.Execute("-1", func(stdout, stderr io.Reader) {
+		attach = true
+	})
+	if err == nil {
+		t.Fatal("Expected an error. Got nothing.")
+	}
+	if attach == true {
+		t.Fatalf("Expected attach to be false. Got true.")
+	}
+}
+
+func TestExecuteAttachFailed(t *testing.T) {
+	client := newFakeClient(t)
+	client.docker = NewFakeDockerClient(&FakeDockerClientOptions{attachFail: true})
+	containerID, err := client.Prepare("ruby", "puts 42")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = client.Execute(containerID, func(stdout, stderr io.Reader) {})
+	if err == nil {
+		t.Fatal("Expected an error. Got nothing.")
+	}
+	if err != ErrorAttachFailed {
+		t.Fatalf("Expected error to be %v. Got %v.", ErrorAttachFailed, err)
+	}
+}
+
+func TestExecuteWaitFailed(t *testing.T) {
+	client := newFakeClient(t)
+	client.docker = NewFakeDockerClient(&FakeDockerClientOptions{waitFail: true})
+	containerID, err := client.Prepare("ruby", "puts 42")
+	if err != nil {
+		t.Fatal(err)
+	}
+	attach := false
+	_, err = client.Execute(containerID, func(stdout, stderr io.Reader) {
+		attach = true
+	})
+	if err == nil {
+		t.Fatal("Expected an error. Got nothing.")
+	}
+	if err != ErrorWaitFailed {
+		t.Fatalf("Expected error to be %v. Got %v.", ErrorWaitFailed, err)
+	}
+	if attach == true {
+		t.Fatalf("Expected attach to be false. Got true.")
+	}
+}
+
 func TestInterrupt(t *testing.T) {
 	client := newFakeClient(t)
 	containerID, err := client.Prepare("ruby", "puts 42")
@@ -115,6 +179,6 @@ func newFakeClient(t *testing.T) *Client {
 	if err != nil {
 		t.Fatal(err)
 	}
-	client.docker = &FakeDockerClient{}
+	client.docker = NewFakeDockerClient(nil)
 	return client
 }
