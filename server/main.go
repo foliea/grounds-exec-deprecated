@@ -28,7 +28,7 @@ func main() {
 	}
 
 	log.Printf("Listening on: %s\n", *serveAddr)
-	http.Handle("/ws", NewWsHandler(*debug, execClient))
+	http.Handle("/run", NewRunHandler(*debug, execClient))
 	if err := http.ListenAndServe(*serveAddr, nil); err != nil {
 		log.Fatal(err)
 	}

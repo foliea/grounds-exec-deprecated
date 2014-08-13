@@ -30,8 +30,10 @@ type Response struct {
 
 func (c *connection) read() {
 	defer c.ws.Close()
-	containerID := ""
-	var interrupted chan bool
+	var (
+		containerID string
+		interrupted chan bool
+	)
 	for {
 		input := Input{}
 		// Read input from client

@@ -8,13 +8,16 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type WsHandler struct {
+type RunHandler struct {
 	debug      bool
 	upgrader   *websocket.Upgrader
 	execClient *execcode.Client
 }
 
-func NewWsHandler(debug bool, execClient *execcode.Client) *WsHandler {
+func NewRunHandler(debug bool, execClient *execcode.Client) *RunHandler {
+	if execClient == nil {
+		return nil
+	}
 	upgrader := &websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
@@ -24,14 +27,14 @@ func NewWsHandler(debug bool, execClient *execcode.Client) *WsHandler {
 			return true
 		}
 	}
-	return &WsHandler{
+	return &RunHandler{
 		debug:      debug,
 		upgrader:   upgrader,
 		execClient: execClient,
 	}
 }
 
-func (h *WsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *RunHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, "Method not allowed", 405)
 		return

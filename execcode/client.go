@@ -32,9 +32,10 @@ func (c *Client) Prepare(language, code string) (string, error) {
 	if language == "" {
 		return "", ErrorLanguageNotSpecified
 	}
-	image := utils.FormatImageName(c.registry, language)
-	cmd := []string{utils.FormatCode(code)}
-
+	var (
+		image = utils.FormatImageName(c.registry, language)
+		cmd   = []string{utils.FormatCode(code)}
+	)
 	container, err := c.createContainer(image, cmd)
 	if err != nil {
 		return "", err
@@ -43,9 +44,10 @@ func (c *Client) Prepare(language, code string) (string, error) {
 }
 
 func (c *Client) Execute(containerID string, attach func(stdout, stderr io.Reader)) (int, error) {
-	stdoutReader, stdoutWriter := io.Pipe()
-	stderrReader, stderrWriter := io.Pipe()
-
+	var (
+		stdoutReader, stdoutWriter = io.Pipe()
+		stderrReader, stderrWriter = io.Pipe()
+	)
 	defer func() {
 		stdoutWriter.Close()
 		stderrWriter.Close()
