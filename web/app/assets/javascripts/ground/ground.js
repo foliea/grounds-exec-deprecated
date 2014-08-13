@@ -25,7 +25,7 @@ Ground.prototype.setCursor = function() {
 };
 
 Ground.prototype.setLanguage = function() {
-  this.editor.getSession().setMode("ace/mode/" + this.language.code);
+  this.editor.getSession().setMode("ace/mode/" + GetTheme(this.language.code));
   this.editor.setValue(GetSample(this.language.code));
   this.setCursor();
   $("#language-name").text(this.language.label);

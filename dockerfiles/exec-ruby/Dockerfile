@@ -1,8 +1,8 @@
 FROM ubuntu:14.04
 
-RUN apt-get update
+RUN apt-get update -qq
 
-RUN apt-get -y install \
+RUN apt-get -qy install \
     git-core \
     curl \
     zlib1g-dev \
