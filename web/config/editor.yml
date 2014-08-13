@@ -17,3 +17,4 @@ languages:
   python3: 'Python 3'
   c: 'C'
   cpp: 'C++'
+  csharp: 'C#'

@@ -33,11 +33,7 @@ type FakeDockerClientOptions struct {
 
 func NewFakeDockerClient(opts *FakeDockerClientOptions) dockerClient {
 	if opts == nil {
-		opts = &FakeDockerClientOptions{
-			createFail: false,
-			attachFail: false,
-			waitFail:   false,
-		}
+		opts = &FakeDockerClientOptions{}
 	}
 	return &FakeDockerClient{container: &docker.Container{}, opts: opts}
 }
