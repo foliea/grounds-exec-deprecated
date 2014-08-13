@@ -40,6 +40,23 @@ func TestPrepare(t *testing.T) {
 	}
 }
 
+func TestPrepareProgrameToolarge(t *testing.T) {
+	var (
+		client = newFakeClient(t)
+		code   = getTooLargeProgram()
+	)
+	containerID, err := client.Prepare("ruby", code)
+	if err == nil {
+		t.Fatalf("Expected error. Got nothing.")
+	}
+	if err != ErrorProgramTooLarge {
+		t.Fatalf("Expected error to be %v. Got %v.", ErrorProgramTooLarge, err)
+	}
+	if containerID != "" {
+		t.Fatalf("Expected containerID to be empty.")
+	}
+}
+
 func TestPrepareCreateFailed(t *testing.T) {
 	client := newFakeClient(t)
 	client.docker = NewFakeDockerClient(&FakeDockerClientOptions{createFail: true})
@@ -181,4 +198,9 @@ func newFakeClient(t *testing.T) *Client {
 	}
 	client.docker = NewFakeDockerClient(nil)
 	return client
+}
+
+func getTooLargeProgram() string {
+	code := make([]byte, programMaxSize)
+	return string(code[0:programMaxSize])
 }

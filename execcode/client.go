@@ -8,8 +8,11 @@ import (
 	docker "github.com/fsouza/go-dockerclient"
 )
 
+const programMaxSize = 4096
+
 var (
-	ErrorLanguageNotSpecified = errors.New("execcode: language not specified.")
+	ErrorLanguageNotSpecified = errors.New("Language not specified.")
+	ErrorProgramTooLarge      = errors.New("Program too large.")
 )
 
 type Client struct {
@@ -31,6 +34,9 @@ func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
 func (c *Client) Prepare(language, code string) (string, error) {
 	if language == "" {
 		return "", ErrorLanguageNotSpecified
+	}
+	if len(code) >= programMaxSize {
+		return "", ErrorProgramTooLarge
 	}
 	var (
 		image = utils.FormatImageName(c.registry, language)

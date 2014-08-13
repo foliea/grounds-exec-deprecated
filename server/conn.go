@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"log"
 	"strconv"
@@ -28,6 +27,8 @@ type Response struct {
 	Chunk  string `json:"chunk"`
 }
 
+// FIXME: IF CODE > 1500 program too large
+// Prepare a new container
 func (c *connection) read() {
 	defer c.ws.Close()
 	var (
@@ -35,67 +36,61 @@ func (c *connection) read() {
 		interrupted chan bool
 	)
 	for {
-		input := Input{}
-		// Read input from client
-		err := c.ws.ReadJSON(&input)
-		// Interrupt previous container execution
+		var (
+			input = Input{}
+			err   = c.ws.ReadJSON(&input)
+		)
 		if containerID != "" {
 			go c.interrupt(containerID, interrupted)
 		}
-		//FIXME: timeout excess
 		if err != nil {
 			log.Println(err)
 			return
 		}
-
-		// FIXME: IF CODE > 1500 program too large
-		// Prepare a new container
 		if containerID, err = c.execClient.Prepare(input.Language, input.Code); err != nil {
 			log.Println(err)
 			continue
 		}
 		interrupted = make(chan bool, 3)
-
-		// Execute code inside the new container
 		go c.exec(containerID, interrupted)
 	}
 }
 
 func (c *connection) exec(containerID string, interrupted chan bool) {
-	// Execute code with execcode and send output to the client
+	defer func() {
+		if err := c.execClient.Clean(containerID); err != nil {
+			log.Println(err)
+		}
+	}()
 	status, err := c.execClient.Execute(containerID, func(stdout, stderr io.Reader) {
 		go c.broadcast("stdout", stdout, interrupted)
 		c.broadcast("stderr", stderr, interrupted)
 	})
+	if err != nil {
+		log.Println(err)
+		return
+	}
 	select {
 	case <-interrupted:
 	default:
-		if err != nil {
-			log.Println(err)
-		} else {
-			c.send("status", strconv.Itoa(status))
-		}
-	}
-	// Cleanup execcode container
-	fmt.Println("Cleaning: ", containerID)
-	if err := c.execClient.Clean(containerID); err != nil {
-		log.Println(err)
+		c.send("status", strconv.Itoa(status))
 	}
 }
 
 func (c *connection) interrupt(containerID string, interrupted chan bool) {
-	interrupted <- true
-	interrupted <- true
-	interrupted <- true
+	for i := 0; i < 3; i++ {
+		interrupted <- true
+	}
 	if err := c.execClient.Interrupt(containerID); err != nil {
 		log.Println(err)
 	}
 }
 
 func (c *connection) broadcast(stream string, output io.Reader, interrupted chan bool) {
-	reader := bufio.NewReader(output)
-	buffer := make([]byte, 1024) // check other projects and verify read size
-	// with big code example > 500 lines
+	var (
+		reader = bufio.NewReader(output)
+		buffer = make([]byte, 1024)
+	)
 	for {
 		n, err := reader.Read(buffer)
 		if err != nil {
