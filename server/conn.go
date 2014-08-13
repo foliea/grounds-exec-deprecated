@@ -27,8 +27,6 @@ type Response struct {
 	Chunk  string `json:"chunk"`
 }
 
-// FIXME: IF CODE > 1500 program too large
-// Prepare a new container
 func (c *connection) read() {
 	defer c.ws.Close()
 	var (
@@ -44,11 +42,10 @@ func (c *connection) read() {
 			go c.interrupt(containerID, interrupted)
 		}
 		if err != nil {
-			log.Println(err)
 			return
 		}
 		if containerID, err = c.execClient.Prepare(input.Language, input.Code); err != nil {
-			log.Println(err)
+			c.handleError(err)
 			continue
 		}
 		interrupted = make(chan bool, 3)
@@ -59,7 +56,7 @@ func (c *connection) read() {
 func (c *connection) exec(containerID string, interrupted chan bool) {
 	defer func() {
 		if err := c.execClient.Clean(containerID); err != nil {
-			log.Println(err)
+			c.handleError(err)
 		}
 	}()
 	status, err := c.execClient.Execute(containerID, func(stdout, stderr io.Reader) {
@@ -67,7 +64,7 @@ func (c *connection) exec(containerID string, interrupted chan bool) {
 		c.broadcast("stderr", stderr, interrupted)
 	})
 	if err != nil {
-		log.Println(err)
+		c.handleError(err)
 		return
 	}
 	select {
@@ -81,9 +78,7 @@ func (c *connection) interrupt(containerID string, interrupted chan bool) {
 	for i := 0; i < 3; i++ {
 		interrupted <- true
 	}
-	if err := c.execClient.Interrupt(containerID); err != nil {
-		log.Println(err)
-	}
+	c.execClient.Interrupt(containerID)
 }
 
 func (c *connection) broadcast(stream string, output io.Reader, interrupted chan bool) {
@@ -114,4 +109,14 @@ func (c *connection) send(stream, chunk string) {
 		log.Println(err)
 	}
 	c.Unlock()
+}
+
+// Send the error to the client or log the error server side
+func (c *connection) handleError(err error) {
+	if err == execcode.ErrorLanguageNotSpecified ||
+		err == execcode.ErrorProgramTooLarge {
+		c.send("error", err.Error())
+	} else {
+		log.Println(err)
+	}
 }

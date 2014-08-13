@@ -8,7 +8,7 @@ import (
 	docker "github.com/fsouza/go-dockerclient"
 )
 
-const programMaxSize = 4096
+const programMaxSize = 65536
 
 var (
 	ErrorLanguageNotSpecified = errors.New("Language not specified.")

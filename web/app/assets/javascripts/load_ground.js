@@ -13,6 +13,8 @@ var loadGround = function() {
  
   // Create ground
   var client = new Client(run_endpoint);
+
+  // FIXME: WEBSOCKET non existent
   var ground = new Ground(editor, language, theme, indent, client);
 };
 
