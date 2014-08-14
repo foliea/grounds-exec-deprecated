@@ -7,12 +7,12 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/folieadrien/grounds/execcode"
+	"github.com/folieadrien/grounds/pkg/execcode"
 	"github.com/gorilla/websocket"
 )
 
 type connection struct {
-	sync.Mutex
+	writeLock  sync.Mutex
 	ws         *websocket.Conn
 	execClient *execcode.Client
 }
@@ -104,11 +104,11 @@ func (c *connection) broadcast(stream string, output io.Reader, interrupted chan
 
 func (c *connection) send(stream, chunk string) {
 	response := Response{Stream: stream, Chunk: chunk}
-	c.Lock()
+	c.writeLock.Lock()
 	if err := c.ws.WriteJSON(response); err != nil {
 		log.Println(err)
 	}
-	c.Unlock()
+	c.writeLock.Unlock()
 }
 
 // Send the error to the client or log the error server side

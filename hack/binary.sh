@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-NAME="server"
+NAME="groundsock"
 BINARY="bin/$NAME"
 
 if [ ! "$GOPATH" ]; then
@@ -11,6 +11,6 @@ fi
 
 echo "Creating binary: $BINARY"
 
-gom build -o $BINARY ./$NAME
+gom build -o $BINARY ./cmd/$NAME
 
 echo "Created binary: $BINARY"

@@ -28,7 +28,7 @@ build-server:
 build-web:
 	docker build -t $(WEB_IMAGE) web
 
-run: images run-server run-web
+run: run-server run-web
 
 run-server: build-server
 	docker run -d -p $(SERVER_PORT):$(SERVER_PORT) $(SERVER_IMAGE) hack/run.sh '-d -e $(DOCKER_HOST) -r $(REGISTRY)'
@@ -39,7 +39,7 @@ run-web: build-web
 test: test-unit test-web
 
 test-unit: build-server
-	docker run --rm $(SERVER_IMAGE) hack/test.sh
+	docker run --rm $(SERVER_IMAGE) hack/test-unit.sh
 
 test-web: build-web
 	docker run --rm $(WEB_IMAGE) RAILS_ENV=test bundle exec rspec
@@ -53,6 +53,7 @@ images-push: images
 images-pull:
 	$(call each_exec_images,docker pull)
 
-each_exec_images = $(foreach IMAGE_DIR,$(EXEC_IMAGES), $(1) $(REGISTRY)/$(word 2, $(subst /, ,$(IMAGE_DIR))) $(if $(2),$(IMAGE_DIR));)
+each_exec_images = $(foreach IMAGE_DIR,$(EXEC_IMAGES), \
+									 $(1) $(REGISTRY)/$(word 2, $(subst /, ,$(IMAGE_DIR))) $(if $(2),$(IMAGE_DIR));)
 
 

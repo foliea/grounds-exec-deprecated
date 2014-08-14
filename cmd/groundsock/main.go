@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/folieadrien/grounds/execcode"
+	"github.com/folieadrien/grounds/pkg/execcode"
 )
 
 var (

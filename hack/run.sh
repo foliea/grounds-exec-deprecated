@@ -2,4 +2,4 @@
 set -e
 
 sh hack/binary.sh
-bin/server $1
+bin/groundsock $1

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/folieadrien/grounds/utils"
+	"github.com/folieadrien/grounds/pkg/utils"
 	docker "github.com/fsouza/go-dockerclient"
 )
 

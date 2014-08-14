@@ -18,14 +18,14 @@ func TestNewClient(t *testing.T) {
 		t.Fatal(err)
 	}
 	if client.registry != registry {
-		t.Errorf("Expected registry %s. Got %s.", registry, client.registry)
+		t.Errorf("Expected registry %s, got %s.", registry, client.registry)
 	}
 }
 
 func TestNewClientInvalidEndpoint(t *testing.T) {
 	_, err := NewClient(invalidEndpoint, "")
 	if err == nil {
-		t.Errorf("Expected error. Got nothing.")
+		t.Errorf("Expected error, got nothing.")
 	}
 }
 
@@ -36,7 +36,7 @@ func TestPrepare(t *testing.T) {
 		t.Fatal(err)
 	}
 	if containerID == "" {
-		t.Fatalf("Expected containerID. Got empty string.")
+		t.Fatalf("Expected containerID, got empty string.")
 	}
 }
 
@@ -47,10 +47,10 @@ func TestPrepareProgrameToolarge(t *testing.T) {
 	)
 	containerID, err := client.Prepare("ruby", code)
 	if err == nil {
-		t.Fatalf("Expected error. Got nothing.")
+		t.Fatalf("Expected error, got nothing.")
 	}
 	if err != ErrorProgramTooLarge {
-		t.Fatalf("Expected error to be %v. Got %v.", ErrorProgramTooLarge, err)
+		t.Fatalf("Expected error to be %v, got %v.", ErrorProgramTooLarge, err)
 	}
 	if containerID != "" {
 		t.Fatalf("Expected containerID to be empty.")
@@ -62,7 +62,7 @@ func TestPrepareCreateFailed(t *testing.T) {
 	client.docker = NewFakeDockerClient(&FakeDockerClientOptions{createFail: true})
 	containerID, err := client.Prepare("ruby", "puts 42")
 	if err == nil {
-		t.Fatalf("Expected error. Got nothing.")
+		t.Fatalf("Expected error, got nothing.")
 	}
 	if containerID != "" {
 		t.Fatalf("Expected containerID to be empty.")
@@ -73,10 +73,10 @@ func TestPrepareWithEmptyLanguage(t *testing.T) {
 	client := newFakeClient(t)
 	containerID, err := client.Prepare("", "puts 42")
 	if err == nil {
-		t.Fatalf("Expected error. Got nothing.")
+		t.Fatalf("Expected error, got nothing.")
 	}
 	if err != ErrorLanguageNotSpecified {
-		t.Fatalf("Expected error to be %v. Got %v.", ErrorLanguageNotSpecified, err)
+		t.Fatalf("Expected error to be %v, got %v.", ErrorLanguageNotSpecified, err)
 	}
 	if containerID != "" {
 		t.Fatalf("Expected containerID to be empty.")
@@ -106,10 +106,10 @@ func TestExecute(t *testing.T) {
 		t.Fatal(err)
 	}
 	if attach == false {
-		t.Fatalf("Expected attach to be true. Got false.")
+		t.Fatalf("Expected attach to be true, got false.")
 	}
 	if status != 0 {
-		t.Fatalf("Expected status to be 0. Got %v.", status)
+		t.Fatalf("Expected status to be 0, got %v.", status)
 	}
 }
 
@@ -120,10 +120,10 @@ func TestExecuteNotPrepared(t *testing.T) {
 		attach = true
 	})
 	if err == nil {
-		t.Fatal("Expected an error. Got nothing.")
+		t.Fatal("Expected an error, got nothing.")
 	}
 	if attach == true {
-		t.Fatalf("Expected attach to be false. Got true.")
+		t.Fatalf("Expected attach to be false, got true.")
 	}
 }
 
@@ -136,10 +136,10 @@ func TestExecuteAttachFailed(t *testing.T) {
 	}
 	_, err = client.Execute(containerID, func(stdout, stderr io.Reader) {})
 	if err == nil {
-		t.Fatal("Expected an error. Got nothing.")
+		t.Fatal("Expected an error, got nothing.")
 	}
 	if err != ErrorAttachFailed {
-		t.Fatalf("Expected error to be %v. Got %v.", ErrorAttachFailed, err)
+		t.Fatalf("Expected error to be %v, got %v.", ErrorAttachFailed, err)
 	}
 }
 
@@ -155,13 +155,13 @@ func TestExecuteWaitFailed(t *testing.T) {
 		attach = true
 	})
 	if err == nil {
-		t.Fatal("Expected an error. Got nothing.")
+		t.Fatal("Expected an error, got nothing.")
 	}
 	if err != ErrorWaitFailed {
-		t.Fatalf("Expected error to be %v. Got %v.", ErrorWaitFailed, err)
+		t.Fatalf("Expected error to be %v, got %v.", ErrorWaitFailed, err)
 	}
 	if attach == true {
-		t.Fatalf("Expected attach to be false. Got true.")
+		t.Fatalf("Expected attach to be false, got true.")
 	}
 }
 

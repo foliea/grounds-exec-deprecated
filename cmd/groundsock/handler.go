@@ -4,12 +4,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/folieadrien/grounds/execcode"
+	"github.com/folieadrien/grounds/pkg/execcode"
 	"github.com/gorilla/websocket"
 )
 
 type RunHandler struct {
-	debug      bool
 	upgrader   *websocket.Upgrader
 	execClient *execcode.Client
 }
@@ -28,7 +27,6 @@ func NewRunHandler(debug bool, execClient *execcode.Client) *RunHandler {
 		}
 	}
 	return &RunHandler{
-		debug:      debug,
 		upgrader:   upgrader,
 		execClient: execClient,
 	}

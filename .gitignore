@@ -1,4 +1,4 @@
-bin/server
+bin/groundsock
 _vendor
 *.env
 *.rbc

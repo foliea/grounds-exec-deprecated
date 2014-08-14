@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/folieadrien/grounds/execcode"
+	"github.com/folieadrien/grounds/pkg/execcode"
 )
 
 func TestNewRunHandler(t *testing.T) {
