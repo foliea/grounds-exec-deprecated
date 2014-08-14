@@ -6,8 +6,8 @@ if [ ! "$GOPATH" ]; then
 	exit 1
 fi
 
-echo "Testing execcode..."
-gom test -cover ./pkg/execcode
+echo "Testing runner..."
+gom test -cover ./pkg/runner
 
 echo "Testing utils..."
 gom test -cover ./pkg/utils

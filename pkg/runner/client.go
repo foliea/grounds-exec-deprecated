@@ -1,4 +1,4 @@
-package execcode
+package runner
 
 import (
 	"errors"

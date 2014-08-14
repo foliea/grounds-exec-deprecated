@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/folieadrien/grounds/pkg/execcode"
+	"github.com/folieadrien/grounds/pkg/handler"
 )
 
 var (
@@ -22,13 +22,14 @@ func main() {
 		log.Printf("Warning: using debug mode, origin check disabled")
 	}
 	log.Printf("Using docker host: %s and docker registry: %s", *dockerAddr, *dockerRegistry)
-	execClient, err := execcode.NewClient(*dockerAddr, *dockerRegistry)
-	if err != nil {
-		log.Fatal(err)
+
+	run := handler.NewRunHandler(*debug, *dockerAddr, *dockerRegistry)
+	if run == nil {
+		log.Fatalf("Impossible to create run handler, verify your docker endpoint.")
 	}
+	http.Handle("/run", run)
 
 	log.Printf("Listening on: %s\n", *serveAddr)
-	http.Handle("/run", NewRunHandler(*debug, execClient))
 	if err := http.ListenAndServe(*serveAddr, nil); err != nil {
 		log.Fatal(err)
 	}

@@ -1,4 +1,4 @@
-package execcode
+package runner
 
 import (
 	"errors"
@@ -18,7 +18,7 @@ var (
 	ErrorWaitFailed          = errors.New("Wait failed.")
 )
 
-// FakeDockerClient is a simple fake docker client, so that execcode can be run for testing without requiring a real docker setup
+// FakeDockerClient is a simple fake docker client, so that runner can be run for testing without requiring a real docker setup
 type FakeDockerClient struct {
 	container        *docker.Container
 	containerStarted bool

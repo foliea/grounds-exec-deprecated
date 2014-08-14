@@ -1,20 +1,21 @@
-package main
+package handler
 
 import (
 	"log"
 	"net/http"
 
-	"github.com/folieadrien/grounds/pkg/execcode"
+	"github.com/folieadrien/grounds/pkg/runner"
 	"github.com/gorilla/websocket"
 )
 
 type RunHandler struct {
-	upgrader   *websocket.Upgrader
-	execClient *execcode.Client
+	upgrader *websocket.Upgrader
+	runner   *runner.Client
 }
 
-func NewRunHandler(debug bool, execClient *execcode.Client) *RunHandler {
-	if execClient == nil {
+func NewRunHandler(debug bool, dockerAddr, dockerRegistry string) *RunHandler {
+	runner, err := runner.NewClient(dockerAddr, dockerRegistry)
+	if err != nil {
 		return nil
 	}
 	upgrader := &websocket.Upgrader{
@@ -27,8 +28,8 @@ func NewRunHandler(debug bool, execClient *execcode.Client) *RunHandler {
 		}
 	}
 	return &RunHandler{
-		upgrader:   upgrader,
-		execClient: execClient,
+		upgrader: upgrader,
+		runner:   runner,
 	}
 }
 
@@ -42,6 +43,6 @@ func (h *RunHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	c := &connection{ws: ws, execClient: h.execClient}
+	c := &connection{ws: ws, runner: h.runner}
 	c.read()
 }
