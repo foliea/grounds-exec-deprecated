@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo $1 > prog.c
+echo "$1" > prog.c
 gcc -o prog prog.c
 
 if [ -f "prog" ]

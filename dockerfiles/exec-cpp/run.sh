@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo $1 > prog.cpp
+echo "$1" > prog.cpp
 g++ -o prog prog.cpp
 
 if [ -f "prog" ]
