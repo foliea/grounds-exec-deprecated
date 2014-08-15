@@ -10,11 +10,11 @@ import (
 
 type RunHandler struct {
 	upgrader *websocket.Upgrader
-	runner   *runner.Client
+	client   *runner.Client
 }
 
 func NewRunHandler(debug bool, dockerAddr, dockerRegistry string) *RunHandler {
-	runner, err := runner.NewClient(dockerAddr, dockerRegistry)
+	client, err := runner.NewClient(dockerAddr, dockerRegistry)
 	if err != nil {
 		return nil
 	}
@@ -29,7 +29,7 @@ func NewRunHandler(debug bool, dockerAddr, dockerRegistry string) *RunHandler {
 	}
 	return &RunHandler{
 		upgrader: upgrader,
-		runner:   runner,
+		client:   client,
 	}
 }
 
@@ -43,6 +43,22 @@ func (h *RunHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	c := &connection{ws: ws, runner: h.runner}
-	c.read()
+	runner := &runner.Runner{
+		Client: h.client,
+		Input:  make(chan []byte),
+		Output: make(chan []byte),
+		Errs:   make(chan error),
+	}
+	conn := &connection{
+		ws:      ws,
+		receive: runner.Input,
+		send:    runner.Output,
+	}
+	go runner.Read()
+	go conn.reader()
+	go conn.writer()
+
+	for err := range runner.Errs {
+		log.Println(err)
+	}
 }

@@ -1,122 +1,39 @@
 package handler
 
-import (
-	"bufio"
-	"io"
-	"log"
-	"strconv"
-	"sync"
+import "github.com/gorilla/websocket"
 
-	"github.com/folieadrien/grounds/pkg/runner"
-	"github.com/gorilla/websocket"
-)
+type websocketConn interface {
+	ReadMessage() (messageType int, p []byte, err error)
+	WriteMessage(messageType int, data []byte) error
+	Close() error
+}
 
 type connection struct {
-	writeLock sync.Mutex
-	ws        *websocket.Conn
-	runner    *runner.Client
+	ws websocketConn
+
+	// Buffered channel of inbound messages.
+	receive chan []byte
+	// Buffered channel of outbound messages.
+	send chan []byte
 }
 
-type Input struct {
-	Language string `json:"language"`
-	Code     string `json:"code"`
-}
-
-type Response struct {
-	Stream string `json:"stream"`
-	Chunk  string `json:"chunk"`
-}
-
-func (c *connection) read() {
-	defer c.ws.Close()
-	var (
-		containerID string
-		interrupted chan bool
-	)
+func (c *connection) reader() {
 	for {
-		var (
-			input = Input{}
-			err   = c.ws.ReadJSON(&input)
-		)
-		if containerID != "" {
-			go c.interrupt(containerID, interrupted)
-		}
+		_, message, err := c.ws.ReadMessage()
 		if err != nil {
-			return
+			break
 		}
-		if containerID, err = c.runner.Prepare(input.Language, input.Code); err != nil {
-			c.handleError(err)
-			continue
-		}
-		interrupted = make(chan bool, 3)
-		go c.exec(containerID, interrupted)
+		c.receive <- message
 	}
+	close(c.receive)
+	c.ws.Close()
 }
 
-func (c *connection) exec(containerID string, interrupted chan bool) {
-	defer func() {
-		if err := c.runner.Clean(containerID); err != nil {
-			c.handleError(err)
-		}
-	}()
-	status, err := c.runner.Execute(containerID, func(stdout, stderr io.Reader) {
-		go c.broadcast("stdout", stdout, interrupted)
-		c.broadcast("stderr", stderr, interrupted)
-	})
-	if err != nil {
-		c.handleError(err)
-		return
-	}
-	select {
-	case <-interrupted:
-	default:
-		c.send("status", strconv.Itoa(status))
-	}
-}
-
-func (c *connection) interrupt(containerID string, interrupted chan bool) {
-	for i := 0; i < 3; i++ {
-		interrupted <- true
-	}
-	c.runner.Interrupt(containerID)
-}
-
-func (c *connection) broadcast(stream string, output io.Reader, interrupted chan bool) {
-	var (
-		reader = bufio.NewReader(output)
-		buffer = make([]byte, 1024)
-	)
-	for {
-		n, err := reader.Read(buffer)
-		if err != nil {
-			return
-		}
-		select {
-		case <-interrupted:
-			return
-		default:
-			if n > 0 {
-				c.send(stream, string(buffer[0:n]))
-			}
+func (c *connection) writer() {
+	for message := range c.send {
+		if err := c.ws.WriteMessage(websocket.TextMessage, message); err != nil {
+			break
 		}
 	}
-}
-
-func (c *connection) send(stream, chunk string) {
-	response := Response{Stream: stream, Chunk: chunk}
-	c.writeLock.Lock()
-	if err := c.ws.WriteJSON(response); err != nil {
-		log.Println(err)
-	}
-	c.writeLock.Unlock()
-}
-
-// Send the error to the client or log the error server side
-func (c *connection) handleError(err error) {
-	if err == runner.ErrorLanguageNotSpecified ||
-		err == runner.ErrorProgramTooLarge {
-		c.send("error", err.Error())
-	} else {
-		log.Println(err)
-	}
+	c.ws.Close()
 }

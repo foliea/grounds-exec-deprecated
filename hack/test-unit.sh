@@ -9,5 +9,8 @@ fi
 echo "Testing runner..."
 gom test -cover ./pkg/runner
 
+echo "Testing handler..."
+gom test -cover ./pkg/handler
+
 echo "Testing utils..."
 gom test -cover ./pkg/utils
