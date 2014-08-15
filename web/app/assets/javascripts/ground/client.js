@@ -20,6 +20,7 @@ Client.prototype.bindEvents = function() {
         response.chunk = "\n[Program exited with status: " + response.chunk + "]";
       }
       $("#console").append($('<span class="'+ response.stream +'">').text(response.chunk));
+      $("html,body").animate({scrollTop:$(document).height()}, 1000);
     }
   };
   var that = this;
@@ -27,7 +28,7 @@ Client.prototype.bindEvents = function() {
     that.socket = null;
   };
 }
-
+// FIXME: stop connection attempt if 10 fails
 Client.prototype.send = function(data) {
   $("#waiting").show();
   if (this.socket === null) {

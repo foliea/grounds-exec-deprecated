@@ -59,10 +59,7 @@ func (c *Client) Execute(containerID string, attach func(stdout, stderr io.Reade
 		stderrWriter.Close()
 	}()
 
-	errs := make(chan error, 1)
-	go func() {
-		errs <- c.attachToContainer(containerID, stdoutWriter, stderrWriter)
-	}()
+	go c.attachToContainer(containerID, stdoutWriter, stderrWriter)
 	go attach(stdoutReader, stderrReader)
 
 	if err := c.docker.StartContainer(containerID, nil); err != nil {
@@ -70,9 +67,6 @@ func (c *Client) Execute(containerID string, attach func(stdout, stderr io.Reade
 	}
 	status, err := c.docker.WaitContainer(containerID)
 	if err != nil {
-		return 0, err
-	}
-	if err := <-errs; err != nil {
 		return 0, err
 	}
 	return status, nil

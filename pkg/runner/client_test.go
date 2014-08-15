@@ -89,12 +89,13 @@ func TestExecute(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	attach := false
+	attach := make(chan bool)
 	status, err := client.Execute(containerID, func(stdout, stderr io.Reader) {
-		attach = true
+		attach <- true
 
+		// FIXME: Should detect if writers not closed!
 		readOut := bufio.NewReader(stdout)
-		if _, err := readOut.Read(make([]byte, 2)); err != io.EOF {
+		if _, err := readOut.Read(make([]byte, 2)); err == nil {
 			t.Fatalf("Expected stdout to be closed.")
 		}
 		readErr := bufio.NewReader(stderr)
@@ -105,7 +106,7 @@ func TestExecute(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if attach == false {
+	if attached := <-attach; !attached {
 		t.Fatalf("Expected attach to be true, got false.")
 	}
 	if status != 0 {
@@ -115,31 +116,9 @@ func TestExecute(t *testing.T) {
 
 func TestExecuteNotPrepared(t *testing.T) {
 	client := newFakeClient(t)
-	attach := false
-	_, err := client.Execute("-1", func(stdout, stderr io.Reader) {
-		attach = true
-	})
+	_, err := client.Execute("-1", func(stdout, stderr io.Reader) {})
 	if err == nil {
 		t.Fatal("Expected an error, got nothing.")
-	}
-	if attach == true {
-		t.Fatalf("Expected attach to be false, got true.")
-	}
-}
-
-func TestExecuteAttachFailed(t *testing.T) {
-	client := newFakeClient(t)
-	client.docker = NewFakeDockerClient(&FakeDockerClientOptions{attachFail: true})
-	containerID, err := client.Prepare("ruby", "puts 42")
-	if err != nil {
-		t.Fatal(err)
-	}
-	_, err = client.Execute(containerID, func(stdout, stderr io.Reader) {})
-	if err == nil {
-		t.Fatal("Expected an error, got nothing.")
-	}
-	if err != ErrorAttachFailed {
-		t.Fatalf("Expected error to be %v, got %v.", ErrorAttachFailed, err)
 	}
 }
 
@@ -150,18 +129,12 @@ func TestExecuteWaitFailed(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	attach := false
-	_, err = client.Execute(containerID, func(stdout, stderr io.Reader) {
-		attach = true
-	})
+	_, err = client.Execute(containerID, func(stdout, stderr io.Reader) {})
 	if err == nil {
 		t.Fatal("Expected an error, got nothing.")
 	}
-	if err != ErrorWaitFailed {
-		t.Fatalf("Expected error to be %v, got %v.", ErrorWaitFailed, err)
-	}
-	if attach == true {
-		t.Fatalf("Expected attach to be false, got true.")
+	if err != errorWaitFailed {
+		t.Fatalf("Expected error to be %v, got %v.", errorWaitFailed, err)
 	}
 }
 

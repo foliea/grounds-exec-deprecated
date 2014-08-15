@@ -6,7 +6,6 @@ function Ground(editor, language, theme, indent, client) {
   this.client = client;
 
   this.initEditor();
-  this.setCursor();
   this.setLanguage();
   this.setTheme();
   this.setIndent();
@@ -77,5 +76,9 @@ Ground.prototype.bindEvents = function() {
     var language = that.language.code;
     data = JSON.stringify({ language: language, code: code });
     that.client.send(data);
+  });
+  $("#back").on('click', function(event) {
+    $("html,body").animate({scrollTop: 0}, 'fast');
+    that.editor.focus(); 
   });
 };

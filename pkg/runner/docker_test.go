@@ -7,15 +7,15 @@ import (
 )
 
 var (
-	ErrorNoSuchContainerID   = errors.New("No such container ID.")
-	ErrorContainerNotStarted = errors.New("Container not started.")
-	ErrorInvalidImage        = errors.New("Invalid image.")
-	ErrorCreateInvalidOpts   = errors.New("Create invalid opts.")
-	ErrorAttachInvalidOpts   = errors.New("Attach invalid opts.")
-	ErrorRemoveInvalidOpts   = errors.New("Remove invalid opts.")
-	ErrorAttachFailed        = errors.New("Attach failed.")
-	ErrorCreateFailed        = errors.New("Create failed.")
-	ErrorWaitFailed          = errors.New("Wait failed.")
+	errorNoSuchContainerID   = errors.New("No such container ID.")
+	errorContainerNotStarted = errors.New("Container not started.")
+	errorInvalidImage        = errors.New("Invalid image.")
+	errorCreateInvalidOpts   = errors.New("Create invalid opts.")
+	errorAttachInvalidOpts   = errors.New("Attach invalid opts.")
+	errorRemoveInvalidOpts   = errors.New("Remove invalid opts.")
+	errorAttachFailed        = errors.New("Attach failed.")
+	errorCreateFailed        = errors.New("Create failed.")
+	errorWaitFailed          = errors.New("Wait failed.")
 )
 
 // FakeDockerClient is a simple fake docker client, so that runner can be run for testing without requiring a real docker setup
@@ -40,13 +40,13 @@ func NewFakeDockerClient(opts *FakeDockerClientOptions) dockerClient {
 
 func (f *FakeDockerClient) CreateContainer(c docker.CreateContainerOptions) (*docker.Container, error) {
 	if f.opts.createFail {
-		return nil, ErrorCreateFailed
+		return nil, errorCreateFailed
 	}
 	if c.Config.Image == "" {
-		return nil, ErrorInvalidImage
+		return nil, errorInvalidImage
 	}
 	if !c.Config.AttachStdout || !c.Config.AttachStderr || !c.Config.NetworkDisabled {
-		return nil, ErrorCreateInvalidOpts
+		return nil, errorCreateInvalidOpts
 	}
 	f.container = &docker.Container{ID: "fake"}
 	f.containerStarted = false
@@ -55,21 +55,21 @@ func (f *FakeDockerClient) CreateContainer(c docker.CreateContainerOptions) (*do
 
 func (f *FakeDockerClient) AttachToContainer(opts docker.AttachToContainerOptions) error {
 	if f.opts.attachFail {
-		return ErrorAttachFailed
+		return errorAttachFailed
 	}
 	if f.container.ID != opts.Container {
-		return ErrorNoSuchContainerID
+		return errorNoSuchContainerID
 	}
 	if opts.Container == "" || opts.OutputStream == nil || opts.ErrorStream == nil ||
 		!opts.Stream || !opts.Stdout || !opts.Stderr {
-		return ErrorAttachInvalidOpts
+		return errorAttachInvalidOpts
 	}
 	return nil
 }
 
 func (f *FakeDockerClient) StartContainer(id string, hostConfig *docker.HostConfig) error {
 	if f.container.ID != id {
-		return ErrorNoSuchContainerID
+		return errorNoSuchContainerID
 	}
 	f.containerStarted = true
 	return nil
@@ -77,23 +77,23 @@ func (f *FakeDockerClient) StartContainer(id string, hostConfig *docker.HostConf
 
 func (f *FakeDockerClient) WaitContainer(id string) (int, error) {
 	if f.container.ID != id {
-		return -1, ErrorNoSuchContainerID
+		return -1, errorNoSuchContainerID
 	}
 	if f.containerStarted == false {
-		return -1, ErrorContainerNotStarted
+		return -1, errorContainerNotStarted
 	}
 	if f.opts.waitFail {
-		return -1, ErrorWaitFailed
+		return -1, errorWaitFailed
 	}
 	return 0, nil
 }
 
 func (f *FakeDockerClient) StopContainer(id string, timeout uint) error {
 	if f.container.ID != id {
-		return ErrorNoSuchContainerID
+		return errorNoSuchContainerID
 	}
 	if f.containerStarted == false {
-		return ErrorContainerNotStarted
+		return errorContainerNotStarted
 	}
 	f.containerStarted = false
 	return nil
@@ -101,10 +101,10 @@ func (f *FakeDockerClient) StopContainer(id string, timeout uint) error {
 
 func (f *FakeDockerClient) RemoveContainer(opts docker.RemoveContainerOptions) error {
 	if f.container.ID != opts.ID {
-		return ErrorNoSuchContainerID
+		return errorNoSuchContainerID
 	}
 	if opts.ID == "" || opts.Force == true {
-		return ErrorRemoveInvalidOpts
+		return errorRemoveInvalidOpts
 	}
 	f.container = nil
 	return nil
