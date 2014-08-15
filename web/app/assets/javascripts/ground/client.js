@@ -18,9 +18,9 @@ Client.prototype.bindEvents = function() {
       response = JSON.parse(event.data);
       if (response.stream === 'status') {
         response.chunk = "\n[Program exited with status: " + response.chunk + "]";
+        $("body").animate({scrollTop:$(document).height()}, 1000);
       }
       $("#console").append($('<span class="'+ response.stream +'">').text(response.chunk));
-      $("html,body").animate({scrollTop:$(document).height()}, 1000);
     }
   };
   var that = this;

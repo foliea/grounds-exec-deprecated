@@ -1,4 +1,4 @@
-<div class="row top-buffer ground-editor-header">
+<div class="row top-buffer fullwidth ground-editor-header">
 
   <div class="large-12 column">
 
@@ -12,9 +12,9 @@
 
 </div>
 
-<%= content_tag(:div, @ground.code, id: :ground_editor, class: 'row ground-editor', data: @ground.editor) %>
+<%= content_tag(:div, @ground.code, id: :ground_editor, class: 'row fullwidth ground-editor', data: @ground.editor) %>
 
-<div class="row top-buffer">
+<div class="row fullwidth top-buffer">
   
   <%= button_tag(type: 'button', id: :run, class: 'small ground-button radius') do
     content_tag(:strong, t('editor.run'))
@@ -22,7 +22,7 @@
 
 </div>
 
-<div class="row ground-panel">
+<div class="row fullwidth ground-panel">
 
   <h6><%= t('editor.console') %></h6>
 
@@ -32,10 +32,10 @@
 
 </div>
 
-<div class="row top-buffer">
+<div class="row fullwidth top-buffer">
 
   <%= button_tag(type: 'button', id: :back, class: 'small ground-button radius') do
-    content_tag(:strong, 'Back to editor')
+    content_tag(:strong, t('editor.back'))
   end %>
 
 </div>

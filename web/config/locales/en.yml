@@ -26,6 +26,7 @@ en:
     error: 'An error occurred.'
     waiting: 'Waiting for remote server...'
     run: 'Run'
+    back: 'Back to editor'
     console: 'Console'
     select:
       language: 'Language:'

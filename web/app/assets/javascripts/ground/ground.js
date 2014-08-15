@@ -11,6 +11,23 @@ function Ground(editor, language, theme, indent, client) {
   this.setIndent();
   
   this.bindEvents();
+
+  this.editor.commands.addCommand({
+    name: 'Run',
+    bindKey: {win: 'Ctrl-M',  mac: 'Command-M'},
+    exec: function(editor) {
+        $("#run").click();
+    },
+    readOnly: false
+  });
+  this.editor.commands.addCommand({
+    name: 'Back to editor',
+    bindKey: {win: 'Ctrl-L',  mac: 'Command-L'},
+    exec: function(editor) {
+        $("#back").click();
+    },
+    readOnly: false
+  });
 }
 
 Ground.prototype.initEditor = function() {
@@ -78,7 +95,7 @@ Ground.prototype.bindEvents = function() {
     that.client.send(data);
   });
   $("#back").on('click', function(event) {
-    $("html,body").animate({scrollTop: 0}, 'fast');
+    $("body").animate({scrollTop: 0}, 'fast');
     that.editor.focus(); 
   });
 };

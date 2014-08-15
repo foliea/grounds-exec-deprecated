@@ -37,22 +37,24 @@ $ground-font-color: #333;
   }
 }
 
+.fullwidth {
+   width: 100%;
+   margin-left: auto;
+   margin-right: auto;
+   max-width: initial;
+}
+
 .ground-editor {
   height: rem-calc(400);
   border-radius: 0 0 3px 3px; 
   @include ground-border;
 }
 
-.ground-contain-to-grid {
-  @extend .contain-to-grid;
-  background-color: $ground-primary-color;
-  @include ground-border(bottom);
-}
-
 .ground-top-bar {
   @extend .top-bar;
   background-color: $ground-primary-color;
-  
+  @include ground-border(bottom);
+ 
   .name h1 a {
     color: $ground-font-color;
   }
