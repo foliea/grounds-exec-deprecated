@@ -34,7 +34,7 @@ func (r *Runner) Read() {
 	for input := range r.Input {
 		var config RunConfig
 		if err := json.Unmarshal(input, &config); err != nil {
-			r.handleError(err)
+			r.notifyError(err)
 			continue
 		}
 		if containerID != "" {
@@ -42,7 +42,7 @@ func (r *Runner) Read() {
 		}
 		containerID, err = r.Client.Prepare(config.Language, config.Code)
 		if err != nil {
-			r.handleError(err)
+			r.notifyError(err)
 			continue
 		}
 		stop = make(chan bool, 3)
@@ -56,7 +56,7 @@ func (r *Runner) Read() {
 func (r *Runner) execute(containerID string, stop chan bool) {
 	defer func() {
 		if err := r.Client.Clean(containerID); err != nil {
-			r.handleError(err)
+			r.Errs <- err
 		}
 	}()
 	status, err := r.Client.Execute(containerID, func(stdout, stderr io.Reader) {
@@ -64,7 +64,7 @@ func (r *Runner) execute(containerID string, stop chan bool) {
 		r.broadcast("stderr", stderr, stop)
 	})
 	if err != nil {
-		r.handleError(err)
+		r.notifyError(err)
 		return
 	}
 	select {
@@ -84,7 +84,7 @@ func (r *Runner) stop(containerID string, stop chan bool) {
 func (r *Runner) write(stream, chunk string) {
 	response, err := json.Marshal(Response{Stream: stream, Chunk: chunk})
 	if err != nil {
-		r.handleError(err)
+		r.Errs <- err
 		return
 	}
 	r.Output <- response
@@ -111,9 +111,11 @@ func (r *Runner) broadcast(stream string, output io.Reader, stop chan bool) {
 	}
 }
 
-func (r *Runner) handleError(err error) {
+func (r *Runner) notifyError(err error) {
 	r.Errs <- err
 	if err == ErrorProgramTooLarge || err == ErrorLanguageNotSpecified {
 		r.write("error", err.Error())
+	} else {
+		r.write("error", "An error occured.")
 	}
 }
