@@ -13,8 +13,8 @@ type RunHandler struct {
 	client   *runner.Client
 }
 
-func NewRunHandler(debug bool, dockerAddr, dockerRegistry string) *RunHandler {
-	client, err := runner.NewClient(dockerAddr, dockerRegistry)
+func NewRunHandler(debug bool, dockerAddr, dockerRepository string) *RunHandler {
+	client, err := runner.NewClient(dockerAddr, dockerRepository)
 	if err != nil {
 		return nil
 	}

@@ -14,7 +14,7 @@ function Ground(editor, language, theme, indent, client) {
 
   this.editor.commands.addCommand({
     name: 'Run',
-    bindKey: {win: 'Ctrl-M',  mac: 'Command-M'},
+    bindKey: {win: 'Ctrl-K',  mac: 'Command-K'},
     exec: function(editor) {
         $("#run").click();
     },
@@ -22,7 +22,7 @@ function Ground(editor, language, theme, indent, client) {
   });
   this.editor.commands.addCommand({
     name: 'Back to editor',
-    bindKey: {win: 'Ctrl-L',  mac: 'Command-L'},
+    bindKey: {win: 'Ctrl-J',  mac: 'Command-J'},
     exec: function(editor) {
         $("#back").click();
     },

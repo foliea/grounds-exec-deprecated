@@ -2,8 +2,8 @@
 
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
-# to allow `make REGISTRY=custom`
-REGISTRY := $(if $(REGISTRY),$(REGISTRY),grounds)
+# to allow `make REPOSITORY=custom`
+REPOSITORY := $(if $(REPOSITORY),$(REPOSITORY),grounds)
 # to allow `make WEB_PORT=4000`
 WEB_PORT := $(if $(WEB_PORT),$(WEB_PORT),3000)
 # to allow `make SERVER_PORT=4242`
@@ -31,7 +31,7 @@ build-web:
 run: run-server run-web
 
 run-server: build-server
-	docker run -d -p $(SERVER_PORT):$(SERVER_PORT) $(SERVER_IMAGE) hack/run.sh '-d -e $(DOCKER_HOST) -r $(REGISTRY)'
+	docker run -d -p $(SERVER_PORT):$(SERVER_PORT) $(SERVER_IMAGE) hack/run.sh '-d -e $(DOCKER_HOST) -r $(REPOSITORY)'
 
 run-web: build-web
 	docker run -d -p $(WEB_PORT):$(WEB_PORT) -e RUN_ENDPOINT=$(DOCKER_IP):$(SERVER_PORT)/run $(WEB_IMAGE) RAILS_ENV=production rails s -p $(WEB_PORT)	
@@ -54,6 +54,6 @@ images-pull:
 	$(call each_exec_images,docker pull)
 
 each_exec_images = $(foreach IMAGE_DIR,$(EXEC_IMAGES), \
-									 $(1) $(REGISTRY)/$(word 2, $(subst /, ,$(IMAGE_DIR))) $(if $(2),$(IMAGE_DIR));)
+									 $(1) $(REPOSITORY)/$(word 2, $(subst /, ,$(IMAGE_DIR))) $(if $(2),$(IMAGE_DIR));)
 
 

@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	serveAddr      = flag.String("p", ":8080", "Address and port to serve")
-	dockerAddr     = flag.String("e", "unix:///var/run/docker.sock", "Docker API endpoint")
-	dockerRegistry = flag.String("r", "grounds", "Docker registry to use for images")
-	debug          = flag.Bool("d", false, "Debug mode")
+	serveAddr        = flag.String("p", ":8080", "Address and port to serve")
+	dockerAddr       = flag.String("e", "unix:///var/run/docker.sock", "Docker API endpoint")
+	dockerRepository = flag.String("r", "grounds", "Docker repository to use for images")
+	debug            = flag.Bool("d", false, "Debug mode")
 )
 
 func main() {
@@ -21,9 +21,9 @@ func main() {
 	if *debug {
 		log.Printf("Warning: using debug mode, origin check disabled")
 	}
-	log.Printf("Using docker host: %s and docker registry: %s", *dockerAddr, *dockerRegistry)
+	log.Printf("Using docker host: %s and docker repository: %s", *dockerAddr, *dockerRepository)
 
-	run := handler.NewRunHandler(*debug, *dockerAddr, *dockerRegistry)
+	run := handler.NewRunHandler(*debug, *dockerAddr, *dockerRepository)
 	if run == nil {
 		log.Fatalf("Impossible to create run handler, verify your docker endpoint.")
 	}

@@ -16,18 +16,18 @@ var (
 )
 
 type Client struct {
-	docker   dockerClient
-	registry string
+	docker     *docker.Client
+	repository string
 }
 
-func NewClient(dockerAddr, dockerRegistry string) (*Client, error) {
+func NewClient(dockerAddr, dockerRepository string) (*Client, error) {
 	docker, err := docker.NewClient(dockerAddr)
 	if err != nil {
 		return nil, err
 	}
 	return &Client{
-		docker:   docker,
-		registry: dockerRegistry,
+		docker:     docker,
+		repository: dockerRepository,
 	}, nil
 }
 
@@ -39,7 +39,7 @@ func (c *Client) Prepare(language, code string) (string, error) {
 		return "", ErrorProgramTooLarge
 	}
 	var (
-		image = utils.FormatImageName(c.registry, language)
+		image = utils.FormatImageName(c.repository, language)
 		cmd   = []string{utils.FormatCode(code)}
 	)
 	container, err := c.createContainer(image, cmd)
@@ -59,12 +59,13 @@ func (c *Client) Execute(containerID string, attach func(stdout, stderr io.Reade
 		stderrWriter.Close()
 	}()
 
-	go c.attachToContainer(containerID, stdoutWriter, stderrWriter)
-	go attach(stdoutReader, stderrReader)
-
 	if err := c.docker.StartContainer(containerID, nil); err != nil {
 		return 0, err
 	}
+
+	go c.attachToContainer(containerID, stdoutWriter, stderrWriter)
+	go attach(stdoutReader, stderrReader)
+
 	status, err := c.docker.WaitContainer(containerID)
 	if err != nil {
 		return 0, err

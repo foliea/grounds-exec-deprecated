@@ -48,6 +48,7 @@ func (r *Runner) Read() {
 		stop = make(chan bool, 3)
 		go r.execute(containerID, stop)
 	}
+	r.stop(containerID, stop)
 	close(r.Output)
 	close(r.Errs)
 }

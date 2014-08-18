@@ -3,12 +3,12 @@ package handler
 import "testing"
 
 const (
-	dockerAddr     = "http://127.0.0.1:8080"
-	dockerRegistry = "grounds"
+	dockerAddr       = "http://127.0.0.1:8080"
+	dockerRepository = "grounds"
 )
 
 func TestNewRunHandler(t *testing.T) {
-	run := NewRunHandler(true, dockerAddr, dockerRegistry)
+	run := NewRunHandler(true, dockerAddr, dockerRepository)
 	if run == nil {
 		t.Fatalf("Expected run handler to be not nil.")
 	}
@@ -29,5 +29,5 @@ func TestRunHandlerServeHTTP(t *testing.T) {
 }
 
 func newRunHandler(t *testing.T) *RunHandler {
-	return NewRunHandler(true, dockerAddr, dockerRegistry)
+	return NewRunHandler(true, dockerAddr, dockerRepository)
 }

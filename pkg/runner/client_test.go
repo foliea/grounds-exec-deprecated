@@ -4,33 +4,34 @@ import (
 	"bufio"
 	"io"
 	"testing"
-)
+	"time"
 
-const (
-	validEndpoint   = "http://localhost:4243"
-	invalidEndpoint = ""
+	docker "github.com/fsouza/go-dockerclient"
+	dockerTest "github.com/fsouza/go-dockerclient/testing"
 )
 
 func TestNewClient(t *testing.T) {
-	registry := "test"
-	client, err := NewClient(validEndpoint, registry)
+	repository := "test"
+	client, err := NewClient("http://localhost:4243", repository)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if client.registry != registry {
-		t.Errorf("Expected registry %s, got %s.", registry, client.registry)
+	if client.repository != repository {
+		t.Errorf("Expected registry %s, got %s.", repository, client.repository)
 	}
 }
 
 func TestNewClientInvalidEndpoint(t *testing.T) {
-	_, err := NewClient(invalidEndpoint, "")
+	_, err := NewClient("", "")
 	if err == nil {
 		t.Errorf("Expected error, got nothing.")
 	}
 }
 
 func TestPrepare(t *testing.T) {
-	client := newFakeClient(t)
+	client, server := NewFakeClientServer(t, nil)
+	defer server.Stop()
+
 	containerID, err := client.Prepare("ruby", "puts 42")
 	if err != nil {
 		t.Fatal(err)
@@ -41,11 +42,10 @@ func TestPrepare(t *testing.T) {
 }
 
 func TestPrepareProgrameToolarge(t *testing.T) {
-	var (
-		client = newFakeClient(t)
-		code   = getTooLargeProgram()
-	)
-	containerID, err := client.Prepare("ruby", code)
+	client, server := NewFakeClientServer(t, nil)
+	defer server.Stop()
+
+	containerID, err := client.Prepare("ruby", getTooLargeProgram())
 	if err == nil {
 		t.Fatalf("Expected error, got nothing.")
 	}
@@ -57,20 +57,10 @@ func TestPrepareProgrameToolarge(t *testing.T) {
 	}
 }
 
-func TestPrepareCreateFailed(t *testing.T) {
-	client := newFakeClient(t)
-	client.docker = NewFakeDockerClient(&FakeDockerClientOptions{createFail: true})
-	containerID, err := client.Prepare("ruby", "puts 42")
-	if err == nil {
-		t.Fatalf("Expected error, got nothing.")
-	}
-	if containerID != "" {
-		t.Fatalf("Expected containerID to be empty.")
-	}
-}
-
 func TestPrepareWithEmptyLanguage(t *testing.T) {
-	client := newFakeClient(t)
+	client, server := NewFakeClientServer(t, nil)
+	defer server.Stop()
+
 	containerID, err := client.Prepare("", "puts 42")
 	if err == nil {
 		t.Fatalf("Expected error, got nothing.")
@@ -84,77 +74,100 @@ func TestPrepareWithEmptyLanguage(t *testing.T) {
 }
 
 func TestExecute(t *testing.T) {
-	client := newFakeClient(t)
+	cChan := make(chan *docker.Container, 2)
+	client, server := NewFakeClientServer(t, cChan)
+	defer server.Stop()
+
 	containerID, err := client.Prepare("ruby", "puts 42")
 	if err != nil {
 		t.Fatal(err)
 	}
-	attach := make(chan bool)
-	status, err := client.Execute(containerID, func(stdout, stderr io.Reader) {
-		attach <- true
-
-		// FIXME: Should detect if writers not closed!
-		readOut := bufio.NewReader(stdout)
-		if _, err := readOut.Read(make([]byte, 2)); err == nil {
-			t.Fatalf("Expected stdout to be closed.")
+	// Wait that the container is properly created
+	<-cChan
+	end := make(chan bool)
+	go func() {
+		status, err := client.Execute(containerID, func(stdout, stderr io.Reader) {
+			var (
+				buff    = make([]byte, 1024)
+				readOut = bufio.NewReader(stdout)
+				readErr = bufio.NewReader(stderr)
+			)
+			for {
+				if _, err := readOut.Read(buff); err != nil {
+					break
+				}
+			}
+			for {
+				if _, err := readErr.Read(buff); err != nil {
+					break
+				}
+			}
+			end <- true
+		})
+		if err != nil {
+			t.Fatal(err)
 		}
-		readErr := bufio.NewReader(stderr)
-		if _, err := readErr.Read(make([]byte, 2)); err != io.EOF {
-			t.Fatalf("Expected stderr to be closed.")
+		if status != 0 {
+			t.Fatalf("Expected status to be 0, got %v.", status)
 		}
-	})
-	if err != nil {
+	}()
+	// Wait that the container is properly started
+	<-cChan
+	if err := client.Interrupt(containerID); err != nil {
 		t.Fatal(err)
 	}
-	if attached := <-attach; !attached {
-		t.Fatalf("Expected attach to be true, got false.")
-	}
-	if status != 0 {
-		t.Fatalf("Expected status to be 0, got %v.", status)
+	select {
+	case <-end:
+	case <-time.After(time.Second):
+		t.Fatalf("Expected stdout and stderr to be closed.")
 	}
 }
 
 func TestExecuteNotPrepared(t *testing.T) {
-	client := newFakeClient(t)
+	client, server := NewFakeClientServer(t, nil)
+	defer server.Stop()
+
 	_, err := client.Execute("-1", func(stdout, stderr io.Reader) {})
 	if err == nil {
 		t.Fatal("Expected an error, got nothing.")
 	}
 }
 
-func TestExecuteWaitFailed(t *testing.T) {
-	client := newFakeClient(t)
-	client.docker = NewFakeDockerClient(&FakeDockerClientOptions{waitFail: true})
-	containerID, err := client.Prepare("ruby", "puts 42")
-	if err != nil {
-		t.Fatal(err)
-	}
-	_, err = client.Execute(containerID, func(stdout, stderr io.Reader) {})
-	if err == nil {
-		t.Fatal("Expected an error, got nothing.")
-	}
-	if err != errorWaitFailed {
-		t.Fatalf("Expected error to be %v, got %v.", errorWaitFailed, err)
-	}
-}
-
 func TestInterrupt(t *testing.T) {
-	client := newFakeClient(t)
+	cChan := make(chan *docker.Container, 2)
+	client, server := NewFakeClientServer(t, cChan)
+	defer server.Stop()
+
 	containerID, err := client.Prepare("ruby", "puts 42")
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = client.Execute(containerID, func(stdout, stderr io.Reader) {})
-	if err != nil {
-		t.Fatal(err)
-	}
+	// Wait that the container is properly created
+	<-cChan
+	end := make(chan bool)
+	go func() {
+		_, err := client.Execute(containerID, func(stdout, stderr io.Reader) {})
+		if err != nil {
+			t.Fatal(err)
+		}
+		end <- true
+	}()
+	// Wait that the container is properly started
+	<-cChan
 	if err := client.Interrupt(containerID); err != nil {
 		t.Fatal(err)
+	}
+	select {
+	case <-end:
+	case <-time.After(time.Second):
+		t.Fatalf("Expected execution to be interrupted.")
 	}
 }
 
 func TestClean(t *testing.T) {
-	client := newFakeClient(t)
+	client, server := NewFakeClientServer(t, nil)
+	defer server.Stop()
+
 	containerID, err := client.Prepare("ruby", "puts 42")
 	if err != nil {
 		t.Fatal(err)
@@ -162,15 +175,30 @@ func TestClean(t *testing.T) {
 	if err := client.Clean(containerID); err != nil {
 		t.Fatal(err)
 	}
+	if err := client.Interrupt(containerID); err == nil {
+		t.Fatal("Expected container %v to be removed.", containerID)
+	}
 }
 
-func newFakeClient(t *testing.T) *Client {
-	client, err := NewClient(validEndpoint, "")
+func NewFakeClientServer(t *testing.T, cChan chan *docker.Container) (*Client, *dockerTest.DockerServer) {
+	server, err := dockerTest.NewServer("127.0.0.1:0", cChan, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	client.docker = NewFakeDockerClient(nil)
-	return client
+	client, err := NewClient(server.URL(), "grounds")
+	if err != nil {
+		server.Stop()
+		t.Fatal(err)
+	}
+	var (
+		opts = docker.PullImageOptions{Repository: "grounds/exec-ruby"}
+		auth = docker.AuthConfiguration{}
+	)
+	if err := client.docker.PullImage(opts, auth); err != nil {
+		server.Stop()
+		t.Fatal(err)
+	}
+	return client, server
 }
 
 func getTooLargeProgram() string {
