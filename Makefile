@@ -34,7 +34,7 @@ run-server: build-server
 	docker run -d -p $(SERVER_PORT):$(SERVER_PORT) $(SERVER_IMAGE) hack/run.sh '-d -e $(DOCKER_HOST) -r $(REPOSITORY)'
 
 run-web: build-web
-	docker run -d -p $(WEB_PORT):$(WEB_PORT) -e RUN_ENDPOINT=$(DOCKER_IP):$(SERVER_PORT)/run $(WEB_IMAGE) RAILS_ENV=production rails s -p $(WEB_PORT)	
+	docker run -d -p $(WEB_PORT):$(WEB_PORT) -e "RUN_ENDPOINT=$(DOCKER_IP):$(SERVER_PORT)/run RAILS_ENV=production" $(WEB_IMAGE)  rails s -p $(WEB_PORT)	
 
 test: test-unit test-web
 
