@@ -1,8 +1,8 @@
+require 'digest/sha1'
+
 class Ground
   include ActiveModel::Validations
   include ActiveModel::Conversion
-
-  KEY_PREFIX = 'ground'
 
   attr_accessor :id, :language, :code
 
@@ -11,31 +11,47 @@ class Ground
       send("#{name}=", value)
     end
   end
-
+  
   def persisted?
-    id.present?
+    storage.exists(id)
   end
-
+  
   def save
     return if persisted?
 
-    self.id = self.class.storage.incr('ground')
-
+    self.id = generate_key
     to_h.each do |field, value|
-      self.class.storage.hset("#{KEY_PREFIX}:#{id}", field, value)
+      storage.hset(id, field, value)
     end
-    puts id
+    storage.persist(id)
   end
-
-  private
+    
+  def destroy
+    storage.del(id)
+  end
+ 
+  def generate_key
+    key = 'ground'
+    to_h.each do |field, value|
+      key << "::#{field}:#{value.to_json}"
+    end
+    Digest::SHA256.hexdigest(key)
+ end
 
   def self.from_storage(id)
-    attributes = storage.hgetall("#{KEY_PREFIX}:#{id}")
-    new(attributes)
+    ground = new(storage.hgetall(id))
+    ground.id = id
+    ground
   end
+
+  private  
 
   def self.storage
     $redis
+  end
+    
+  def storage
+    self.class.storage
   end
 
   def to_h

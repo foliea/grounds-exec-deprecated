@@ -15,10 +15,12 @@ module GroundEditor
 
   def default_option_code(option)
     code, _ = options(option).first
+    code
   end
 
   def default_option_label(option)
     _, label = options(option).first
+    label
   end
 
   def option(option, code)

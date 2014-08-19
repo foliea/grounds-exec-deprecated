@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'grounds#show'
 
-  match 'grounds/shared/:id', to: 'grounds#shared', as: 'grounds_shared', via: :get
+  match 's/:id', to: 'grounds#shared', as: 'grounds_shared', via: :get
   match 'grounds/share/', to: 'grounds#share', as: 'grounds_share', via: :post
   match 'grounds/switch_option/:option', to: 'grounds#switch_option', as: 'grounds_switch_option', via: :put
   # Example of regular route:

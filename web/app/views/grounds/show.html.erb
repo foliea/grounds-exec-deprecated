@@ -20,7 +20,7 @@
     content_tag(:strong, t('editor.run'))
   end %>
 
-  <%= form_for(@ground, url: grounds_share_path(@ground), remote: true) do |f| %>
+  <%= form_for(Ground.new, url: grounds_share_path(@ground), remote: true) do |f| %>
   <%= f.hidden_field :language, value: @ground.language %>
   <%= f.hidden_field :code, value: @ground.code %>
   <%= button_tag(type: 'submit', id: :share, class: 'small ground-button radius') do
@@ -29,7 +29,7 @@
   <% end %>
 
   <input type="text" id="sharedURL">
-
+  
 </div>
 
 <div class="row fullwidth ground-panel">

@@ -16,6 +16,7 @@ RUN apt-get -qy install \
     libxslt1-dev \
     libcurl4-openssl-dev \
     python-software-properties \
+    bundler \
     nodejs
 
 # Install ruby-2.1.2.
@@ -28,9 +29,6 @@ RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \
     cd .. && \
     rm -r ruby-2.1.2 ruby-2.1.2.tar.gz && \
     echo 'gem: --no-document' > /usr/local/etc/gemrc
-
-# Install bundler.
-RUN gem install bundler
 
 # Copy the Gemfile and Gemfile.lock into the image.
 COPY Gemfile rails/Gemfile
