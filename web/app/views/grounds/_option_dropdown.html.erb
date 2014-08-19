@@ -1,7 +1,7 @@
 <% options = option.to_s.pluralize(2) %>
 
 <a href="#" data-dropdown="<%= options %>" class="tiny radius button secondary dropdown">
-<%= t("editor.select.#{option}") %> <b id="<%= option %>-name" ></b></a>
+  <%= t("editor.select.#{option}") %> <b id="<%= option %>-name" ><%= @ground.send(options)[@ground.editor[option]] %></b></a>
 
 <ul id=<%= options %> data-dropdown-content class="f-dropdown">
   
@@ -10,8 +10,8 @@
     <li>
     
     <%= link_to(label,
-                grounds_switch_option_path(option: "#{option}", value: { code: code, label: label }),
-                data: { "#{option}" => { code: code, label: label } },
+                grounds_switch_option_path(option: "#{option}", value: code),
+                data: { "#{option}" => code },
                 class: "#{option}-link", method: :put, remote: true) %>
               
     </li>

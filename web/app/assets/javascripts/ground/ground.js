@@ -9,7 +9,7 @@ function Ground(editor, language, theme, indent, client) {
   this.setLanguage();
   this.setTheme();
   this.setIndent();
-  
+
   this.bindEvents();
 
   this.editor.commands.addCommand({
@@ -31,6 +31,7 @@ function Ground(editor, language, theme, indent, client) {
 }
 
 Ground.prototype.initEditor = function() {
+  $("#sharedURL").hide();
   this.editor.getSession().setUseWrapMode(true);
 };
 
@@ -41,26 +42,24 @@ Ground.prototype.setCursor = function() {
 };
 
 Ground.prototype.setLanguage = function() {
-  this.editor.getSession().setMode("ace/mode/" + GetTheme(this.language.code));
-  this.editor.setValue(GetSample(this.language.code));
+  this.editor.getSession().setMode("ace/mode/" + GetTheme(this.language));
+  if (this.editor.getValue() === "")
+    this.editor.setValue(GetSample(this.language));
   this.setCursor();
-  $("#language-name").text(this.language.label);
 };
 
 Ground.prototype.setTheme = function() {
-  this.editor.setTheme("ace/theme/" + this.theme.code);
-  $("#theme-name").text(this.theme.label);
+  this.editor.setTheme("ace/theme/" + this.theme);
 };
 
 Ground.prototype.setIndent = function() {
-  if (this.indent.code == "tab") {
+  if (this.indent == "tab") {
     this.editor.getSession().setUseSoftTabs(false);
     this.editor.getSession().setTabSize(8);
   } else {
     this.editor.getSession().setUseSoftTabs(true);
-    this.editor.getSession().setTabSize(this.indent.code);
+    this.editor.getSession().setTabSize(this.indent);
   }
-  $("#indent-name").text(this.indent.label);
 };
 
 Ground.prototype.cleanConsole = function() {
@@ -74,28 +73,51 @@ Ground.prototype.bindEvents = function() {
   // Refresh language
   $(".language-link").on('click', function(event, date) {
     that.language = $(event.currentTarget).data('language');
+    that.editor.setValue("");
     that.setLanguage();
+    $("#language-name").text($(this).text());
   });
   // Refresh theme
   $(".theme-link").on('click', function(event, date) {
     that.theme = $(event.currentTarget).data('theme');
     that.setTheme();
+    $("#theme-name").text($(this).text());
   });
   // Refresh indentation
   $(".indent-link").on('click', function(event, date) {
     that.indent = $(event.currentTarget).data('indent');
     that.setIndent();
+    $("#indent-name").text($(this).text());
   }); 
   // Form submit
   $("#run").on('click', function(event) {
     that.cleanConsole();
     var code = that.editor.getValue();
-    var language = that.language.code;
+    var language = that.language;
     data = JSON.stringify({ language: language, code: code });
     that.client.send(data);
   });
+  // Share current snippet
+  $("#share").on('click', function(event) {
+    var code = that.editor.getValue();
+    $("#ground_code").val(code);
+    $("#ground_language").val(that.language);
+  });
+  // Scroll back to editor
   $("#back").on('click', function(event) {
     $("body").animate({scrollTop: 0}, 'fast');
     that.editor.focus(); 
+  });
+  // Get result from share action
+  $("#new_ground").on("ajax:complete", function(xhr, data) {
+    var sharedURL = data.responseJSON.shared_url;
+    $("#sharedURL").val(sharedURL)
+                   .show()
+                   .focus()
+                   .select();
+  });
+  // Hide shared url if code is modified
+  that.editor.on('input', function() {
+    $("#sharedURL").hide();
   });
 };

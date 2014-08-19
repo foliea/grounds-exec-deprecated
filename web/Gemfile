@@ -12,6 +12,9 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'sqlite3'
 
+gem 'redis'
+gem 'redis-namespace'
+
 group :development do
   gem 'spring'
   gem 'pry-rails'
@@ -30,3 +33,4 @@ gem 'ace-rails-ap'
 gem 'modernizr-rails'
 gem 'foundation-rails'
 gem 'puma'
+

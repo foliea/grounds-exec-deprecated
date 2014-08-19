@@ -13,6 +13,14 @@ module GroundEditor
     format_option(code, label) if code.present? 
   end
 
+  def default_option_code(option)
+    code, _ = options(option).first
+  end
+
+  def default_option_label(option)
+    _, label = options(option).first
+  end
+
   def option(option, code)
     options = options(option)
     label = options[code]
@@ -30,6 +38,6 @@ module GroundEditor
   private
 
   def format_option(code, label)
-    { 'code' => code, 'label' => label } 
+    { code: code, label: label } 
   end
 end

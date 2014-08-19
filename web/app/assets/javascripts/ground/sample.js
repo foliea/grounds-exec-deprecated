@@ -12,7 +12,7 @@ function GetTheme(language) {
   for (i = 0; i < samples.length; i++) { 
     if (samples[i][0] === language) {
       return samples[i][1];
-    }    
+    }
   }
   return '';
 }
@@ -21,7 +21,7 @@ function GetSample(language) {
   for (i = 0; i < samples.length; i++) { 
     if (samples[i][0] === language) {
       return samples[i][2];
-    }    
+    }
   }
   return '';
 }

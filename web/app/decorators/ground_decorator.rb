@@ -1,11 +1,10 @@
 class GroundDecorator < BaseDecorator
   def editor
     {
-      theme: h.session[:theme] ||= GroundEditor.default_option(:theme),
-      indent: h.session[:indent] ||= GroundEditor.default_option(:indent),
+      theme: h.session[:theme] ||= GroundEditor.default_option_code(:theme),
+      indent: h.session[:indent] ||= GroundEditor.default_option_code(:indent),
       language: self.language,
-      run_endpoint: WebSocket.run_endpoint,
-      error: I18n.t('editor.error') 
+      run_endpoint: WebSocket.run_endpoint
     }
   end
 

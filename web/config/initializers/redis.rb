@@ -1,0 +1,1 @@
+$redis = Redis::Namespace.new('grounds', redis: Redis.new)

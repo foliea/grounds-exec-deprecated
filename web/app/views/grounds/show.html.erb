@@ -2,11 +2,11 @@
 
   <div class="large-12 column">
 
-    <%= render 'option_dropdown', option: 'language' %>
+    <%= render 'option_dropdown', option: :language %>
 
-    <%= render 'option_dropdown', option: 'theme' %>
+    <%= render 'option_dropdown', option: :theme %>
 
-    <%= render 'option_dropdown', option: 'indent' %>
+    <%= render 'option_dropdown', option: :indent %>
 
   </div>
 
@@ -18,18 +18,30 @@
   
   <%= button_tag(type: 'button', id: :run, class: 'small ground-button radius') do
     content_tag(:strong, t('editor.run'))
-  end %> 
+  end %>
+
+  <%= form_for(@ground, url: grounds_share_path(@ground), remote: true) do |f| %>
+  <%= f.hidden_field :language, value: @ground.language %>
+  <%= f.hidden_field :code, value: @ground.code %>
+  <%= button_tag(type: 'submit', id: :share, class: 'small ground-button radius') do
+    content_tag(:strong, t('editor.share'))
+    end %>
+  <% end %>
+
+  <input type="text" id="sharedURL">
 
 </div>
 
 <div class="row fullwidth ground-panel">
 
   <div class="large-12 column">
-  <h6><%= t('editor.console') %></h6>
 
-  <pre id="waiting" hidden="true"><%= t('editor.waiting') %></pre>
+    <h6><%= t('editor.console') %></h6>
 
-  <pre id="console"></pre>
+    <pre id="waiting" hidden="true"><%= t('editor.waiting') %></pre>
+    <pre id="error" hidden="true"><%= t('editor.error') %></pre>
+    <pre id="console"></pre>
+
   </div>
 </div>
 
