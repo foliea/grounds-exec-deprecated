@@ -14,6 +14,9 @@ class GroundsController < ApplicationController
   def share
     @ground = Ground.new(ground_params)
     @ground.save
+    if !@ground.persisted?
+      return render json: { status: :service_unavailable }
+    end
     render json: { status: :ok, shared_url: grounds_shared_url(@ground.id) }
   end
   

@@ -63,6 +63,8 @@ Ground.prototype.setIndent = function() {
 };
 
 Ground.prototype.cleanConsole = function() {
+  $("#waiting").hide();
+   $("#error").hide();
    $("#console").find("span").each(function() {
       this.remove();
    });
@@ -92,6 +94,8 @@ Ground.prototype.bindEvents = function() {
   // Form submit
   $("#run").on('click', function(event) {
     that.cleanConsole();
+    $("#waiting").show();
+
     var code = that.editor.getValue();
     var language = that.language;
     data = JSON.stringify({ language: language, code: code });
@@ -102,15 +106,21 @@ Ground.prototype.bindEvents = function() {
     var code = that.editor.getValue();
     $("#ground_code").val(code);
     $("#ground_language").val(that.language);
+    $("#new_ground").submit();
   });
   // Scroll back to editor
   $("#back").on('click', function(event) {
     $("body").animate({scrollTop: 0}, 'fast');
     that.editor.focus(); 
   });
-  // Get result from share action
-  $("#new_ground").on("ajax:complete", function(xhr, data) {
-    var sharedURL = data.responseJSON.shared_url;
+  // Get result from share action and display shared link
+  $("#new_ground").on("ajax:success", function(data, response, xhr) {
+    if (response.status !== "ok") {
+      that.cleanConsole();
+      $("#error").show();
+      return;
+    }
+    var sharedURL = response.shared_url;
     $("#sharedURL").val(sharedURL)
                    .show()
                    .focus()

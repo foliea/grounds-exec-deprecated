@@ -6,6 +6,7 @@ $ground-primary-active-color: adjust-color($ground-primary-color, $lightness: -2
 $ground-error-color: #c60f13;
 $ground-border-color: #DDD;
 $ground-font-color: #333;
+$ground-link-color: #4183c4;
 
 .top-buffer    { margin-top:    $ground-buffer }
 .bottom-buffer { margin-bottom: $ground-buffer }
@@ -37,13 +38,6 @@ $ground-font-color: #333;
   }
 }
 
-.fullwidth {
-   width: 100%;
-   margin-left: auto;
-   margin-right: auto;
-   max-width: initial;
-}
-
 .ground-editor {
   height: rem-calc(400);
   border-radius: 0 0 3px 3px; 
@@ -71,6 +65,8 @@ $ground-font-color: #333;
   @extend .button.secondary;
   @include ground-border;
 
+  margin: 0;
+  
   &:hover {
     background-color: $ground-primary-hover-color;
   }
@@ -85,5 +81,42 @@ $ground-font-color: #333;
   
   .stderr {
     color: $ground-error-color;
+  }
+}
+
+.fullwidth {
+   width: 100%;
+   margin-left: auto;
+   margin-right: auto;
+   max-width: initial;
+}
+
+.footer-text {
+  font-size: rem-calc(12);
+}
+
+a {
+  @extend a;
+  color: $ground-link-color;
+}
+
+figure { 
+  display: table;
+  text-align: center;
+}
+
+figcaption {
+  margin-top: rem-calc(15);
+  display: table-caption;
+  caption-side: bottom;
+  color: $ground-font-color;
+}
+
+.img-circle {
+  border-radius: 50%;
+  @include ground-border($width: 5px, $color: $ground-primary-color);
+  &:before {
+    content: '';
+    @include ground-border($width: 5px);
   }
 }

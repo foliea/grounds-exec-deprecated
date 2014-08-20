@@ -18,7 +18,6 @@ Client.prototype.connect = function() {
 Client.prototype.bindEvents = function() {
   this.socket.onmessage = function(event) {
     $("#waiting").hide();
-    $("#error").hide();
     if (!event.data.length) return;
     
     response = JSON.parse(event.data);
@@ -40,7 +39,6 @@ Client.prototype.bindEvents = function() {
 
 // FIXME: stop connection attempt if 10 fails
 Client.prototype.send = function(data) {
-  $("#waiting").show();
   if (this.socket === null) {
     var ok = this.connect();
   if (!ok) return;

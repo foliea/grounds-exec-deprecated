@@ -1,7 +1,25 @@
 <div class="column">
 
   <hr>
+  
+  <ul class="footer-text inline-list">
 
-  <span><%= t('site.copyright') %></span>
+    <li><%= t('site.copyright') %></li>
 
+    <li>
+      <%= link_to('https://github.com/folieadrien/grounds/issues/new') do 
+        content_tag(:span, fa_icon('envelope-o', text: t('site.contact')))
+      end %>
+    </li>
+    
+    <li>
+      <%= link_to('https://www.github.com/folieadrien/grounds') do 
+        content_tag(:span, fa_icon('github', text: 'GitHub'))
+      end %>
+    </li>
+    
+    <li><%= link_to(t('site.about'), page_path('about')) %></li>
+    
+  </ul>
+    
 </div>
