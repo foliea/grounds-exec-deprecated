@@ -1,5 +1,4 @@
 class GroundsController < ApplicationController
-
   def show
     ground = Ground.new(language: session[:language] || GroundEditor.default_option_code(:language),
                         code: '')

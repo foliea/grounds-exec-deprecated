@@ -9,8 +9,8 @@ WEB_PORT := $(if $(WEB_PORT),$(WEB_PORT),3000)
 # to allow `make SERVER_PORT=4242`
 SERVER_PORT := $(if $(SERVER_PORT),$(SERVER_PORT),8080)
 
-SERVER_IMAGE := $(REGISTRY)/server$(if $(GIT_BRANCH),:$(GIT_BRANCH))
-WEB_IMAGE := $(REGISTRY)/web$(if $(GIT_BRANCH),:$(GIT_BRANCH))
+SERVER_IMAGE := $(REPOSITORY)/server$(if $(GIT_BRANCH),:$(GIT_BRANCH))
+WEB_IMAGE := $(REPOSITORY)/web$(if $(GIT_BRANCH),:$(GIT_BRANCH))
 EXEC_IMAGES := $(shell find dockerfiles -maxdepth 1 -type d | grep dockerfiles/)
 
 # to allow `make DOCKER_HOST=tcp://192.168.59.103:2375`
@@ -45,7 +45,7 @@ test-unit: build-server
 	docker run --rm $(SERVER_IMAGE) hack/test-unit.sh
 
 test-web: build-web
-	docker run --rm $(WEB_IMAGE) RAILS_ENV=test bundle exec rspec
+	docker run --rm -e "RAILS_ENV=test" $(WEB_IMAGE) bundle exec rspec
 				
 images:
 	$(call each_exec_images,docker build -t, dir)
