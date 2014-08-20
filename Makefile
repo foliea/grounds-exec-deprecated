@@ -30,6 +30,9 @@ build-web:
 
 run: run-server run-web
 
+run-redis:
+	docker run -d -p 6379:6379 -v /grounds-redis:/data --name redis dockerfile/redis
+
 run-server: build-server
 	docker run -d -p $(SERVER_PORT):$(SERVER_PORT) $(SERVER_IMAGE) hack/run.sh '-d -e $(DOCKER_HOST) -r $(REPOSITORY)'
 
