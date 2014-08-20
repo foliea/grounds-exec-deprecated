@@ -25,11 +25,11 @@ class Ground
     end
     storage.persist(id)
   end
-    
+
   def destroy
     storage.del(id)
   end
- 
+
   def generate_key
     key = 'ground'
     to_h.each do |field, value|
@@ -44,7 +44,11 @@ class Ground
     ground
   end
 
-  private  
+  def to_h
+    instance_values.slice!('id')
+  end
+
+  private
 
   def self.storage
     $redis
@@ -52,9 +56,5 @@ class Ground
     
   def storage
     self.class.storage
-  end
-
-  def to_h
-    instance_values.slice!('id')
   end
  end
