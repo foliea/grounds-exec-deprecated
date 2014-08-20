@@ -1,6 +1,8 @@
 en:
   site:
     title: 'Grounds Beta'
+    about: 'About'
+    copyright: '© 2014 Adrien Folie'
   editor:
     error: 'An error occurred.'
     waiting: 'Waiting for remote server...'
@@ -12,4 +14,3 @@ en:
       language: 'Language:'
       theme: 'Theme:'
       indent: 'Indent mode:'
-

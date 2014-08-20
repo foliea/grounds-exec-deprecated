@@ -54,8 +54,15 @@ $ground-font-color: #333;
   @extend .top-bar;
   background-color: $ground-primary-color;
   @include ground-border(bottom);
- 
+  padding-bottom: 1px;
+
   .name h1 a {
+    color: $ground-font-color;
+  }
+
+  .top-bar-section li:not(.has-form) a:not(.button) {
+    @include ground-border(bottom);
+    background-color: $ground-primary-color;
     color: $ground-font-color;
   }
 }
