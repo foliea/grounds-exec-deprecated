@@ -24,7 +24,7 @@ server() {
 }
 
 web() {
-	docker build -t $(WEB_IMAGE) web
+  docker build -t $(WEB_IMAGE) web
 }
 
 build() {
