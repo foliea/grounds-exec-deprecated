@@ -20,7 +20,7 @@ if [ -z $WEB_IMAGE ]; then
 fi
 
 server() {
-	docker build -t $(SERVER_IMAGE) .
+  docker build -t $(SERVER_IMAGE) .
 }
 
 web() {
@@ -28,7 +28,7 @@ web() {
 }
 
 build() {
-	# If first parameter from CLI is missing or empty
+  # If first parameter from CLI is missing or empty
   if [ -z $1 ]; then
     echo "usage: [server|web]"
     return
