@@ -4,16 +4,16 @@
   <%= t("editor.select.#{option}") %> <b id="<%= option %>-name" ><%= @ground.send(options)[@ground.editor[option]] %></b></a>
 
 <ul id=<%= options %> data-dropdown-content class="f-dropdown">
-  
+
   <% @ground.send(options).each do |code, label| %>
-    
+
     <li>
-    
+
     <%= link_to(label,
                 grounds_switch_option_path(option: "#{option}", value: code),
                 data: { "#{option}" => code },
                 class: "#{option}-link", method: :put, remote: true) %>
-              
+
     </li>
 
   <% end %>

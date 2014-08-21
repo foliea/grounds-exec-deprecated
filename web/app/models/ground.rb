@@ -11,11 +11,11 @@ class Ground
       send("#{name}=", value)
     end
   end
-  
+
   def persisted?
     storage.exists(id)
   end
-  
+
   def save
     return if persisted?
 
@@ -39,9 +39,9 @@ class Ground
  end
 
   def self.from_storage(id)
-    ground = new(storage.hgetall(id))
-    ground.id = id
-    ground
+    attributes = storage.hgetall(id)
+    raise ActiveRecord::RecordNotFound if attributes.empty?
+    ground = new(attributes.merge({ id: id }))
   end
 
   def to_h
@@ -53,7 +53,7 @@ class Ground
   def self.storage
     $redis
   end
-    
+
   def storage
     self.class.storage
   end

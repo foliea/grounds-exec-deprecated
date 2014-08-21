@@ -22,7 +22,7 @@ $ground-link-color: #4183c4;
   border-radius: 3px 3px 0 0;
   padding: rem-calc(10) rem-calc(10);
   @include ground-border(left top right);
-  
+
   .button {
     margin: 0rem;
     background-color: $ground-primary-light-color;
@@ -98,18 +98,6 @@ $ground-link-color: #4183c4;
 a {
   @extend a;
   color: $ground-link-color;
-}
-
-figure { 
-  display: table;
-  text-align: center;
-}
-
-figcaption {
-  margin-top: rem-calc(15);
-  display: table-caption;
-  caption-side: bottom;
-  color: $ground-font-color;
 }
 
 .img-circle {
