@@ -100,11 +100,12 @@ a {
   color: $ground-link-color;
 }
 
-.img-circle {
+h1, h2, h3, h4, h5, h6 {
+  color: $ground-font-color;
+}
+
+.circle-img {
   border-radius: 50%;
+  box-shadow: 0 0 0 1px $ground-border-color;
   @include ground-border($width: 5px, $color: $ground-primary-color);
-  &:before {
-    content: '';
-    @include ground-border($width: 5px);
-  }
 }
