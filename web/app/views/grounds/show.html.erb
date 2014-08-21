@@ -19,7 +19,7 @@
 
     <%= button_tag(type: 'button', id: :share, class: 'tiny ground-button radius') do
       content_tag(:strong, fa_icon('share', text: t('editor.share')))
-      end %>
+    end %>
 
   </div>
 
@@ -28,9 +28,9 @@
 <%= content_tag(:div, @ground.code, id: :ground_editor, class: 'row fullwidth ground-editor', data: @ground.editor) %>
 
 <div class="row fullwidth top-buffer">
-  
+
   <input type="text" id="sharedURL">
-  
+
 </div>
 
 <div class="row fullwidth ground-panel">
@@ -51,9 +51,8 @@
 
 <div class="row fullwidth top-buffer">
 
-  <%= button_tag(type: 'button', id: :back, class: 'small ground-button radius') do
+  <%= button_tag(type: 'button', id: :back, class: 'tiny ground-button radius') do
     content_tag(:strong, fa_icon('long-arrow-up', text: t('editor.back')))
   end %>
 
 </div>
-

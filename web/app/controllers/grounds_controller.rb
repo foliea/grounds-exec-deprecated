@@ -14,12 +14,14 @@ class GroundsController < ApplicationController
   def share
     @ground = Ground.new(ground_params)
     @ground.save
-    if !@ground.persisted?
-      return render json: { status: :service_unavailable }
+
+    if @ground.persisted?
+      render json: { status: :ok, shared_url: grounds_shared_url(@ground.id) }
+    else
+      render json: { status: :service_unavailable }
     end
-    render json: { status: :ok, shared_url: grounds_shared_url(@ground.id) }
   end
-  
+
   def switch_option
     option, value = params[:option], params[:value]
     if option.present? && value.present? && GroundEditor.has_option?(option, value)

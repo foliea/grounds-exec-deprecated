@@ -22,7 +22,7 @@ $ground-link-color: #4183c4;
   border-radius: 3px 3px 0 0;
   padding: rem-calc(10) rem-calc(10);
   @include ground-border(left top right);
-  
+
   .button {
     margin: 0rem;
     background-color: $ground-primary-light-color;
@@ -100,23 +100,12 @@ a {
   color: $ground-link-color;
 }
 
-figure { 
-  display: table;
-  text-align: center;
-}
-
-figcaption {
-  margin-top: rem-calc(15);
-  display: table-caption;
-  caption-side: bottom;
+h1, h2, h3, h4, h5, h6 {
   color: $ground-font-color;
 }
 
-.img-circle {
+.circle-img {
   border-radius: 50%;
+  box-shadow: 0 0 0 1px $ground-border-color;
   @include ground-border($width: 5px, $color: $ground-primary-color);
-  &:before {
-    content: '';
-    @include ground-border($width: 5px);
-  }
 }
