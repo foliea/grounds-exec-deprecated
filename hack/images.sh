@@ -2,7 +2,10 @@
 
 set -e
 
-REPOSITORY="grounds"
+# Set default docker repository if none exist in env
+if [ -z $REPOSITORY ]; then
+  REPOSITORY="grounds"
+fi
 
 get_images_dirs() {
   echo $(find dockerfiles -maxdepth 1 -type d | grep dockerfiles/)
@@ -27,7 +30,7 @@ pull() {
   docker pull $(get_image_name $1)
 }
 
-main() {
+images() {
   # If first parameter from CLI is missing or empty
   if [ -z $1 ]; then
     echo "usage: [build|push|pull]"
@@ -40,4 +43,4 @@ main() {
   done
 }
 
-main $1
+images $1
