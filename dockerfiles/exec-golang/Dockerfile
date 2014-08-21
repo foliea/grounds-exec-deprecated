@@ -1,7 +1,11 @@
 FROM google/golang:latest
 
-COPY run.sh gopath/run.sh
+COPY run.sh /gopath/run.sh
 
-WORKDIR gopath
+RUN useradd dev
+RUN chown -R dev: /gopath
+
+WORKDIR /gopath
+USER dev
 
 ENTRYPOINT ["/gopath/run.sh"]

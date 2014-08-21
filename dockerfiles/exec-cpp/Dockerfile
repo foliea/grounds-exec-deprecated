@@ -6,8 +6,12 @@ RUN apt-get -qy install \
     build-essential \
     gcc
 
-COPY run.sh cpp/run.sh
+COPY run.sh /home/dev/run.sh
 
-WORKDIR cpp
+RUN useradd dev
+RUN chown -R dev: /home/dev
 
-ENTRYPOINT ["/cpp/run.sh"]
+WORKDIR /home/dev
+USER dev
+
+ENTRYPOINT ["/home/dev/run.sh"]

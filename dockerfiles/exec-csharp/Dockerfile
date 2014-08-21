@@ -5,8 +5,12 @@ RUN apt-get update -qq
 RUN apt-get -qy install \
     mono-mcs
 
-COPY run.sh csharp/run.sh
+COPY run.sh /home/dev/run.sh
 
-WORKDIR csharp
+RUN useradd dev
+RUN chown -R dev: /home/dev
 
-ENTRYPOINT ["/csharp/run.sh"]
+WORKDIR /home/dev
+USER dev
+
+ENTRYPOINT ["/home/dev/run.sh"]

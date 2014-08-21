@@ -7,8 +7,12 @@ RUN apt-get install -qy \
     python-pip \ 
     python-dev
 
-COPY run.sh python/run.sh
+COPY run.sh /home/dev/run.sh
 
-WORKDIR python
+RUN useradd dev
+RUN chown -R dev: /home/dev
 
-ENTRYPOINT ["/python/run.sh"]
+WORKDIR /home/dev
+USER dev
+
+ENTRYPOINT ["/home/dev/run.sh"]
