@@ -1,23 +1,27 @@
-<nav class="ground-top-bar" data-topbar>
+<div class="fixed">
 
-  <ul class="title-area">
+  <nav class="ground-top-bar" data-topbar>
 
-    <li class="name">
+    <ul class="title-area">
 
-      <h1><%= link_to(fa_icon('code', text: t('site.title')), root_url) %></h1>
+      <li class="name">
 
-    </li>
+        <h1><%= link_to(fa_icon('code', text: t('site.title')), root_url) %></h1>
 
-  </ul>
-
-  <section class="top-bar-section">
-
-    <ul class="left">
-
-      <li><%= link_to(t('site.about'), page_path('about')) %></li>
+      </li>
 
     </ul>
 
-  </section>
+    <section class="top-bar-section">
 
-</nav>
+      <ul class="left">
+
+        <li><%= link_to(t('site.about'), page_path('about')) %></li>
+
+      </ul>
+
+    </section>
+
+  </nav>
+
+</div>
