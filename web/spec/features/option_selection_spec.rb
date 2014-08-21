@@ -2,6 +2,9 @@ require 'spec_helper'
 require 'capybara/rails'
 
 describe 'option selection in ground editor', type: :feature do
+  before(:each) do
+    visit('/')
+  end
 
   it 'saves selected language in session' do
     value = 'golang'
@@ -22,9 +25,7 @@ describe 'option selection in ground editor', type: :feature do
   end
 
   def switch_option(option, value)
-    visit('/')
     find("a[data-#{option}=#{value}]").click
-
     page.get_rack_session_key(option)
   end
 end
