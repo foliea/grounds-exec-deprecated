@@ -1,4 +1,4 @@
-## Images
+# Images
 
 Images are referring to `docker` images used to execute code inside a `docker` container.
 
@@ -13,8 +13,8 @@ dockerfiles
 │
 │
 └───exec-golang
-│   │   Dockerfile
-│   │   run.sh
+    │   Dockerfile
+    │   run.sh
 ```
 
 Each image has a directory called `exec-$language`.
@@ -24,7 +24,7 @@ Inside this directory there is two files:
 - A shell script `run.sh` that must be copied inside the image.
 
 
-Images are built has an executable docker image. This allow us to do:
+Images are built has an executable `docker` image. This allow us to do:
 
     $ docker run grounds/exec-ruby "puts 42"
     42
@@ -75,7 +75,7 @@ Add:
 
     ENTRYPOINT ["/home/dev/run.sh"]
 
-When you run a container with this image with `docker`:
+When you run a `docker` container with this image:
 - The default `pwd` of the container will be `/home/dev`.
 - The user of the container will be `dev`
 - The container will run `run.sh` with parameters received from the CLI.
@@ -98,4 +98,9 @@ Compile and/or run the program:
     then
       ./prog
     fi
+    
+### Build the image
 
+Use `docker` to build the image like you usually do:
+
+    $ docker build -t grounds/exec-c dockerfiles/exec-c
