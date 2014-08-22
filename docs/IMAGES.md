@@ -86,9 +86,11 @@ First make it a shell script:
 
     #!/bin/sh
 
-Copy first parameter inside a file runnable by the language compiler/interpreter:
+Echo first parameter from CLI to a file runnable by the language compiler/interpreter:
 
     echo "$1" > prog.c
+    
+Please don't forget to surround `$1` with quotation marks, to avoid unexpected behaviors.
     
 Compile and/or run the program:
 
