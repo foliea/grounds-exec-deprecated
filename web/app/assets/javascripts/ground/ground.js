@@ -11,23 +11,7 @@ function Ground(editor, language, theme, indent, client) {
   this.setIndent();
 
   this.bindEvents();
-
-  this.editor.commands.addCommand({
-    name: 'Run',
-    bindKey: {win: 'Ctrl-K',  mac: 'Command-K'},
-    exec: function(editor) {
-        $("#run").click();
-    },
-    readOnly: false
-  });
-  this.editor.commands.addCommand({
-    name: 'Back to editor',
-    bindKey: {win: 'Ctrl-J',  mac: 'Command-J'},
-    exec: function(editor) {
-        $("#back").click();
-    },
-    readOnly: false
-  });
+  this.bindCommands();
 }
 
 Ground.prototype.initEditor = function() {
@@ -129,5 +113,32 @@ Ground.prototype.bindEvents = function() {
   // Hide shared url if code is modified
   that.editor.on('input', function() {
     $("#sharedURL").hide();
+  });
+};
+
+Ground.prototype.bindCommands = function() {
+	this.editor.commands.addCommand({
+    name: 'Run',
+    bindKey: {win: 'Ctrl-K',  mac: 'Command-K'},
+    exec: function(editor) {
+        $("#run").click();
+    },
+    readOnly: false
+  });
+  this.editor.commands.addCommand({
+    name: 'Back to editor',
+    bindKey: {win: 'Ctrl-J',  mac: 'Command-J'},
+    exec: function(editor) {
+        $("#back").click();
+    },
+    readOnly: false
+  });
+  this.editor.commands.addCommand({
+    name: 'Share',
+    bindKey: {win: 'Ctrl-H',  mac: 'Command-H'},
+    exec: function(editor) {
+        $("#share").click();
+    },
+    readOnly: false
   });
 };

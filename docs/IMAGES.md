@@ -103,6 +103,6 @@ Compile and/or run the program:
     
 ### Build the image
 
-Use `docker` to build the image like you usually do:
+Build the image like you usually do with `docker`:
 
     $ docker build -t grounds/exec-c dockerfiles/exec-c

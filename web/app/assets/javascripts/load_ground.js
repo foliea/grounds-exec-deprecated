@@ -10,11 +10,8 @@ var loadGround = function() {
   var language = $groundEditor.data("language");
   var indent = $groundEditor.data("indent");
   var run_endpoint = "ws://" + $groundEditor.data("run-endpoint");
- 
-  // Create ground
-  var client = new Client(run_endpoint);
 
-  // FIXME: WEBSOCKET non existent
+  var client = new Client(run_endpoint);
   var ground = new Ground(editor, language, theme, indent, client);
 };
 

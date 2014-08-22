@@ -1,5 +1,3 @@
-// FIXME: Do something if connection to websockets is impossible
-// FIXME: readyState3
 function Client(endpoint) {
   this.endpoint = endpoint;
   this.socket = null;
@@ -13,7 +11,24 @@ Client.prototype.connect = function() {
   this.socket = new WebSocket(this.endpoint);
   this.bindEvents();
   return true
-}
+};
+
+// FIXME: stop connection attempt if 10 fails
+Client.prototype.send = function(data) {
+  if (this.socket === null) {
+    var ok = this.connect();
+  if (!ok) return;
+  }
+  var that = this;
+  setTimeout(function(){
+    if (that.socket !== null && that.socket.readyState === 1) {
+      that.socket.send(data);
+      return;
+    } else {
+      that.send(data);
+    }
+  }, 1);
+};
 
 Client.prototype.bindEvents = function() {
   this.socket.onmessage = function(event) {
@@ -35,21 +50,4 @@ Client.prototype.bindEvents = function() {
   this.socket.onclose = function() {
     that.socket = null;
   };
-}
-
-// FIXME: stop connection attempt if 10 fails
-Client.prototype.send = function(data) {
-  if (this.socket === null) {
-    var ok = this.connect();
-  if (!ok) return;
-  }
-  var that = this;
-  setTimeout(function(){
-    if (that.socket !== null && that.socket.readyState === 1) {
-      that.socket.send(data);
-      return;
-    } else {
-      that.send(data);
-    }
-  }, 1);
 };
