@@ -2,10 +2,6 @@ require 'spec_helper'
 require 'mock_redis'
 
 describe Ground do
-  before(:each) do
-    $redis = MockRedis.new
-  end
-
   let(:storage) { $redis }
   let(:ground) { FactoryGirl.build(:ground) }
 
