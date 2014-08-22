@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+
 set -e
 
 if [ ! "$GOPATH" ]; then
@@ -6,11 +7,13 @@ if [ ! "$GOPATH" ]; then
 	exit 1
 fi
 
-echo "Testing runner..."
-gom test -cover ./pkg/runner
+get_pkg_dirs() {
+	echo $(find pkg -maxdepth 1 -type d | grep pkg/)
+}
 
-echo "Testing handler..."
-gom test -cover ./pkg/handler
+# For every pkg
+for dir in $(get_pkg_dirs); do
+	echo "Testing: $dir"
+	gom test -cover "./$dir"
+done
 
-echo "Testing utils..."
-gom test -cover ./pkg/utils

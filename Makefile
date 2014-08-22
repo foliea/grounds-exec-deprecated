@@ -1,30 +1,30 @@
-.PHONY: binary build-server build-web test test-unit test-web images images-push images-pull
+.PHONY: binary build-go build-web test test-unit test-web images images-push images-pull
 
 binary:
 	hack/binary.sh
 
-build-server:
-	hack/build.sh server
+build-go:
+	hack/make.sh build go
 
 build-web:
-	hack/build.sh web
+	hack/make.sh build web
 
 test:
-	hack/test.sh all
+	hack/make.sh test all
 
 test-unit: build-server
-	hack/test.sh unit
+	hack/make.sh test unit
 
 test-web: build-web
-	hack/test.sh web
+	hack/make.sh test web
 
 images:
-	hack/images.sh build
+	hack/make.sh images build
 
 images-push: images
-	hack/images.sh push
+	hack/make.sh images push
 
 images-pull:
-	hack/images.sh pull
+	hack/make.sh images pull
 
 

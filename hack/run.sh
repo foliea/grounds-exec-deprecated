@@ -2,4 +2,5 @@
 set -e
 
 sh hack/binary.sh
-bin/groundsock $1
+
+bin/groundsock "$@"
