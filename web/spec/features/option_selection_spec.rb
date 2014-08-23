@@ -7,7 +7,7 @@ describe 'option selection in ground editor', type: :feature do
   end
 
   it 'saves selected language in session' do
-    value = 'golang'
+    value = 'ruby'
     language = switch_option('language', value)
     expect(language).to eq(value)
   end

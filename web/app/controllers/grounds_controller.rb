@@ -16,7 +16,7 @@ class GroundsController < ApplicationController
     @ground.save
 
     if @ground.persisted?
-      render json: { status: :ok, shared_url: grounds_shared_url(@ground.id) }
+      render json: { status: :ok, shared_url: ground_shared_url(@ground.id) }
     else
       render json: { status: :service_unavailable }
     end

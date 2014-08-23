@@ -19,13 +19,24 @@ if [ -z $WEB_IMAGE ]; then
 	WEB_IMAGE="$REPOSITORY/web:$GIT_BRANCH"
 fi
 
+# Set default web port if none exist in env
+if [ -z $WEB_PORT ]; then
+	WEB_PORT="3000"
+fi
+
+# Set default web port if none exist in env
+if [ -z $WEBSOCKET_PORT ]; then
+	WEBSOCKET_PORT="8080"
+fi
+
 main() {
 	# If first parameter from CLI is missing or empty
 	if [ -z $1 ]; then
 		echo "usage: make [build|test|images]"
 		return
 	fi
-	REPOSITORY=$REPOSITORY GO_IMAGE=$GO_IMAGE WEB_IMAGE=$WEB_IMAGE \
+	REPOSITORY="$REPOSITORY" GO_IMAGE="$GO_IMAGE" WEB_IMAGE="$WEB_IMAGE" \
+  WEB_PORT="$WEB_PORT" WEBSOCKET_PORT="$WEBSOCKET_PORT" \
 	sh hack/make/"$1".sh "$2"
 }
 

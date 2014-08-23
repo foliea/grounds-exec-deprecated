@@ -1,4 +1,4 @@
-<%= form_for(Ground.new, url: grounds_share_path(@ground), remote: true) do |f| %>
+<%= form_for(@ground, url: ground_share_path(@ground), remote: true) do |f| %>
     <%= f.hidden_field :language, value: @ground.language %>
     <%= f.hidden_field :code, value: @ground.code %>
 <% end %>

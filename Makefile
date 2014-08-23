@@ -3,16 +3,17 @@
 binary:
 	hack/binary.sh
 
+build: build-go build-web
+
 build-go:
 	hack/make.sh build go
 
 build-web:
 	hack/make.sh build web
 
-test:
-	hack/make.sh test all
+test: test-unit test-web
 
-test-unit: build-server
+test-unit: build-go
 	hack/make.sh test unit
 
 test-web: build-web

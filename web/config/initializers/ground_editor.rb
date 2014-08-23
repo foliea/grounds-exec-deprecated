@@ -30,11 +30,14 @@ module GroundEditor
   end
 
   def options(option)
-    send("__#{option.to_s.pluralize(2)}__")
+    method = "__#{option.to_s.pluralize(2)}__"
+    send(method) if respond_to?(method)
   end
 
   def has_option?(option, code)
-    options(option).has_key?(code)
+    options = options(option)
+    return false if options.nil?
+    options.has_key?(code)
   end
 
   private

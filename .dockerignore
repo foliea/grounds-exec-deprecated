@@ -3,5 +3,9 @@ README.md
 LICENSE
 dockerfiles
 docs
+hack/make
+hack/make.sh
 web
+Makefile
+
 
