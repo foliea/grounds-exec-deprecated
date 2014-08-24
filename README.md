@@ -12,7 +12,7 @@ This project is made with three major parts:
 
 ## Web application
 
-The web application is written in `Ruby` with the web framework `Ruby on Rails`.
+The web application is written in `Ruby` with the awesome framework `Ruby on Rails`.
 
 ## Websocket application
 
