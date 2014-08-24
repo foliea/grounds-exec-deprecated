@@ -2,7 +2,7 @@
 
 To hack on `Grounds`, all you need is `git`, `make`, `docker` and your favorite text editor.
 
-You can run the tests or the whole stack inside `docker` containers, with the same environment
+You can run tests and even the whole stack inside `docker` containers, with the same environment
 used in production.
 
 If you prefer to hack on your local environment, there is also instructions to install all
@@ -19,7 +19,7 @@ to install it on your platform.
 
 ### Websocket Application
 
-To build websocket `docker` image:
+To build the websocket `docker` image:
 
     $ make build go
 
@@ -83,6 +83,6 @@ Then:
 
     $ bundle exec rails s
 
-#### Run the tests
+#### Run tests
 
     $ bundle exec rspec
