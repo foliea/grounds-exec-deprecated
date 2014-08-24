@@ -20,8 +20,7 @@ Run the full test suite on your branch before submitting a pull request:
 
 Write clean code. Universally formatted code promotes ease of writing, reading, and maintenance.
 
-If you hacking on go code, always run `gofmt -s -w file.go` on each changed file before committing your changes.
-Most editors have plug-ins that do this automatically.
+If you are hacking on `Grounds` go packages, always run `gofmt -s -w file.go` on each changed file before committing your changes. Most editors have plug-ins that do this automatically.
 
 Pull requests descriptions should be as clear as possible and include a reference to all the issues that they address.
 
