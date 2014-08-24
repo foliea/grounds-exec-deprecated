@@ -23,9 +23,9 @@ class GroundsController < ApplicationController
   end
 
   def switch_option
-    option, value = params[:option], params[:value]
-    if option.present? && value.present? && GroundEditor.has_option?(option, value)
-      session[option] = value
+    option, code = params[:option], params[:code]
+    if option.present? && code.present? && GroundEditor.has_option?(option, code)
+      session[option] = code
     end
     render json: { status: :ok }
   end
@@ -33,6 +33,6 @@ class GroundsController < ApplicationController
   private
 
   def ground_params
-    params.require(:ground)
+    params.require(:ground).permit(:language, :code)
   end
 end

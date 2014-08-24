@@ -3,29 +3,29 @@ require 'capybara/rails'
 
 describe 'option selection in ground editor', type: :feature do
   before(:each) do
-    visit('/')
+    visit(ground_show_path)
   end
 
   it 'saves selected language in session' do
-    value = 'ruby'
-    language = switch_option('language', value)
-    expect(language).to eq(value)
+    expect_option_in_session('language', 'ruby')
   end
 
   it 'saves selected theme in session' do
-    value = 'monokai'
-    theme = switch_option('theme', value)
-    expect(theme).to eq(value)
+    expect_option_in_session('theme', 'monokai')
   end
 
   it 'saves selected indent in session' do
-    value = 'tab'
-    indent = switch_option('indent', value)
-    expect(indent).to eq(value)
+    expect_option_in_session('indent', 'tab')
   end
 
-  def switch_option(option, value)
-    find("a[data-#{option}=#{value}]").click
-    page.get_rack_session_key(option)
+  def expect_option_in_session(option, code)
+    select_option(option, code)
+
+    session_option = page.get_rack_session_key(option)
+    expect(session_option).to eq(code)
+  end
+
+  def select_option(option, code)
+    find("a[data-#{option}=#{code}]").click
   end
 end
