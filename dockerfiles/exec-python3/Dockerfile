@@ -1,8 +1,7 @@
 FROM ubuntu:14.04
 
-RUN apt-get update -qq
-
-RUN apt-get install -qy \
+RUN apt-get update -qq && \
+    apt-get install -qy \
     python \
     python-pip \ 
     python-dev

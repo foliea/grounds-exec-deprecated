@@ -1,8 +1,8 @@
 FROM ubuntu:14.04
 
 # Install dependencies.
-RUN apt-get update -qq
-RUN apt-get -qy install \
+RUN apt-get update -qq && \
+    apt-get -qy install \
     git-core \
     curl \
     zlib1g-dev \
@@ -16,7 +16,8 @@ RUN apt-get -qy install \
     libxslt1-dev \
     libcurl4-openssl-dev \
     python-software-properties \
-    nodejs
+    nodejs \
+    libqt4-dev
 
 # Install ruby-2.1.2.
 RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \

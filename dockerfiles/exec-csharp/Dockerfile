@@ -1,8 +1,7 @@
 FROM ubuntu:14.04
 
-RUN apt-get update -qq
-
-RUN apt-get -qy install \
+RUN apt-get update -qq && \
+    apt-get -qy install \
     mono-mcs
 
 COPY run.sh /home/dev/run.sh
