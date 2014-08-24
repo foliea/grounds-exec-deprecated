@@ -16,7 +16,7 @@ The web application is written in `Ruby` with the web framework `Ruby on Rails`.
 
 ## Websocket application
 
-The web application is written in `Go`.
+The websocket server application is written in `Go`.
 
 ## Docker images
 
