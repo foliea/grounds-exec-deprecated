@@ -1,5 +1,8 @@
 # </\> Grounds
 
+[ ![Codeship Status for folieadrien/grounds](https://codeship.io/projects/19c7a0d0-f6e9-0131-f838-6aed31f6fcc8/status?branch=master)]
+(https://codeship.io/projects/28538)
+
 This the official repository of the `Grounds` project.
 
 `Grounds` is a web application that compiles and executes arbitrary code and returns the program output.

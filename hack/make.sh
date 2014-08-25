@@ -2,9 +2,7 @@
 
 set -e
 
-if [ -z $GIT_BRANCH ]; then
-	GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-fi
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
 # Set default docker repository if none exist in env
 if [ -z $REPOSITORY ]; then
