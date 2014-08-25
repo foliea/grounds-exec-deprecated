@@ -1,11 +1,14 @@
 machine:
   services:
     - docker
-    
+
 dependencies:
   override:
     - docker info
-    
+    - make build-go
+    - make build-web
+
 test:
   override:
-    - make test
+    - make test-unit
+    - make test-web
