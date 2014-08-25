@@ -8,5 +8,5 @@ task :run => :environment do
 end
 
 task :test => :environment do
-  sh 'bundle exec rspec'
+  sh 'xvfb-run bundle exec rspec'
 end

@@ -17,7 +17,8 @@ RUN apt-get update -qq && \
     libcurl4-openssl-dev \
     python-software-properties \
     nodejs \
-    libqt4-dev
+    libqt4-dev \
+    xvfb
 
 # Install ruby-2.1.2.
 RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \
@@ -39,6 +40,10 @@ COPY Gemfile.lock rails/Gemfile.lock
 
 # Install ruby gems.
 RUN cd rails && bundle install
+
+# Using xvfb to emulate a X server
+# (required by capybara-webkit)
+ENV DISPLAY localhost:1.0
 
 # Everything up to here was cached. This includes
 # the bundle install, unless the Gemfiles changed.
