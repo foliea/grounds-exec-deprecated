@@ -8,7 +8,7 @@ describe 'footer', type: :feature do
 
   it 'has a link to about page' do
     path = '/about'
-    visit_footer_link(path)
+    click_footer_link(path)
     expect(current_path).to eq(path)
   end
 
@@ -22,7 +22,7 @@ describe 'footer', type: :feature do
     end
   end
 
-  def visit_footer_link(path)
+  def click_footer_link(path)
     within(:css, 'footer') do
       find("a[href=\"#{path}\"]").click
     end
