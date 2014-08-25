@@ -4,12 +4,12 @@ set -e
 
 # Run unit tests inside a docker container
 unit() {
-	docker run "$GO_IMAGE" ./hack/test-unit.sh
+	docker run --rm "$GO_IMAGE" ./hack/test-unit.sh
 }
 
 # Run web tests inside a docker container
 web() {
-	docker run -e "RAILS_ENV=test" "$WEB_IMAGE" rake test
+	docker run --rm -e "RAILS_ENV=test" "$WEB_IMAGE" rake test
 }
 
 test() {
