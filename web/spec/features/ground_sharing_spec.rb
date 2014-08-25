@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'capybara/rails'
 
 describe 'ground sharing' do
   let(:storage) { $redis }

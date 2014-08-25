@@ -4,31 +4,42 @@ function Client(endpoint) {
 }
 
 Client.prototype.connect = function() {
-  if (!window.WebSocket) {
-    $("#error").show();
-    return false
-  }
+  if (!window.WebSocket) return false;
   this.socket = new WebSocket(this.endpoint);
   this.bindEvents();
   return true
 };
 
-// FIXME: stop connection attempt if 10 fails
 Client.prototype.send = function(data) {
   if (this.socket === null) {
     var ok = this.connect();
-  if (!ok) return;
+    if (!ok) {
+      $("#error").show();
+      return;
+    }
   }
+  this.write(data);
+};
+
+Client.prototype.write = function(data) {
   var that = this;
   setTimeout(function(){
-    if (that.socket !== null && that.socket.readyState === 1) {
-      that.socket.send(data);
+    if (that.socket === null) {
+      $("#error").show();
       return;
-    } else {
-      that.send(data);
+    }
+    switch (that.socket.readyState) {
+      // CONNECTING
+      case 0:
+        that.write(data);
+        break;
+      // OPEN
+      case 1:
+        that.socket.send(data);
+        break;
     }
   }, 1);
-};
+}
 
 Client.prototype.bindEvents = function() {
   this.socket.onmessage = function(event) {
@@ -49,5 +60,9 @@ Client.prototype.bindEvents = function() {
   var that = this;
   this.socket.onclose = function() {
     that.socket = null;
+  };
+  // Handle any errors that occur.
+  this.socket.onerror = function(error) {
+    console.log('WebSocket Error: ' + error);
   };
 };

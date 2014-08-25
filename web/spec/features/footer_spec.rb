@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'capybara/rails'
 
 describe 'footer', type: :feature do
   before(:each) do

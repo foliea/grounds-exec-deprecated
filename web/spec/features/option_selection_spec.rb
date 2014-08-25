@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'capybara/rails'
 
 describe 'option selection in ground editor', type: :feature do
   let(:options) { FactoryGirl.build(:options) }
