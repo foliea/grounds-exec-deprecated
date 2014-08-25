@@ -2,7 +2,9 @@
 
 set -e
 
-GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+if [ -z $GIT_BRANCH ]; then
+	GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+fi
 
 # Set default docker repository if none exist in env
 if [ -z $REPOSITORY ]; then
@@ -36,7 +38,7 @@ main() {
 		return
 	fi
 	REPOSITORY="$REPOSITORY" GO_IMAGE="$GO_IMAGE" WEB_IMAGE="$WEB_IMAGE" \
-  	WEB_PORT="$WEB_PORT" WEBSOCKET_PORT="$WEBSOCKET_PORT" \
+	WEB_PORT="$WEB_PORT" WEBSOCKET_PORT="$WEBSOCKET_PORT" \
 	sh hack/make/"$1".sh "$2"
 }
 
