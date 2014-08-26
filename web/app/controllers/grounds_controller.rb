@@ -6,7 +6,7 @@ class GroundsController < ApplicationController
   end
 
   def shared
-    ground = Ground.from_storage(params[:id])
+    ground = Ground.from_storage!(params[:id])
     @ground = GroundDecorator.new(ground, view_context)
     render 'show'
   end

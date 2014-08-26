@@ -15,7 +15,7 @@ describe Ground do
     expect(ground.generate_key).to eq(expected)
   end
 
-  context 'when ground is saved' do
+  context 'when ground is already saved' do
     before(:each) do
       ground.save
     end
@@ -38,7 +38,7 @@ describe Ground do
     end
 
     it 'can be retrieve from storage' do
-      expected = Ground.from_storage(ground.id)
+      expected = Ground.from_storage!(ground.id)
       expect(ground.to_h).to eq(expected.to_h)
     end
 
@@ -58,7 +58,7 @@ describe Ground do
     end
 
     it "can't be retrieve from storage" do
-      expect { Ground.from_storage(ground.id) }.to raise_error
+      expect { Ground.from_storage!(ground.id) }.to raise_error
     end
   end
 end
