@@ -1,0 +1,3 @@
+image: busybox
+script:
+  - make test-go

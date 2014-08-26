@@ -82,4 +82,10 @@ Then:
 
 #### Run tests
 
+You need to install first PhantomJS to run integration tests.
+Please checkout the official
+[documentation](http://phantomjs.org/download.html)
+
+Then:
+
     $ bundle exec rspec
