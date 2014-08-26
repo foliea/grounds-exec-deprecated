@@ -1,6 +1,9 @@
-<%= form_for(@ground, url: ground_share_path(@ground), remote: true) do |f| %>
+<%= form_for(Ground.new, url: ground_share_path, remote: true) do |f| %>
+
     <%= f.hidden_field :language, value: @ground.language %>
+
     <%= f.hidden_field :code, value: @ground.code %>
+
 <% end %>
 
 <div class="row top-buffer fullwidth ground-editor-header">

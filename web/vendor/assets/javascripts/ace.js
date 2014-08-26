@@ -1,0 +1,10 @@
+//= require ace/ace
+//= require ace/mode-ruby
+//= require ace/mode-golang
+//= require ace/mode-python
+//= require ace/mode-c_cpp
+//= require ace/mode-csharp
+//= require ace/theme-tomorrow_night
+//= require ace/theme-textmate
+//= require ace/theme-monokai
+//= require ace/theme-github

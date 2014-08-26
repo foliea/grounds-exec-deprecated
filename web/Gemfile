@@ -32,7 +32,7 @@ group :test do
   gem 'rack_session_access'
   gem 'mock_redis'
   gem 'capybara'
-  gem 'capybara-webkit'
+  gem 'poltergeist'
 end
 
 group :production do

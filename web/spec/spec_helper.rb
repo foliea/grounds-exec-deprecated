@@ -2,7 +2,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'capybara/rails'
-require 'capybara/webkit/matchers'
+require 'capybara/poltergeist'
 require 'rack_session_access/capybara'
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
@@ -12,8 +12,6 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 # ActiveRecord::Migration.maintain_test_schema!
 
 $redis = MockRedis.new
-
-Capybara.javascript_driver = :webkit
 
 RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
@@ -25,8 +23,15 @@ RSpec.configure do |config|
   config.include(FactoryGirl::Syntax::Methods)
 
   config.infer_spec_type_from_file_location!
-  
-  config.include(Capybara::Webkit::RspecMatchers, type: :feature)
+
+  config.include(GroundExpectations)
 end
 
+Capybara.register_driver :poltergeist do |app|
+    options = {
+      js_errors: true,
+    }
+    Capybara::Poltergeist::Driver.new(app, options)
+end
 
+Capybara.javascript_driver = :poltergeist

@@ -2,6 +2,5 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require foundation
-//= require ace/ace
-
+//= require ace
 // ADD THEMES and modes for ace

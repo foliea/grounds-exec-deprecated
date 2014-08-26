@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'header', type: :feature do
+describe 'header' do
   before(:each) do
     visit('/')
   end

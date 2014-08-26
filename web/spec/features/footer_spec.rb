@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'footer', type: :feature do
+describe 'footer' do
   before(:each) do
     visit('/')
   end

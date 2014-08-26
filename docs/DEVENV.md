@@ -65,9 +65,6 @@ Install go package dependencies:
 
 First, you need ruby-2.1.2, and `bundle`.
 
-You also need `capybara-webkit`, to install it on your platform, checkout the official
-[documentation](https://github.com/thoughtbot/capybara-webkit/wiki/Installing-Qt-and-compiling-capybara-webkit).
-
 Install ruby gem dependencies:
 
     $ bundle install

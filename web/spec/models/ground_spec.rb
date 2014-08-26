@@ -11,7 +11,7 @@ describe Ground do
   end
 
   it 'generates a key' do
-    expected = 'e5b71bb74c1854f3f264c5332836179e860f14651e8878e6ffc29780596bb221'
+    expected = '8aa8697c05f23db0083eb2114f83be44e8801929dbf78fb8d25b0f057a423fad'
     expect(ground.generate_key).to eq(expected)
   end
 
