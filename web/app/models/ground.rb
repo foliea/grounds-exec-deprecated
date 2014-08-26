@@ -36,7 +36,7 @@ class Ground
       key << "::#{field}:#{value.to_json}"
     end
     Digest::SHA256.hexdigest(key)
- end
+  end
 
   def self.from_storage!(id)
     attributes = storage.hgetall(id)
@@ -57,4 +57,4 @@ class Ground
   def storage
     self.class.storage
   end
- end
+end

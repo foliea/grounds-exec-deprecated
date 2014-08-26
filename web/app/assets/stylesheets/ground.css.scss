@@ -7,6 +7,7 @@ $ground-error-color: #c60f13;
 $ground-border-color: #DDD;
 $ground-font-color: #333;
 $ground-link-color: #4183c4;
+$ground-link-hover-color: adjust-color($ground-link-color, $lightness: -15%);
 
 .top-buffer    { margin-top:    $ground-buffer }
 .bottom-buffer { margin-bottom: $ground-buffer }
@@ -44,10 +45,15 @@ $ground-link-color: #4183c4;
   @include ground-border;
 }
 
+.contain-to-grid {
+  @extend .contain-to-grid;
+  background-color: $ground-primary-color;
+  @include ground-border(bottom);
+}
+
 .ground-top-bar {
   @extend .top-bar;
   background-color: $ground-primary-color;
-  @include ground-border(bottom);
   padding-bottom: 1px;
 
   .name h1 a {
@@ -55,7 +61,6 @@ $ground-link-color: #4183c4;
   }
 
   .top-bar-section li:not(.has-form) a:not(.button) {
-    @include ground-border(bottom);
     background-color: $ground-primary-color;
     color: $ground-font-color;
   }
@@ -91,13 +96,55 @@ $ground-link-color: #4183c4;
    max-width: initial;
 }
 
+$footer-height: rem-calc(150);; // Set to however many lines of text you want to have in your footer. Sorry, no dynamic option here.
+html, body { height: 100%; }
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto ($footer-height * -1);
+}
+#wrap > *:last-child {
+    padding-bottom: $footer-height;
+}
+#footer {
+    height: $footer-height;
+    background-color: $ground-primary-color;
+    @include ground-border(top);
+    @extend .top-buffer;
+}
+
 .footer-text {
   font-size: rem-calc(12);
+  color: $ground-font-color;
+}
+
+.inline-list {
+  position: relative;
+  overflow: visible;
+  float: left;
+  left: 50%;
+  
+  li {
+    position: relative;
+    right: 50%;
+  }
+}
+
+.icon-heart {
+  color: red;
 }
 
 a {
   @extend a;
-  color: $ground-link-color;
+  color: $ground-font-color;
+  
+  &:hover {
+    color: $ground-link-hover-color;
+  }
+  &:focus {
+    color: $ground-link-hover-color;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {

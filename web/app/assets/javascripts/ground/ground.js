@@ -82,7 +82,7 @@ Ground.prototype.bindEvents = function() {
 
     var code = that.editor.getValue();
     var language = that.language;
-    data = JSON.stringify({ language: language, code: code });
+    var data = JSON.stringify({ language: language, code: code });
     that.client.send(data);
   });
   // Share current snippet

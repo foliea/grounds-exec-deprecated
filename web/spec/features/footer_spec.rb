@@ -11,14 +11,12 @@ describe 'footer' do
     expect(current_path).to eq(path)
   end
 
-  context 'visit external urls' do
-    it 'has a link to contact project developers on github' do
-      expect_footer_external_url('https://www.github.com/folieadrien/grounds')
-    end
+  it 'has a link to contact project developers on github' do
+    expect_footer_external_url('https://github.com/folieadrien/grounds/issues/new')
+  end
 
-    it 'has a link to github project repository' do
-      expect_footer_external_url('https://github.com/folieadrien/grounds/issues/new')
-    end
+  it 'has a link to github project repository' do
+    expect_footer_external_url('https://github.com/folieadrien/grounds')
   end
 
   def click_footer_link(path)

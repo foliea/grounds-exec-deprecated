@@ -6,7 +6,7 @@
 
 <% end %>
 
-<div class="row top-buffer fullwidth ground-editor-header">
+<div class="row top-buffer ground-editor-header">
 
   <div class="large-12 column">
 
@@ -16,10 +16,6 @@
 
     <%= render 'option_dropdown', option: :indent %>
 
-    <%= button_tag(type: 'button', id: :run, class: 'tiny ground-button radius') do
-      content_tag(:strong, fa_icon('play', text: t('editor.run')))
-    end %>
-
     <%= button_tag(type: 'button', id: :share, class: 'tiny ground-button radius') do
       content_tag(:strong, fa_icon('share', text: t('editor.share')))
     end %>
@@ -28,15 +24,21 @@
 
 </div>
 
-<%= content_tag(:div, @ground.code, id: :ground_editor, class: 'row fullwidth ground-editor', data: @ground.editor) %>
+<%= content_tag(:div, @ground.code, id: :ground_editor, class: 'row ground-editor', data: @ground.editor) %>
 
-<div class="row fullwidth top-buffer">
+<div class="row top-buffer">
 
   <input name="sharedURL" type="text" id="sharedURL">
+  
+  <%= button_tag(type: 'button', id: :run, class: 'tiny ground-button radius') do
+    content_tag(:strong, fa_icon('play', text: t('editor.run')))
+  end %>
 
 </div>
 
-<div class="row fullwidth ground-panel">
+
+
+<div class="row ground-panel top-buffer">
 
   <div class="large-12 column">
 
@@ -52,7 +54,7 @@
 
 </div>
 
-<div class="row fullwidth top-buffer">
+<div class="row top-buffer">
 
   <%= button_tag(type: 'button', id: :back, class: 'tiny ground-button radius') do
     content_tag(:strong, fa_icon('long-arrow-up', text: t('editor.back')))

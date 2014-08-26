@@ -11,15 +11,27 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
     <%= csrf_meta_tag %>
   </head>
+
   <header>
+
     <%= render 'layouts/header' %>
+
   </header>
+
   <body>
-    <div class="column">
-      <%= yield %>
-    </div>
-    <footer>
+
+    <section id="wrap" role="document">
+
+      <div class="column">
+        <%= yield %>
+      </div>
+    </section>
+
+    <footer id="footer">
+
       <%= render 'layouts/footer' %>
+
     </footer>
+
   </body>
 </html>

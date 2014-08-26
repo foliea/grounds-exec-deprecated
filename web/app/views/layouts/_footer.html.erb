@@ -1,11 +1,15 @@
-<div class="column">
+<div class="footer-text top-buffer">
 
-  <hr>
+  <div class="row text-center">
   
-  <ul class="footer-text inline-list">
-
+    <p>MADE WITH <%= fa_icon('heart', class: 'icon-heart') %> IN PARIS</p>
+  
+  </div>
+  
+  <ul class="inline-list">
+  
     <li><%= t('site.copyright') %></li>
-
+  
     <li>
       <%= link_to('https://github.com/folieadrien/grounds/issues/new') do 
         content_tag(:span, fa_icon('envelope-o', text: t('site.contact')))
@@ -13,13 +17,13 @@
     </li>
     
     <li>
-      <%= link_to('https://www.github.com/folieadrien/grounds') do 
-        content_tag(:span, fa_icon('github', text: 'GitHub'))
+      <%= link_to('https://github.com/folieadrien/grounds') do 
+        content_tag(:span, fa_icon('github', text: t('site.sources')))
       end %>
     </li>
     
     <li><%= link_to(t('site.about'), page_path('about')) %></li>
     
   </ul>
-    
+
 </div>
