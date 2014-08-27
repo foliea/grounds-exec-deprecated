@@ -25,6 +25,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.include(GroundExpectations)
+  config.include(GroundControls)
 end
 
 Capybara.register_driver :poltergeist do |app|

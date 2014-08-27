@@ -3,6 +3,7 @@ class GroundDecorator < BaseDecorator
     {
       theme: h.session[:theme] ||= GroundEditor.default_option_code(:theme),
       indent: h.session[:indent] ||= GroundEditor.default_option_code(:indent),
+      keyboard: h.session[:keyboard] ||= GroundEditor.default_option_code(:keyboard),
       language: self.language,
       run_endpoint: WebSocket.run_endpoint
     }
@@ -18,6 +19,10 @@ class GroundDecorator < BaseDecorator
   
   def languages
     GroundEditor.options(:language)
+  end
+  
+  def keyboards
+    GroundEditor.options(:keyboard)
   end
 end
 

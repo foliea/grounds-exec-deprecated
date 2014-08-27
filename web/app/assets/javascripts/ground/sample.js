@@ -8,21 +8,19 @@ var samples = [
   ['csharp', 'csharp', 'using System;\r\n\r\nclass Program\r\n{\r\n\tstatic void Main(string[] args)\r\n\t{\r\n\t\tConsole.WriteLine("Hello world");\r\n\t}\r\n}']
 ]
 
-function GetTheme(language) {
-  for (i = 0; i < samples.length; i++) { 
-    if (samples[i][0] === language) {
-      return samples[i][1];
-    }
-  }
-  return '';
+function GetMode(language) {
+  return GetForLanguage(language, 1);
 }
 
 function GetSample(language) {
-  for (i = 0; i < samples.length; i++) { 
+  return GetForLanguage(language, 2);
+}
+
+function GetForLanguage(language, key) {
+  for (var i = 0; i < samples.length; i++) { 
     if (samples[i][0] === language) {
-      return samples[i][2];
+      return samples[i][key];
     }
   }
   return '';
 }
-

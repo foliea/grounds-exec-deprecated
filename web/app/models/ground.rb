@@ -6,6 +6,8 @@ class Ground
 
   attr_accessor :id, :language, :code
 
+  # validate presence of language?
+
   def initialize(attributes = {})
     attributes.each do |name, value|
       send("#{name}=", value)

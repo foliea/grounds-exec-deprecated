@@ -18,3 +18,8 @@ languages:
   c: 'C'
   cpp: 'C++'
   csharp: 'C#'
+  
+keyboards:
+  ace: 'Ace'
+  vim: 'Vim'
+  emacs: 'Emacs'

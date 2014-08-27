@@ -1,22 +1,28 @@
-function Ground(editor, language, theme, indent, client) {
+function Ground(editor, language, theme, indent, keyboard, client) {
   this.editor = editor;
   this.language = language;
   this.theme = theme;
   this.indent = indent;
+  this.keyboard = keyboard;
   this.client = client;
 
   this.initEditor();
   this.setLanguage();
   this.setTheme();
   this.setIndent();
+  this.setKeyboard();
 
   this.bindEvents();
-  this.bindCommands();
 }
 
 Ground.prototype.initEditor = function() {
   $("#sharedURL").hide();
-  this.editor.getSession().setUseWrapMode(true);
+
+  this.keybindings = {
+    ace: null, // use "default" keymapping
+    vim: "ace/keyboard/vim",
+    emacs: "ace/keyboard/emacs"
+  };
 };
 
 Ground.prototype.setCursor = function() {
@@ -26,7 +32,7 @@ Ground.prototype.setCursor = function() {
 };
 
 Ground.prototype.setLanguage = function() {
-  this.editor.getSession().setMode("ace/mode/" + GetTheme(this.language));
+  this.editor.getSession().setMode("ace/mode/" + GetMode(this.language));
   if (this.editor.getValue() === "")
     this.editor.setValue(GetSample(this.language));
   this.setCursor();
@@ -44,6 +50,10 @@ Ground.prototype.setIndent = function() {
     this.editor.getSession().setUseSoftTabs(true);
     this.editor.getSession().setTabSize(this.indent);
   }
+};
+
+Ground.prototype.setKeyboard = function() {
+  this.editor.setKeyboardHandler(this.keybindings[this.keyboard]);
 };
 
 Ground.prototype.cleanConsole = function() {
@@ -74,6 +84,12 @@ Ground.prototype.bindEvents = function() {
     that.indent = $(event.currentTarget).data('indent');
     that.setIndent();
     $("#indent-name").text($(this).text());
+  });
+  // Refresh keyboard
+  $(".keyboard-link").on('click', function(event, date) {
+    that.keyboard = $(event.currentTarget).data('keyboard');
+    that.setKeyboard();
+    $("#keyboard-name").text($(this).text());
   }); 
   // Form submit
   $("#run").on('click', function(event) {
@@ -90,7 +106,7 @@ Ground.prototype.bindEvents = function() {
     var code = that.editor.getValue();
     $("#ground_code").val(code);
     $("#ground_language").val(that.language);
-    $("#new_ground").submit();
+    $("#share_ground").submit();
   });
   // Scroll back to editor
   $("#back").on('click', function(event) {
@@ -98,7 +114,7 @@ Ground.prototype.bindEvents = function() {
     that.editor.focus(); 
   });
   // Get result from share action and display shared link
-  $("#new_ground").on("ajax:success", function(data, response, xhr) {
+  $("#share_ground").on("ajax:success", function(data, response, xhr) {
     if (response.status !== "ok") {
       that.cleanConsole();
       $("#error").show();
@@ -113,32 +129,5 @@ Ground.prototype.bindEvents = function() {
   // Hide shared url if code is modified
   that.editor.on('input', function() {
     $("#sharedURL").hide();
-  });
-};
-
-Ground.prototype.bindCommands = function() {
-	this.editor.commands.addCommand({
-    name: 'Run',
-    bindKey: {win: 'Ctrl-K',  mac: 'Command-K'},
-    exec: function(editor) {
-        $("#run").click();
-    },
-    readOnly: false
-  });
-  this.editor.commands.addCommand({
-    name: 'Back to editor',
-    bindKey: {win: 'Ctrl-J',  mac: 'Command-J'},
-    exec: function(editor) {
-        $("#back").click();
-    },
-    readOnly: false
-  });
-  this.editor.commands.addCommand({
-    name: 'Share',
-    bindKey: {win: 'Ctrl-H',  mac: 'Command-H'},
-    exec: function(editor) {
-        $("#share").click();
-    },
-    readOnly: false
   });
 };

@@ -1,3 +1,5 @@
+var ground = null;
+
 var loadGround = function() {
   // Return if there is no editor on the page
   var $groundEditor = $("#ground_editor");
@@ -9,10 +11,11 @@ var loadGround = function() {
   var theme = $groundEditor.data("theme");
   var language = $groundEditor.data("language");
   var indent = $groundEditor.data("indent");
+  var keyboard = $groundEditor.data("keyboard");
   var run_endpoint = "ws://" + $groundEditor.data("run-endpoint");
 
   var client = new Client(run_endpoint);
-  var ground = new Ground(editor, language, theme, indent, client);
+  ground = new Ground(editor, language, theme, indent, keyboard, client);
 };
 
 $(document).ready(loadGround);

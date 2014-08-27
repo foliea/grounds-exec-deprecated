@@ -23,14 +23,31 @@ describe 'ground editor' do
         expect_selected_label(option, code)
       end
     end
+    
+    it 'has code editor cursor on last line', js: :true do
+      expect(editor_cursor_on_last_line?).to be true
+    end
+    
+    it 'has no visible link to any ground shared url' do
+      link = find('#sharedURL', visible: false)
+      expect(link).not_to be_nil
+    end
   end
 
   context 'when selecting an option' do
-    it 'changes options labels', js: :true do
+    it 'updates options dropdowns labels', js: :true do
       options.each do |option, code|
         show_dropdown(option)
         select_option(option, code)
         expect_selected_label(option, code)
+      end
+    end
+    
+    it 'updates code editor options', js: :true do
+      options.each do |option, code|
+        show_dropdown(option)
+        select_option(option, code)
+        expect_editor_option(option, code)
       end
     end
 
@@ -41,17 +58,5 @@ describe 'ground editor' do
         expect_option_in_session(option, code)
       end
     end
-  end
-
-  def refresh
-    visit(ground_show_path)
-  end
-
-  def show_dropdown(option)
-    find("a[data-dropdown=#{option.pluralize(2)}]").click
-  end
-
-  def select_option(option, code)
-    find("a[data-#{option}=#{code}]").click
   end
 end
