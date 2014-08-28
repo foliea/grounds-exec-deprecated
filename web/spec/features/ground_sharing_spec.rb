@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe 'ground sharing' do
+  include GroundControls
+  include GroundExpectations
+  
   let(:storage) { $redis }
   let(:ground) { FactoryGirl.build(:ground) }
 
@@ -15,32 +18,24 @@ describe 'ground sharing' do
     end
 
     it 'has a visible link to this ground shared url', js: :true do
-      link = find('#sharedURL', visible: true)
-      expect(link).not_to be_nil
+      expect_shared_url_visibility(true)
     end
 
     context 'when selecting another language' do
       it 'has no visible link to this ground shared url', js: :true do
         show_dropdown('language')
         select_option('language', 'golang')
-
-        link = find('#sharedURL', visible: false)
-        expect(link).not_to be_nil
+        expect_shared_url_visibility(false)
       end
     end
 
     context 'when typing inside the code editor' do
       it 'has no visible link to this ground shared url', js: :true do
         type_inside_editor
-
-        link = find('#sharedURL', visible: false)
-        expect(link).not_to be_nil
+        expect_shared_url_visibility(false)
       end
     end
   end
-
-  # add test sharedURL is visible:false at start
-  # add test sharedURL is visible:false when selecting another language, or typing into editor
 
   context 'when accessing a shared ground' do
     before(:each) do

@@ -13,13 +13,9 @@ module GroundExpectations
     session_option = page.get_rack_session_key(option)
     expect(session_option).to eq(code)
   end
-
-  def selected_option_label(option, code)
-    find("##{option}-name").text
-  end
-
-  def option_label(option, code)
-    GroundEditor.option(option, code)[:label]
+  
+  def expect_shared_url_visibility(value)
+    expect(find('#sharedURL', visible: value)).not_to be_nil
   end
   
   def expect_editor_option(option, code)
@@ -49,41 +45,5 @@ module GroundExpectations
 
     tab_size = indent == 'tab' ? 8 : indent.to_i
     expect(editor_tab_size).to eq(tab_size)
-  end
-
-  def editor_mode
-    mode = evaluate_script('ground.editor.getSession().getMode().$id;')
-    mode.gsub('ace/mode/', '')
-  end
-  
-  def editor_code
-    evaluate_script('ground.editor.getValue();')
-  end
-  
-  def editor_cursor_on_last_line?
-    pos = evaluate_script('ground.editor.getCursorPosition();')
-    line = evaluate_script('ground.editor.session.getLength();') - 1;
-    pos['row'].to_i == line
-  end
-  
-  def editor_theme
-    theme = evaluate_script('ground.editor.getTheme();')
-    theme.gsub('ace/theme/', '')
-  end
-
-  def editor_tab_size
-    evaluate_script('ground.editor.getSession().getTabSize();')
-  end
-  
-  def editor_use_soft_tabs?
-    evaluate_script('ground.editor.getSession().getUseSoftTabs();')
-  end
-
-  def to_mode(language)
-    evaluate_script("GetMode('#{language}');")
-  end
-  
-  def to_sample(language)
-    evaluate_script("GetSample('#{language}');")
   end
 end

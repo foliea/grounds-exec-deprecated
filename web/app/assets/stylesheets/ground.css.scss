@@ -151,6 +151,11 @@ h1, h2, h3, h4, h5, h6 {
   color: $ground-font-color;
 }
 
+input[type="text"] {
+  @extend input[type="text"];
+  border-radius: 3px;
+}
+
 .circle-img {
   border-radius: 50%;
   box-shadow: 0 0 0 1px $ground-border-color;

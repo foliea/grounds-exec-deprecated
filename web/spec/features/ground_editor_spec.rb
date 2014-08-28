@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe 'ground editor' do
+  include GroundControls
+  include GroundExpectations
+
   let(:options) { FactoryGirl.build(:options) }
 
   before(:each) do
@@ -28,9 +31,8 @@ describe 'ground editor' do
       expect(editor_cursor_on_last_line?).to be true
     end
     
-    it 'has no visible link to any ground shared url' do
-      link = find('#sharedURL', visible: false)
-      expect(link).not_to be_nil
+    it 'has no visible link to this ground shared url' do
+      expect_shared_url_visibility(false)
     end
   end
 

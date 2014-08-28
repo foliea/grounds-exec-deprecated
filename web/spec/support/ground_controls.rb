@@ -1,4 +1,6 @@
 module GroundControls
+  GROUND = 'ground'
+  
   def refresh
     visit(ground_show_path)
   end
@@ -14,16 +16,56 @@ module GroundControls
   def share
     find('#share').click
   end
+  
+  def type_inside_editor
+    evaluate_script("#{GROUND}.editor.setValue('typing...');")
+  end
 
   def shared_url
     find('input[name="sharedURL"]').value
   end
-  
-  def shared_link_visible?
-    evaluate_script('$("#sharedURL").is(":visible");')
+
+  def selected_option_label(option, code)
+    find("##{option}-name").text
+  end
+
+  def option_label(option, code)
+    GroundEditor.option(option, code)[:label]
   end
   
-  def type_inside_editor
-    evaluate_script('ground.editor.setValue("typing...");')
+  def editor_mode
+    mode = evaluate_script("#{GROUND}.editor.getSession().getMode().$id;")
+    mode.gsub('ace/mode/', '')
+  end
+  
+  def editor_code
+    evaluate_script("#{GROUND}.editor.getValue();")
+  end
+  
+  def editor_cursor_on_last_line?
+    pos = evaluate_script("#{GROUND}.editor.getCursorPosition();")
+    line = evaluate_script("#{GROUND}.editor.session.getLength();") - 1;
+    pos['row'].to_i == line
+  end
+  
+  def editor_theme
+    theme = evaluate_script("#{GROUND}.editor.getTheme();")
+    theme.gsub('ace/theme/', '')
+  end
+
+  def editor_tab_size
+    evaluate_script("#{GROUND}.editor.getSession().getTabSize();")
+  end
+  
+  def editor_use_soft_tabs?
+    evaluate_script("#{GROUND}.editor.getSession().getUseSoftTabs();")
+  end
+
+  def to_mode(language)
+    evaluate_script("GetMode('#{language}');")
+  end
+  
+  def to_sample(language)
+    evaluate_script("GetSample('#{language}');")
   end
 end
