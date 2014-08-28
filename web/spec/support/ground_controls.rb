@@ -28,9 +28,21 @@ module GroundControls
   def selected_option_label(option, code)
     find("##{option}-name").text
   end
+  
+  def session(option)
+    page.get_rack_session_key(option)
+  end
+  
+  def default_option_code(option)
+    GroundEditor.default_option_code(option)
+  end
 
   def option_label(option, code)
     GroundEditor.option(option, code)[:label]
+  end
+  
+  def editor_content
+    find('#ground_editor').text
   end
   
   def editor_mode
@@ -61,11 +73,11 @@ module GroundControls
     evaluate_script("#{GROUND}.editor.getSession().getUseSoftTabs();")
   end
 
-  def to_mode(language)
+  def mode(language)
     evaluate_script("GetMode('#{language}');")
   end
   
-  def to_sample(language)
+  def sample(language)
     evaluate_script("GetSample('#{language}');")
   end
 end

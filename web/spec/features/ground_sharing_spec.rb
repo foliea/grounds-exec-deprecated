@@ -44,8 +44,7 @@ describe 'ground sharing' do
     end
 
     it 'ground editor content is equal to ground code' do
-      content = find('#ground_editor').text
-      expect(content).to eq(ground.code)
+      expect(editor_content).to eq(ground.code)
     end
 
     it 'ground editor data language is equal to ground language' do

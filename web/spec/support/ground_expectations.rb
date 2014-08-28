@@ -8,12 +8,7 @@ module GroundExpectations
     label = selected_option_label(option, code)
     expect(label).to eq(option_label(option, code))
   end
-  
-  def expect_option_in_session(option, code)
-    session_option = page.get_rack_session_key(option)
-    expect(session_option).to eq(code)
-  end
-  
+
   def expect_shared_url_visibility(value)
     expect(find('#sharedURL', visible: value)).not_to be_nil
   end
@@ -30,8 +25,8 @@ module GroundExpectations
   end
   
   def expect_editor_language(language)
-    expect(editor_mode).to eq(to_mode(language))
-    expect(editor_code).to eq(to_sample(language))
+    expect(editor_mode).to eq(mode(language))
+    expect(editor_code).to eq(sample(language))
     expect(editor_cursor_on_last_line?).to be true
   end
   
