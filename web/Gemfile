@@ -42,6 +42,5 @@ end
 gem 'ace-rails-ap'
 gem 'modernizr-rails'
 gem 'foundation-rails'
-gem "font-awesome-rails"
+gem 'font-awesome-rails'
 gem 'puma'
-

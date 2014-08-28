@@ -21,6 +21,8 @@ module GroundExpectations
       expect_editor_theme(code)
     when 'indent'
       expect_editor_indent(code)
+    when 'keyboard'
+      expect_editor_keyboard(code)
     end
   end
   
@@ -40,5 +42,10 @@ module GroundExpectations
 
     tab_size = indent == 'tab' ? 8 : indent.to_i
     expect(editor_tab_size).to eq(tab_size)
+  end
+  
+  def expect_editor_keyboard(keyboard)
+    keyboard = keyboard == 'ace' ? '' : keyboard
+    expect(editor_keyboard).to eq(keyboard)
   end
 end

@@ -73,6 +73,12 @@ module GroundControls
     evaluate_script("#{GROUND}.editor.getSession().getUseSoftTabs();")
   end
 
+  def editor_keyboard
+     keyboard = evaluate_script("#{GROUND}.editor.getKeyboardHandler().$id;")
+     return '' if keyboard.nil?
+     keyboard.gsub('ace/keyboard/', '')
+  end
+
   def mode(language)
     evaluate_script("GetMode('#{language}');")
   end
