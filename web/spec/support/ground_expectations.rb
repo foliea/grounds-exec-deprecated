@@ -28,7 +28,7 @@ module GroundExpectations
   
   def expect_editor_language(language)
     expect(editor_mode).to eq(mode(language))
-    expect(editor_code).to eq(sample(language))
+    expect(editor_content).to eq(sample(language))
     expect(editor_cursor_on_last_line?).to be true
   end
   
