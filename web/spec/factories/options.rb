@@ -1,10 +1,17 @@
 FactoryGirl.define do
-  factory :options, class: Hash do
-    language 'golang'
-    theme 'monokai'
-    indent '4'
-    keyboard 'vim'
+  factory :options, class: Array do
+    [
+      ['language', 'golang'],
+      ['language', 'python2'],
 
-    initialize_with {attributes.stringify_keys}
+      ['theme', 'monokai'],
+      ['theme', 'github'],
+
+      ['indent', '4'],
+      ['indent', 'tab'],
+
+      ['keyboard', 'vim'],
+      ['keyboard', 'ace'],
+    ]
   end
 end

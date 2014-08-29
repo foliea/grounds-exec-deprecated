@@ -7,12 +7,37 @@ describe Ground do
 
   it 'is convertible to an hash' do
     expected = {'language' => ground.language, 'code' => ground.code}
-    expect(ground.to_h).to eq(expected)
+    expect(ground.serializable_hash).to eq(expected)
   end
 
   it 'generates a key' do
     expected = '8aa8697c05f23db0083eb2114f83be44e8801929dbf78fb8d25b0f057a423fad'
     expect(ground.generate_key).to eq(expected)
+  end
+  
+  context 'when language is specified' do
+    it 'is valid' do
+      expect(ground).to be_valid
+    end
+  end
+  
+  # FIXME: TEST CONTROLLER
+  
+  context 'when language is not specified' do
+    let(:invalid_ground) { FactoryGirl.build(:invalid_ground) }
+
+    it 'is valid' do
+      expect(invalid_ground).not_to be_valid
+    end
+    
+    it "can't be saved" do
+      expect(invalid_ground.save).to be false
+    end
+    
+    it "can't be persisted" do
+      invalid_ground.save
+      expect(invalid_ground).not_to be_persisted
+    end
   end
 
   context 'when ground is already saved' do
@@ -24,9 +49,13 @@ describe Ground do
       key = ground.generate_key
       expect(ground.id).to eq(key)
     end
-
-    it "can't be saved" do
-      expect(ground.save).to be_nil
+    
+    context 'when saved again' do
+      it 'has the same id' do
+        expected = ground.id
+        ground.save
+        expect(ground.id).to eq(expected)
+      end
     end
 
     it 'is persisted' do
@@ -39,7 +68,7 @@ describe Ground do
 
     it 'can be retrieve from storage' do
       expected = Ground.from_storage!(ground.id)
-      expect(ground.to_h).to eq(expected.to_h)
+      expect(ground.serializable_hash).to eq(expected.serializable_hash)
     end
 
     it 'is destroyable' do

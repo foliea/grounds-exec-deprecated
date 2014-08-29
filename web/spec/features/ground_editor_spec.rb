@@ -63,7 +63,7 @@ describe 'ground editor' do
 
   context 'when selecting an option' do
     it 'updates options dropdowns labels', js: :true do
-      options.each do |option, code|
+      options.each do |option, codes|
         show_dropdown(option)
         select_option(option, code)
         expect_selected_label(option, code)

@@ -6,8 +6,6 @@ class Ground
 
   attr_accessor :id, :language, :code
 
-  # validate presence of language?
-
   def initialize(attributes = {})
     attributes.each do |name, value|
       send("#{name}=", value)
@@ -17,12 +15,17 @@ class Ground
   def persisted?
     storage.exists(id)
   end
+  
+  def valid?
+    !language.empty?
+  end
 
   def save
-    return if persisted?
+    return true if persisted?
+    return false if !valid?
 
     self.id = generate_key
-    to_h.each do |field, value|
+    serializable_hash.each do |field, value|
       storage.hset(id, field, value)
     end
     storage.persist(id)
@@ -34,7 +37,7 @@ class Ground
 
   def generate_key
     key = 'ground'
-    to_h.each do |field, value|
+    serializable_hash.each do |field, value|
       key << "::#{field}:#{value.to_json}"
     end
     Digest::SHA256.hexdigest(key)
@@ -46,7 +49,7 @@ class Ground
     new(attributes.merge({ id: id }))
   end
 
-  def to_h
+  def serializable_hash
     instance_values.slice!('id')
   end
 
