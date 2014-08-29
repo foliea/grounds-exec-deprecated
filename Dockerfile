@@ -7,17 +7,21 @@ ENV PATH $PATH:$GOPATH/bin
 RUN go get github.com/mattn/gom 
 
 # Copy the Gomfile into the image.
-COPY Gomfile gopath/src/github.com/folieadrien/grounds/Gomfile
+COPY Gomfile /grounds/Gomfile
+
+# Link app's location to gopath
+RUN mkdir -p gopath/src/github.com/folieadrien
+RUN ln -s /grounds gopath/src/github.com/folieadrien/grounds
 
 # Gom install inside app's location
-RUN cd gopath/src/github.com/folieadrien/grounds && gom install
+RUN cd /grounds && gom install
 
 # Everything up to here was cached. This includes
 # the gom install, unless the Gomfile changed.
 
 # Now copy the app into the image.
-COPY . gopath/src/github.com/folieadrien/grounds
+COPY . /grounds
 
 # Set the final working dir to the app's location.
-WORKDIR gopath/src/github.com/folieadrien/grounds
+WORKDIR /grounds
 

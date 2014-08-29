@@ -37,21 +37,21 @@ describe 'ground sharing' do
     end
   end
 
-  context 'when accessing a shared ground' do
+  context 'when visiting a shared ground' do
     before(:each) do
       ground.save
       visit(ground_shared_path(ground))
     end
 
-    it 'ground editor content is equal to ground code' do
+    it 'has code editor content equal to ground code', js: :true do
       expect(editor_content).to eq(ground.code)
     end
 
-    it 'ground editor data language is equal to ground language' do
+    it 'has data equal to shared ground language' do
       expect_data('language', ground.language)
     end
 
-    it 'selected language label is equal to ground language' do
+    it 'has selected language label equal to shared ground language' do
       expect_selected_label('language', ground.language)
     end
 
@@ -61,7 +61,7 @@ describe 'ground sharing' do
     end
   end
 
-  context 'when accessing a non-existent shared ground' do
+  context 'when visiting a non-existent shared ground' do
     it 'raises an error' do
       expect { visit(ground_shared_path(0)) }.to raise_error
     end

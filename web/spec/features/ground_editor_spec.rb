@@ -10,6 +10,10 @@ describe 'ground editor' do
     visit(ground_show_path)
   end
 
+  it 'has no visible link to a shared url' do
+    expect_shared_url_visibility(false)
+  end
+
   context 'when first visit to a new ground' do
     it 'initialize data options from default option' do
       options.each do |option, _|
@@ -28,14 +32,6 @@ describe 'ground editor' do
         expect_editor_option(option, default_option_code(option))
       end
     end
-  end
-  
-  it 'has code editor cursor on last line', js: :true do
-    expect(editor_cursor_on_last_line?).to be true
-  end
-  
-  it 'has no visible link to this ground shared url' do
-    expect_shared_url_visibility(false)
   end
 
   context 'when selecting an option and refreshing ground editor' do

@@ -42,18 +42,14 @@ module GroundControls
   end
   
   def editor_content
-    find('#ground_editor').text
+    evaluate_script("#{GROUND}.editor.getValue();")
   end
   
   def editor_mode
     mode = evaluate_script("#{GROUND}.editor.getSession().getMode().$id;")
     mode.gsub('ace/mode/', '')
   end
-  
-  def editor_code
-    evaluate_script("#{GROUND}.editor.getValue();")
-  end
-  
+ 
   def editor_cursor_on_last_line?
     pos = evaluate_script("#{GROUND}.editor.getCursorPosition();")
     line = evaluate_script("#{GROUND}.editor.session.getLength();") - 1;

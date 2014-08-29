@@ -34,20 +34,20 @@ RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \
 RUN gem install bundler
 
 # Copy the Gemfile and Gemfile.lock into the image.
-COPY Gemfile rails/Gemfile
-COPY Gemfile.lock rails/Gemfile.lock
+COPY Gemfile web/Gemfile
+COPY Gemfile.lock web/Gemfile.lock
 
 # Install ruby gems.
-RUN cd rails && bundle install
+RUN cd web && bundle install
 
 # Everything up to here was cached. This includes
 # the bundle install, unless the Gemfiles changed.
 
 # Now copy the app into the image.
-COPY . rails
+COPY . web
 
 # Set the final working dir to the Rails app's location.
-WORKDIR rails
+WORKDIR web
 
 
 
