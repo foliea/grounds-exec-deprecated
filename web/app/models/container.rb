@@ -25,10 +25,6 @@ class Container
     @internal.wait['StatusCode']
   end
 
-  def remove
-    @internal.delete(force: true)
-  end
-
   def self.find_by_id(id)
     new(Docker::Container.get(id))
   end

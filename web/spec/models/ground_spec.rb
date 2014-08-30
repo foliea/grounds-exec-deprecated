@@ -67,7 +67,7 @@ describe Ground do
     end
 
     it 'can be retrieve from storage' do
-      expected = Ground.find_by_id!(ground.id)
+      expected = Ground.from_storage!(ground.id)
       expect(ground.serializable_hash).to eq(expected.serializable_hash)
     end
 

@@ -3,7 +3,7 @@ require 'docker'
 class ContainersController < ApplicationController
   respond_to :json
 
-  before_action :set_container, only: [:start, :stop, :remove, :status]
+  before_action :set_container, only: [:start, :stop, :status]
 
   def create
     @container = Container.create(params[:language], params[:code])
@@ -17,11 +17,6 @@ class ContainersController < ApplicationController
 
   def stop
     @container.stop
-    render json: { status: :ok }
-  end
-
-  def remove
-    @container.remove
     render json: { status: :ok }
   end
 
