@@ -4,8 +4,7 @@ class GroundDecorator < BaseDecorator
       theme: h.session[:theme] ||= GroundEditor.default_option_code(:theme),
       indent: h.session[:indent] ||= GroundEditor.default_option_code(:indent),
       keyboard: h.session[:keyboard] ||= GroundEditor.default_option_code(:keyboard),
-      language: self.language,
-      docker_url: $docker_url
+      language: self.language
     }
   end
 

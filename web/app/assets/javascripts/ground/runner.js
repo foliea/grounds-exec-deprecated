@@ -1,5 +1,4 @@
-function Runner(dockerUrl) {
-  this.dockerUrl = dockerUrl;
+function Runner() {
   this.console = new Console();
   this.previousContainer = null;
 }

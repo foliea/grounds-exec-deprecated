@@ -1,6 +1,6 @@
-function Container(dockerUrl, console) {
-  this.dockerUrl = dockerUrl;
-  this.console = console;
+function Container() {
+  this.dockerUrl = null;
+  this.console = new Console;
 
   this.id = null;
   this.socket = null;
@@ -11,8 +11,9 @@ Container.prototype.run = function(language, code) {
   this.console.startWaiting(); 
   var that = this;
   var creation = this.create(language, code);
-  creation.done(function(containerId) {
-    that.id = containerId;
+  creation.done(function(id, url) {
+    that.id = id;
+    that.dockerUrl = url;
     that.attach();
     that.start(); 
   });
@@ -36,7 +37,7 @@ Container.prototype.create = function(language, code) {
   });
   request.always(function(response) {
     if (response.status === 'ok')
-      deferred.resolve(response.container_id);
+      deferred.resolve(response.id, response.url);
     else
       deferred.reject("HTTP error: " + response.status);
   });

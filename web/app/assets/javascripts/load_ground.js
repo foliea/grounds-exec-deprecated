@@ -12,10 +12,8 @@ var loadGround = function() {
   var language = $groundEditor.data("language");
   var indent = $groundEditor.data("indent");
   var keyboard = $groundEditor.data("keyboard");
-  var dockerUrl = $groundEditor.data("docker-url");
 
-  var runner = new Runner(dockerUrl);
-  ground = new Ground(editor, language, theme, indent, keyboard, runner);
+  ground = new Ground(editor, language, theme, indent, keyboard);
 };
 
 $(document).ready(loadGround);

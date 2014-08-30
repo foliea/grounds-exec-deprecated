@@ -1,12 +1,11 @@
-function Ground(editor, language, theme, indent, keyboard, runner) {
+function Ground(editor, language, theme, indent, keyboard) {
   this.editor = editor;
   this.language = language;
   this.theme = theme;
   this.indent = indent;
   this.keyboard = keyboard;
-  this.runner = runner;
+  this.runner = new Runner();
 
-  this.initEditor();
   this.setLanguage();
   this.setTheme();
   this.setIndent();
@@ -14,14 +13,6 @@ function Ground(editor, language, theme, indent, keyboard, runner) {
 
   this.bindEvents();
 }
-
-Ground.prototype.initEditor = function() {
-  this.keybindings = {
-    ace: null, // use "default" keymapping
-    vim: "ace/keyboard/vim",
-    emacs: "ace/keyboard/emacs"
-  };
-};
 
 Ground.prototype.setCursor = function() {
   var lastLine = this.editor.session.getLength();
@@ -41,7 +32,7 @@ Ground.prototype.setTheme = function() {
 };
 
 Ground.prototype.setIndent = function() {
-  if (this.indent == "tab") {
+  if (this.indent === "tab") {
     this.editor.getSession().setUseSoftTabs(false);
     this.editor.getSession().setTabSize(8);
   } else {
@@ -51,7 +42,12 @@ Ground.prototype.setIndent = function() {
 };
 
 Ground.prototype.setKeyboard = function() {
-  this.editor.setKeyboardHandler(this.keybindings[this.keyboard]);
+  var keybindings = {
+    ace: null,
+    vim: "ace/keyboard/vim",
+    emacs: "ace/keyboard/emacs"
+  };
+  this.editor.setKeyboardHandler(keybindings[this.keyboard]);
 };
 
 Ground.prototype.bindEvents = function() {
