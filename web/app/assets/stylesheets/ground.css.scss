@@ -6,7 +6,8 @@ $ground-primary-active-color: adjust-color($ground-primary-color, $lightness: -2
 $ground-error-color: #c60f13;
 $ground-border-color: #DDD;
 $ground-font-color: #333;
-$ground-link-hover-color: #4183c4;
+$ground-link-color: #4183c4;
+$ground-link-hover-color: adjust-color($ground-link-color, $lightness: -15%);
 
 .top-buffer    { margin-top:    $ground-buffer }
 .bottom-buffer { margin-bottom: $ground-buffer }
@@ -57,17 +58,11 @@ $ground-link-hover-color: #4183c4;
 
   .name h1 a {
     color: $ground-font-color;
-    &:hover {
-      color: $ground-link-hover-color;
-    }
   }
 
   .top-bar-section li:not(.has-form) a:not(.button) {
     background-color: $ground-primary-color;
     color: $ground-font-color;
-    &:hover {
-      color: $ground-link-hover-color;
-    }
   }
 }
 

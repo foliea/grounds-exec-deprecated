@@ -20,7 +20,7 @@ class GroundsController < ApplicationController
     else
       render json: { status: :service_unavailable }
     end
-  end 
+  end
 
   def switch_option
     option, code = params[:option], params[:code]

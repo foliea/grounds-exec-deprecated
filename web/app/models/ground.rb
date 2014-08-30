@@ -13,7 +13,7 @@ class Ground
   end
 
   def persisted?
-    storage.exists(@id)
+    storage.exists(id)
   end
   
   def valid?
@@ -24,15 +24,15 @@ class Ground
     return true if persisted?
     return false if !valid?
 
-    @id = generate_key
+    self.id = generate_key
     serializable_hash.each do |field, value|
-      storage.hset(@id, field, value)
+      storage.hset(id, field, value)
     end
-    storage.persist(@id)
+    storage.persist(id)
   end
 
   def destroy
-    storage.del(@id)
+    storage.del(id)
   end
 
   def generate_key
