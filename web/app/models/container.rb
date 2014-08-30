@@ -9,10 +9,6 @@ class Container
     @internal.id
   end
 
-  def url
-    @internal.connection.url
-  end
-
   def start
     @internal.start
   end

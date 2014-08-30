@@ -7,7 +7,7 @@ class ContainersController < ApplicationController
 
   def create
     @container = Container.create(params[:language], params[:code])
-    render json: { status: :ok , id: @container.id, url: @container.url }
+    render json: { status: :ok , container_id: @container.id }
   end
 
   def start
