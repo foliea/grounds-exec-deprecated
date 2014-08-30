@@ -39,6 +39,7 @@ group :production do
   gem 'rails_12factor'
 end
 
+gem 'docker-api', require: 'docker'
 gem 'ace-rails-ap'
 gem 'modernizr-rails'
 gem 'foundation-rails'

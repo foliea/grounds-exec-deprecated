@@ -1,10 +1,10 @@
-function Ground(editor, language, theme, indent, keyboard, client) {
+function Ground(editor, language, theme, indent, keyboard, runner) {
   this.editor = editor;
   this.language = language;
   this.theme = theme;
   this.indent = indent;
   this.keyboard = keyboard;
-  this.client = client;
+  this.runner = runner;
 
   this.initEditor();
   this.setLanguage();
@@ -16,8 +16,6 @@ function Ground(editor, language, theme, indent, keyboard, client) {
 }
 
 Ground.prototype.initEditor = function() {
-  $("#sharedURL").hide();
-
   this.keybindings = {
     ace: null, // use "default" keymapping
     vim: "ace/keyboard/vim",
@@ -56,14 +54,6 @@ Ground.prototype.setKeyboard = function() {
   this.editor.setKeyboardHandler(this.keybindings[this.keyboard]);
 };
 
-Ground.prototype.cleanConsole = function() {
-  $("#waiting").hide();
-   $("#error").hide();
-   $("#console").find("span").each(function() {
-      this.remove();
-   });
-};
-
 Ground.prototype.bindEvents = function() {
   var that = this;
   // Refresh language
@@ -93,13 +83,13 @@ Ground.prototype.bindEvents = function() {
   }); 
   // Form submit
   $("#run").on('click', function(event) {
-    that.cleanConsole();
-    $("#waiting").show();
-
     var code = that.editor.getValue();
     var language = that.language;
-    var data = JSON.stringify({ language: language, code: code });
-    that.client.send(data);
+    $("#run").attr('disabled', 'disabled');
+    setTimeout(function() {
+      $("#run").removeAttr('disabled');
+    }, 1000);
+    that.runner.run(language, code); 
   });
   // Share current snippet
   $("#share").on('click', function(event) {

@@ -9,18 +9,23 @@ var samples = [
 ]
 
 function GetMode(language) {
-  return GetForLanguage(language, 1);
+  return getForLanguage(language, 1);
 }
 
 function GetSample(language) {
-  return GetForLanguage(language, 2);
+  return getForLanguage(language, 2);
 }
 
-function GetForLanguage(language, key) {
+function getForLanguage(language, key) {
   for (var i = 0; i < samples.length; i++) { 
     if (samples[i][0] === language) {
       return samples[i][key];
     }
   }
   return '';
+}
+
+function formatEndpoint(dockerUrl, containerId) {
+  var url = dockerUrl.replace('http', 'ws');
+  return url + "/v1.14/containers/" + containerId + '/attach/ws?stderr=1&stdout=1&stream=1';
 }
