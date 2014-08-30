@@ -9,5 +9,6 @@ Rails.application.routes.draw do
   match 'containers/create', to: 'containers#create', as: 'container_create', via: :post
   match 'containers/start', to: 'containers#start', as: 'container_start', via: :post
   match 'containers/stop', to: 'containers#stop', as: 'container_stop', via: :post
+  match 'containers/remove', to: 'containers#remove', as: 'container_remove', via: :post
   match 'containers/status', to: 'containers#status', as: 'container_status', via: :get
 end

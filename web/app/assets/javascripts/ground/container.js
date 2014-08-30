@@ -56,9 +56,9 @@ Container.prototype.attach = function() {
       that.console.write("stdout", message.data);  
     };
     that.socket.onclose = function(message) {
-      if (that.interrupted) return;
+      if (!that.interrupted)
+        that.status();
       that.interrupted = true;
-      that.status();
     };  
   }; 
 };
@@ -67,8 +67,7 @@ Container.prototype.start = function() {
   $.ajax({ 
     url: "/containers/start",
     type: 'POST', 
-    data: { id: this.id },
-    fail: this.console.error
+    data: { id: this.id }
   }); 
 };
 
@@ -76,8 +75,15 @@ Container.prototype.stop = function() {
   $.ajax({ 
     url: "/containers/stop",
     type: 'POST', 
-    data: { id: this.id },
-    fail: this.console.error
+    data: { id: this.id }
+  });
+};
+
+Container.prototype.remove = function() {
+  $.ajax({ 
+    url: "/containers/remove",
+    type: 'POST', 
+    data: { id: this.id }
   });
 };
 
@@ -88,7 +94,9 @@ Container.prototype.status = function() {
     data: { id: this.id } 
   });
   request.always(function(response) {
-    if (response.status !== 'ok') return;
-    that.console.write('status', response.code);
+    if (response.status === 'ok') {
+      that.console.write('status', response.code);
+    }
+    that.remove();
   });
 };

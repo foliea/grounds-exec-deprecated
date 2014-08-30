@@ -43,7 +43,7 @@ class Ground
     Digest::SHA256.hexdigest(key)
   end
 
-  def self.from_storage!(id)
+  def self.find_by_id!(id)
     attributes = storage.hgetall(id)
     raise ActiveRecord::RecordNotFound if attributes.empty?
     new(attributes.merge({ id: id }))
