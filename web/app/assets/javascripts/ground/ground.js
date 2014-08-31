@@ -13,6 +13,8 @@ function Ground(editor, language, theme, indent, keyboard, client) {
   this.setKeyboard();
 
   this.bindEvents();
+
+  this.client.connect();
 }
 
 Ground.prototype.initEditor = function() {
