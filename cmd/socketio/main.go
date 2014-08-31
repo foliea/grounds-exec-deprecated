@@ -10,8 +10,10 @@ import (
 )
 
 var (
+	port             = flag.String("p", ":8080", "Port to serve")
 	dockerAddr       = flag.String("e", "unix:///var/run/docker.sock", "Docker API endpoint")
 	dockerRepository = flag.String("r", "grounds", "Docker repository to use for images")
+	authorized       = flag.String("a", "http://127.0.0.1:3000", "Authorized client")
 )
 
 func main() {
@@ -27,27 +29,23 @@ func main() {
 	}
 
 	server.On("connection", func(so socketio.Socket) {
-		var runner = &runner.Runner{
+		runner := &runner.Runner{
 			Client: client,
 			Input:  make(chan []byte),
 			Output: make(chan []byte),
 			Errs:   make(chan error),
 		}
-		log.Println("on connect")
-		go runner.Read()
-		so.On("run message", func(msg string) {
-			go func() {
-				runner.Input <- []byte(msg)
-				log.Println("msg sent")
-			}()
+		go runner.Launch()
+		so.On("run", func(msg string) {
+			so.Emit("run", msg)
+			runner.Input <- []byte(msg)
 		})
 		so.On("disconnection", func() {
 			log.Println("on disconnect")
 		})
 		go func() {
 			for out := range runner.Output {
-				so.Emit("run message", out)
-				log.Println("rofl")
+				so.Emit("run", string(out[0:len(out)]))
 			}
 		}()
 		go func() {
@@ -62,10 +60,12 @@ func main() {
 	})
 
 	http.HandleFunc("/socket.io/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:3000")
+		w.Header().Set("Access-Control-Allow-Origin", *authorized)
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		server.ServeHTTP(w, r)
 	})
 
-	log.Fatal(http.ListenAndServe(":5000", nil))
+	log.Printf("Using docker host: %s and docker repository: %s", *dockerAddr, *dockerRepository)
+	log.Printf("Listening on: %s\n", *port)
+	log.Fatal(http.ListenAndServe(*port, nil))
 }

@@ -25,7 +25,7 @@ type Runner struct {
 	Errs   chan error
 }
 
-func (r *Runner) Read() {
+func (r *Runner) Launch() {
 	var (
 		containerID string
 		stop        chan bool

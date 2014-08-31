@@ -1,6 +1,7 @@
 function Client(endpoint) {
   this.endpoint = endpoint;
   this.socket = null;
+  this.console = new Console();
 }
 
 Client.prototype.connect = function() {
@@ -9,11 +10,14 @@ Client.prototype.connect = function() {
 };
 
 Client.prototype.send = function(data) {
-  this.socket.emit('run message', data);
+  this.socket.emit('run', data);
 };
 
 Client.prototype.bindEvents = function() {
-  this.socket.on('run message', function(data) {
-    alert(JSON.parse(data));
+  var that = this;
+  this.socket.on('run', function(data) {
+    that.console.stopWaiting();
+    response = JSON.parse(data);
+    that.console.write(response.stream, response.chunk);
   });
 };
