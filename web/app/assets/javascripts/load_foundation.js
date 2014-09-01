@@ -3,3 +3,4 @@ var loadFoundation = function() {
 }
 $(document).ready(loadFoundation);
 $(document).on("page:load", loadFoundation);
+

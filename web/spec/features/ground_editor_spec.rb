@@ -4,7 +4,7 @@ describe 'ground editor' do
   include GroundControls
   include GroundExpectations
 
-  let(:options) { FactoryGirl.build(:options) }
+  let(:options) { TestOptionsTable }
 
   before(:each) do
     visit(ground_show_path)
@@ -63,7 +63,7 @@ describe 'ground editor' do
 
   context 'when selecting an option' do
     it 'updates options dropdowns labels', js: :true do
-      options.each do |option, codes|
+      options.each do |option, code|
         show_dropdown(option)
         select_option(option, code)
         expect_selected_label(option, code)
@@ -83,6 +83,14 @@ describe 'ground editor' do
         visit(ground_show_path)
         select_option(option, code)
         expect(session(option)).to eq(code)
+      end
+    end
+    
+    it 'closes properly the dropdown associated', js: :true do
+      options.each do |option, code|
+        show_dropdown(option)
+        select_option(option, code)
+        expect(dropdown_closed?(option)).to be true
       end
     end
   end

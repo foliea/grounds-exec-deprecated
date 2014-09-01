@@ -18,8 +18,6 @@ function Ground(editor, language, theme, indent, keyboard, client) {
 }
 
 Ground.prototype.initEditor = function() {
-  $("#sharedURL").hide();
-
   this.keybindings = {
     ace: null, // use "default" keymapping
     vim: "ace/keyboard/vim",
@@ -58,14 +56,6 @@ Ground.prototype.setKeyboard = function() {
   this.editor.setKeyboardHandler(this.keybindings[this.keyboard]);
 };
 
-Ground.prototype.cleanConsole = function() {
-  $("#waiting").hide();
-   $("#error").hide();
-   $("#console").find("span").each(function() {
-      this.remove();
-   });
-};
-
 Ground.prototype.bindEvents = function() {
   var that = this;
   // Refresh language
@@ -73,31 +63,32 @@ Ground.prototype.bindEvents = function() {
     that.language = $(event.currentTarget).data('language');
     that.editor.setValue("");
     that.setLanguage();
+    $('a[data-dropdown="languages"]').click();
     $("#language-name").text($(this).text());
   });
   // Refresh theme
   $(".theme-link").on('click', function(event, date) {
     that.theme = $(event.currentTarget).data('theme');
     that.setTheme();
+    $('a[data-dropdown="themes"]').click();
     $("#theme-name").text($(this).text());
   });
   // Refresh indentation
   $(".indent-link").on('click', function(event, date) {
     that.indent = $(event.currentTarget).data('indent');
     that.setIndent();
+    $('a[data-dropdown="indents"]').click();
     $("#indent-name").text($(this).text());
   });
   // Refresh keyboard
   $(".keyboard-link").on('click', function(event, date) {
     that.keyboard = $(event.currentTarget).data('keyboard');
     that.setKeyboard();
+    $('a[data-dropdown="keyboards"]').click();
     $("#keyboard-name").text($(this).text());
   }); 
   // Form submit
   $("#run").on('click', function(event) {
-    that.cleanConsole();
-    $("#waiting").show();
-
     var code = that.editor.getValue();
     var language = that.language;
     var data = JSON.stringify({ language: language, code: code });
@@ -118,8 +109,7 @@ Ground.prototype.bindEvents = function() {
   // Get result from share action and display shared link
   $("#share_ground").on("ajax:success", function(data, response, xhr) {
     if (response.status !== "ok") {
-      that.cleanConsole();
-      $("#error").show();
+      that.client.console.clean();
       return;
     }
     var sharedURL = response.shared_url;

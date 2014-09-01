@@ -1,17 +1,13 @@
-FactoryGirl.define do
-  factory :options, class: Array do
-    [
-      ['language', 'golang'],
-      ['language', 'python2'],
+TestOptionsTable = [
+  ['language', 'golang'],
+  ['language', 'python2'],
 
-      ['theme', 'monokai'],
-      ['theme', 'github'],
+  ['theme', 'monokai'],
+  ['theme', 'github'],
 
-      ['indent', '4'],
-      ['indent', 'tab'],
+  ['indent', '4'],
+  ['indent', 'tab'],
 
-      ['keyboard', 'vim'],
-      ['keyboard', 'ace'],
-    ]
-  end
-end
+  ['keyboard', 'vim'],
+  ['keyboard', 'ace'],
+]
