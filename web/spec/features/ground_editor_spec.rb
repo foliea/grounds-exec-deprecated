@@ -15,19 +15,19 @@ describe 'ground editor' do
   end
 
   context 'when first visit to a new ground' do
-    it 'initialize data options from default option' do
+    it 'initializes data options from default option' do
       options.each do |option, _|
         expect_data(option, default_option_code(option))
       end
     end
     
-    it 'initialize selected options labels from default option' do
+    it 'initializes selected options labels from default option' do
       options.each do |option, _|
         expect_selected_label(option, default_option_code(option))
       end
     end
     
-    it 'initialize code editor options from default option', js: :true do
+    it 'initializes code editor options from default option', js: :true do
       options.each do |option, _|
         expect_editor_option(option, default_option_code(option))
       end
@@ -35,7 +35,7 @@ describe 'ground editor' do
   end
 
   context 'when selecting an option and refreshing ground editor' do
-    it 'initialize data options from session' do
+    it 'initializes data options from session' do
       options.each do |option, code|
         select_option(option, code)
         refresh
@@ -43,7 +43,7 @@ describe 'ground editor' do
       end
     end
 
-    it 'initialize selected options labels from session' do
+    it 'initializes selected options labels from session' do
       options.each do |option, code|
         select_option(option, code)
         refresh
@@ -51,10 +51,9 @@ describe 'ground editor' do
       end
     end
 
-    it 'initialize code editor options from session', js: :true do
+    it 'initializes code editor options from session', js: :true do
       options.each do |option, code|
-        show_dropdown(option)
-        select_option(option, code)
+        set_session(option, code)
         refresh
         expect_editor_option(option, code)
       end
@@ -80,13 +79,13 @@ describe 'ground editor' do
 
     it 'saves selected options in session' do
       options.each do |option, code|
-        visit(ground_show_path)
+        refresh
         select_option(option, code)
         expect(session(option)).to eq(code)
       end
     end
     
-    it 'closes properly the dropdown associated', js: :true do
+    it 'closes properly the dropdown associated to each option', js: :true do
       options.each do |option, code|
         show_dropdown(option)
         select_option(option, code)

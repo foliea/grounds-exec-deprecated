@@ -33,6 +33,10 @@ module GroundControls
     page.get_rack_session_key(option)
   end
   
+  def set_session(option, code)
+    page.set_rack_session(option => code)
+  end
+  
   def default_option_code(option)
     GroundEditor.default_option_code(option)
   end
