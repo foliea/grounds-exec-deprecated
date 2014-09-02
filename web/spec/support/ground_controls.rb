@@ -1,12 +1,12 @@
 module GroundControls
-  GROUND = 'ground'
-  
+  EDITOR = 'ground.editor'
+
   def refresh
     visit(ground_show_path)
   end
 
   def show_dropdown(option)
-    find("a[data-dropdown='#{option.pluralize(2)}']").click
+    option_dropdown(option).click
   end
 
   def select_option(option, code)
@@ -18,7 +18,7 @@ module GroundControls
   end
   
   def type_inside_editor
-    evaluate_script("#{GROUND}.editor.setValue('typing...');")
+    evaluate_script("#{EDITOR}.setValue('typing...');")
   end
 
   def shared_url
@@ -33,6 +33,10 @@ module GroundControls
     page.get_rack_session_key(option)
   end
   
+  def set_session(option, code)
+    page.set_rack_session(option => code)
+  end
+  
   def default_option_code(option)
     GroundEditor.default_option_code(option)
   end
@@ -40,37 +44,45 @@ module GroundControls
   def option_label(option, code)
     GroundEditor.option(option, code)[:label]
   end
-  
-  def editor_content
-    evaluate_script("#{GROUND}.editor.getValue();")
+
+  def option_dropdown(option)
+    find("a[data-dropdown='#{option.pluralize(2)}']")
   end
-  
+
+  def dropdown_closed?(option)
+    option_dropdown(option)['aria-expanded'] == 'false'
+  end
+
+  def editor_content
+    evaluate_script("#{EDITOR}.getValue();")
+  end
+
   def editor_mode
-    mode = evaluate_script("#{GROUND}.editor.getSession().getMode().$id;")
+    mode = evaluate_script("#{EDITOR}.getSession().getMode().$id;")
     mode.gsub('ace/mode/', '')
   end
- 
+
   def editor_cursor_on_last_line?
-    pos = evaluate_script("#{GROUND}.editor.getCursorPosition();")
-    line = evaluate_script("#{GROUND}.editor.session.getLength();") - 1;
+    pos = evaluate_script("#{EDITOR}.getCursorPosition();")
+    line = evaluate_script("#{EDITOR}.session.getLength();") - 1;
     pos['row'].to_i == line
   end
-  
+
   def editor_theme
-    theme = evaluate_script("#{GROUND}.editor.getTheme();")
+    theme = evaluate_script("#{EDITOR}.getTheme();")
     theme.gsub('ace/theme/', '')
   end
 
   def editor_tab_size
-    evaluate_script("#{GROUND}.editor.getSession().getTabSize();")
+    evaluate_script("#{EDITOR}.getSession().getTabSize();")
   end
-  
+
   def editor_use_soft_tabs?
-    evaluate_script("#{GROUND}.editor.getSession().getUseSoftTabs();")
+    evaluate_script("#{EDITOR}.getSession().getUseSoftTabs();")
   end
 
   def editor_keyboard
-     keyboard = evaluate_script("#{GROUND}.editor.getKeyboardHandler().$id;")
+     keyboard = evaluate_script("#{EDITOR}.getKeyboardHandler().$id;")
      return '' if keyboard.nil?
      keyboard.gsub('ace/keyboard/', '')
   end
@@ -78,7 +90,7 @@ module GroundControls
   def mode(language)
     evaluate_script("GetMode('#{language}');")
   end
-  
+
   def sample(language)
     evaluate_script("GetSample('#{language}');")
   end

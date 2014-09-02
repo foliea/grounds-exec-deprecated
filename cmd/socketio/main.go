@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	port             = flag.String("p", ":8080", "Port to serve")
+	port             = flag.String("p", ":8080", "Address and port to serve")
 	dockerAddr       = flag.String("e", "unix:///var/run/docker.sock", "Docker API endpoint")
 	dockerRepository = flag.String("r", "grounds", "Docker repository to use for images")
 	authorized       = flag.String("a", "http://127.0.0.1:3000", "Authorized client")
@@ -66,6 +66,7 @@ func main() {
 	})
 
 	log.Printf("Using docker host: %s and docker repository: %s", *dockerAddr, *dockerRepository)
+	log.Printf("Authorizing: %s\n", *authorized)
 	log.Printf("Listening on: %s\n", *port)
 	log.Fatal(http.ListenAndServe(*port, nil))
 }

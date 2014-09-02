@@ -7,115 +7,38 @@ $ground-error-color: #c60f13;
 $ground-border-color: #DDD;
 $ground-font-color: #333;
 $ground-link-color: #4183c4;
-$ground-link-hover-color: adjust-color($ground-link-color, $lightness: -15%);
+$ground-link-hover-color: #4183c4;
 
 .top-buffer    { margin-top:    $ground-buffer }
 .bottom-buffer { margin-bottom: $ground-buffer }
 
-@mixin ground-border($sides: left top right bottom, $width: 1px, $color: $ground-border-color, $style: solid) {
+@mixin border($sides: left top right bottom, $width: 1px, $color: $ground-border-color, $style: solid) {
   @each $side in $sides {
     border-#{$side}: $width $color $style;
   }
 }
 
-.ground-editor-header {
-  background-color: $ground-primary-color;
-  border-radius: 3px 3px 0 0;
-  padding: rem-calc(10) rem-calc(10);
-  @include ground-border(left top right);
-
-  .button {
-    margin: 0rem;
-    background-color: $ground-primary-light-color;
-    color: $ground-font-color;
-    @include ground-border($color: $ground-border-color);
-      
-    &:hover {
-      background-color: $ground-primary-hover-color;
-    }
-    &:focus {
-      background-color: $ground-primary-hover-color;
-    }
-  }
-}
-
-.ground-editor {
-  height: rem-calc(400);
-  border-radius: 0 0 3px 3px; 
-  @include ground-border;
-}
-
-.contain-to-grid {
-  @extend .contain-to-grid;
-  background-color: $ground-primary-color;
-  @include ground-border(bottom);
-}
-
-.ground-top-bar {
-  @extend .top-bar;
-  background-color: $ground-primary-color;
-  padding-bottom: 1px;
-
-  .name h1 a {
-    color: $ground-font-color;
-  }
-
-  .top-bar-section li:not(.has-form) a:not(.button) {
-    background-color: $ground-primary-color;
-    color: $ground-font-color;
-  }
-}
-
-.ground-button {
-  @extend .button.secondary;
-  @include ground-border;
-
-  margin: 0;
+a {
+  @extend a;
+  color: $ground-link-hover-color;
   
   &:hover {
-    background-color: $ground-primary-hover-color;
+    color: adjust-color($ground-link-hover-color, $lightness: 8%);
+  }
+}
+
+.menu-link {
+  color: $ground-font-color;
+  
+  &:hover {
+    color: $ground-link-hover-color;
   }
   &:focus {
-    background-color: $ground-primary-active-color;
+    color: $ground-link-hover-color;
   }
 }
 
-.ground-panel {
-  @extend .panel;
-  @include radius;
-  
-  .stderr {
-    color: $ground-error-color;
-  }
-}
-
-.fullwidth {
-   width: 100%;
-   margin-left: auto;
-   margin-right: auto;
-   max-width: initial;
-}
-
-$footer-height: rem-calc(150);; // Set to however many lines of text you want to have in your footer. Sorry, no dynamic option here.
-html, body { height: 100%; }
-#wrap {
-    min-height: 100%;
-    height: auto !important;
-    height: 100%;
-    margin: 0 auto ($footer-height * -1);
-}
-#wrap > *:last-child {
-    padding-bottom: $footer-height;
-}
-#footer {
-    height: $footer-height;
-    background-color: $ground-primary-color;
-    @include ground-border(top);
-    @extend .top-buffer;
-}
-
-.footer-text {
-  font-size: rem-calc(12);
+h1, h2, h3, h4, h5, h6 {
   color: $ground-font-color;
 }
 
@@ -131,33 +54,122 @@ html, body { height: 100%; }
   }
 }
 
-.icon-heart {
-  color: red;
-}
+.button {
+  @extend .button.secondary;
+  @include border;
 
-a {
-  @extend a;
-  color: $ground-font-color;
+  margin: 0;
   
   &:hover {
-    color: $ground-link-hover-color;
+    background-color: $ground-primary-hover-color;
   }
   &:focus {
-    color: $ground-link-hover-color;
+    background-color: $ground-primary-active-color;
   }
 }
 
-h1, h2, h3, h4, h5, h6 {
+.dropdown {
+  @extend .button;
+  background-color: $ground-primary-light-color;
   color: $ground-font-color;
+  &.tiny {
+    &:after {
+      border-color: $ground-font-color transparent transparent transparent;
+    }
+  }
 }
 
-input[type="text"] {
-  @extend input[type="text"];
-  border-radius: 3px;
+.editor-header {
+  background-color: $ground-primary-color;
+  border-radius: 3px 3px 0 0;
+  padding: rem-calc(10) rem-calc(10);
+  @include border(left top right);
+}
+  
+
+.code-editor {
+  height: rem-calc(400);
+  border-radius: 0 0 3px 3px; 
+  @include border;
+}
+
+.contain-to-grid {
+  @extend .contain-to-grid;
+  background-color: $ground-primary-color;
+  @include border(bottom);
+}
+
+.top-bar {
+  @extend .top-bar;
+  background-color: $ground-primary-color;
+  padding-bottom: 1px;
+
+  .name h1 a {
+    @extend .menu-link;
+  }
+
+  .top-bar-section li:not(.has-form) a:not(.button) {
+    background-color: $ground-primary-color;
+    @extend .menu-link;
+  }
+}
+
+.panel {
+  @extend .panel;
+  
+  .stderr {
+    color: $ground-error-color;
+  }
+}
+
+.fullwidth {
+   width: 100%;
+   margin-left: auto;
+   margin-right: auto;
+   max-width: initial;
+}
+
+$footer-height: rem-calc(125);
+
+html, body { height: 100%; }
+
+body {
+  margin: 0px;
+  padding: 0px;
+}
+
+#wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto ($footer-height * -1);
+}
+
+#wrapper > *:last-child {
+    padding-bottom: $footer-height + rem-calc(20);
+}
+
+#footer {
+    height: $footer-height;
+    background-color: $ground-primary-color;
+    @include border(top);
+    
+    a {
+      @extend .menu-link;  
+    }
+}
+
+.footer-text {
+  font-size: rem-calc(12);
+  color: $ground-font-color;
+  
+  .icon-heart {
+    color: red;
+  }
 }
 
 .circle-img {
   border-radius: 50%;
   box-shadow: 0 0 0 1px $ground-border-color;
-  @include ground-border($width: 5px, $color: $ground-primary-color);
+  @include border($width: 5px, $color: $ground-primary-color);
 }

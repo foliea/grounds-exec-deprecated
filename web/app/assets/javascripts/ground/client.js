@@ -5,11 +5,12 @@ function Client(endpoint) {
 }
 
 Client.prototype.connect = function() {
-  this.socket = io.connect('http://127.0.0.1:5000');
+  this.socket = io.connect(this.endpoint);
   this.bindEvents();
 };
 
 Client.prototype.send = function(data) {
+  this.console.startWaiting();
   this.socket.emit('run', data);
 };
 
@@ -17,7 +18,7 @@ Client.prototype.bindEvents = function() {
   var that = this;
   this.socket.on('run', function(data) {
     that.console.stopWaiting();
-    response = JSON.parse(data);
+    var response = JSON.parse(data);
     that.console.write(response.stream, response.chunk);
   });
 };
