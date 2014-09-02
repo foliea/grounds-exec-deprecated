@@ -19,6 +19,15 @@ $ground-link-hover-color: #4183c4;
 }
 
 a {
+  @extend a;
+  color: $ground-link-hover-color;
+  
+  &:hover {
+    color: adjust-color($ground-link-hover-color, $lightness: 8%);
+  }
+}
+
+.menu-link {
   color: $ground-font-color;
   
   &:hover {
@@ -43,11 +52,6 @@ h1, h2, h3, h4, h5, h6 {
     position: relative;
     right: 50%;
   }
-}
-
-input[type="text"] {
-  @extend input[type="text"];
-  border-radius: 3px;
 }
 
 .button {
@@ -101,25 +105,17 @@ input[type="text"] {
   padding-bottom: 1px;
 
   .name h1 a {
-    @extend a;
+    @extend .menu-link;
   }
 
   .top-bar-section li:not(.has-form) a:not(.button) {
     background-color: $ground-primary-color;
-    color: $ground-font-color;
-    
-    &:hover {
-      color: $ground-link-hover-color;
-    }
-    &:focus {
-      color: $ground-link-hover-color;
-    }
+    @extend .menu-link;
   }
 }
 
 .panel {
   @extend .panel;
-  @include radius;
   
   .stderr {
     color: $ground-error-color;
@@ -157,6 +153,10 @@ body {
     height: $footer-height;
     background-color: $ground-primary-color;
     @include border(top);
+    
+    a {
+      @extend .menu-link;  
+    }
 }
 
 .footer-text {

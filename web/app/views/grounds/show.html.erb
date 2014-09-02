@@ -9,7 +9,7 @@
 
 <% end %>
 
-<div class="row top-buffer editor-header">
+<div class="row editor-header">
 
   <div class="large-12 column">
 
@@ -33,7 +33,7 @@
 
 <div class="row top-buffer">
 
-  <input name="sharedURL" type="text" id="sharedURL">
+  <input name="sharedURL" type="text" id="sharedURL" class="radius">
   
   <%= button_tag(type: 'button', id: :run, class: 'tiny button radius') do
     content_tag(:strong, fa_icon('play', text: t('editor.run')))
@@ -41,7 +41,7 @@
 
 </div>
 
-<div class="row panel top-buffer">
+<div class="row panel radius top-buffer">
 
   <div class="large-12 column">
 
