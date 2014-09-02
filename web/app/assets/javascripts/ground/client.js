@@ -5,7 +5,7 @@ function Client(endpoint) {
 }
 
 Client.prototype.connect = function() {
-  this.socket = io.connect('http://127.0.0.1:5000');
+  this.socket = io.connect(this.endpoint);
   this.bindEvents();
 };
 
