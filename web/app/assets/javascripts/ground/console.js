@@ -21,9 +21,14 @@ Console.prototype.stopWaiting = function() {
 
 Console.prototype.write = function(stream, chunk) {
   switch(stream) {
-      case "status":
-          chunk = '[Program exited with status: ' + chunk + ']';
-          break;
+    case "status":
+      this.stopWaiting();
+      chunk = '[Program exited with status: ' + chunk + ']';
+      break;
+    case "error":
+      this.stopWaiting();
+      stream = 'stderr';
+      break;
   }
   $("#console").append($('<span class="' + stream + '">').text(chunk));
 };

@@ -41,13 +41,13 @@
 
 </div>
 
-<div class="row panel radius top-buffer">
+<div class="row console radius top-buffer">
 
   <div class="large-12 column">
 
     <h6><%= fa_icon('terminal', text: t('editor.console')) %></h6>
 
-    <pre id="waiting" hidden="true"><%= t('editor.waiting') %></pre>
+    <pre id="waiting" class="waiting" hidden="true"><%= t('editor.waiting') %></pre>
 
     <pre id="error" class="stderr" hidden="true"><%= t('editor.error') %></pre>
 
