@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe 'ground sharing' do
   include GroundControls
-  include GroundExpectations
   
   let(:storage) { $redis }
   let(:ground) { FactoryGirl.build(:ground) }
@@ -18,21 +17,21 @@ describe 'ground sharing' do
     end
 
     it 'has a visible link to this ground shared url', js: :true do
-      expect_shared_url_visibility(true)
+      expect(shared_url_visible?).to be true
     end
 
     context 'when selecting another language' do
       it 'has no visible link to this ground shared url', js: :true do
         show_dropdown('language')
         select_option('language', 'golang')
-        expect_shared_url_visibility(false)
+        expect(shared_url_not_visible?).to be true
       end
     end
 
     context 'when typing inside the code editor' do
       it 'has no visible link to this ground shared url', js: :true do
         type_inside_editor
-        expect_shared_url_visibility(false)
+        expect(shared_url_not_visible?).to be true
       end
     end
   end
@@ -47,12 +46,10 @@ describe 'ground sharing' do
       expect(editor_content).to eq(ground.code)
     end
 
-    it 'has data equal to shared ground language' do
-      expect_data('language', ground.language)
-    end
-
-    it 'has selected language label equal to shared ground language' do
-      expect_selected_label('language', ground.language)
+    it 'has selected language label equal to shared ground language label' do
+      selected = selected_label('language')
+      shared = label('language', ground.language)
+      expect(selected).to eq(shared)
     end
 
     it 'generates the same shared url', js: :true do

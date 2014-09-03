@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe 'ground editor' do
   include GroundControls
-  include GroundExpectations
 
   let(:options) { TestOptionsTable }
 
@@ -11,43 +10,30 @@ describe 'ground editor' do
   end
 
   it 'has no visible link to a shared url' do
-    expect_shared_url_visibility(false)
+    expect(shared_url_not_visible?).to be true
   end
 
   context 'when first visit to a new ground' do
-    it 'initializes data options from default option' do
-      options.each do |option, _|
-        expect_data(option, default_option_code(option))
-      end
-    end
-    
     it 'initializes selected options labels from default option' do
       options.each do |option, _|
-        expect_selected_label(option, default_option_code(option))
+        expect(selected_label(option)).to eq(default_label(option))
       end
     end
     
     it 'initializes code editor options from default option', js: :true do
       options.each do |option, _|
-        expect_editor_option(option, default_option_code(option))
+        verified = verify_editor_option?(option, default_code(option))
+        expect(verified).to be true
       end
     end
   end
 
   context 'when selecting an option and refreshing ground editor' do
-    it 'initializes data options from session' do
-      options.each do |option, code|
-        select_option(option, code)
-        refresh
-        expect_data(option, code)
-      end
-    end
-
     it 'initializes selected options labels from session' do
       options.each do |option, code|
         select_option(option, code)
         refresh
-        expect_selected_label(option, code)
+        expect(selected_label(option)).to eq(label(option, code))
       end
     end
 
@@ -55,7 +41,8 @@ describe 'ground editor' do
       options.each do |option, code|
         set_session(option, code)
         refresh
-        expect_editor_option(option, code)
+        verified = verify_editor_option?(option, code)
+        expect(verified).to be true
       end
     end
   end
@@ -65,7 +52,7 @@ describe 'ground editor' do
       options.each do |option, code|
         show_dropdown(option)
         select_option(option, code)
-        expect_selected_label(option, code)
+        expect(selected_label(option)).to eq(label(option, code))
       end
     end
     
@@ -73,7 +60,8 @@ describe 'ground editor' do
       options.each do |option, code|
         show_dropdown(option)
         select_option(option, code)
-        expect_editor_option(option, code)
+        verified = verify_editor_option?(option, code)
+        expect(verified).to be true
       end
     end
 
@@ -92,5 +80,31 @@ describe 'ground editor' do
         expect(dropdown_closed?(option)).to be true
       end
     end
+  end
+  
+  def verify_editor_option?(option, code)
+    send("verify_editor_#{option}?", code)
+  end
+  
+  def verify_editor_language?(language)
+    editor_mode == mode(language) &&
+    editor_content == sample(language) &&
+    editor_cursor_on_last_line?
+  end
+  
+  def verify_editor_theme?(theme)
+    editor_theme == theme
+  end
+  
+  def verify_editor_indent?(indent)
+    use_soft_tabs = indent == 'tab' ? false : true
+    tab_size = indent == 'tab' ? 8 : indent.to_i
+    editor_use_soft_tabs? == use_soft_tabs &&
+    editor_tab_size == tab_size
+  end
+  
+  def verify_editor_keyboard?(keyboard)
+    keyboard = keyboard == 'ace' ? '' : keyboard
+    editor_keyboard == keyboard
   end
 end

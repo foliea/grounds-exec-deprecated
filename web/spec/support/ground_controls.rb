@@ -20,37 +20,59 @@ module GroundControls
   def type_inside_editor
     evaluate_script("#{EDITOR}.setValue('typing...');")
   end
+  
+  def set_session(option, code)
+    page.set_rack_session(option => code)
+  end
+  
+  def dropdown_closed?(option)
+    option_dropdown(option)['aria-expanded'] == 'false'
+  end
+
+  def editor_cursor_on_last_line?
+    pos = evaluate_script("#{EDITOR}.getCursorPosition();")
+    line = evaluate_script("#{EDITOR}.session.getLength();") - 1;
+    pos['row'].to_i == line
+  end
+  
+  def editor_use_soft_tabs?
+    evaluate_script("#{EDITOR}.getSession().getUseSoftTabs();")
+  end
 
   def shared_url
     find('input[name="sharedURL"]').value
   end
+  
+  def shared_url_visible?
+    true if find('#sharedURL', visible: true)
+  end
+  
+  def shared_url_not_visible?
+    true if find('#sharedURL', visible: false)
+  end
 
-  def selected_option_label(option, code)
+  def selected_label(option)
     find("##{option}-name").text
   end
   
   def session(option)
     page.get_rack_session_key(option)
   end
-  
-  def set_session(option, code)
-    page.set_rack_session(option => code)
-  end
-  
-  def default_option_code(option)
+
+  def default_code(option)
     GroundEditor.default_option_code(option)
   end
+  
+  def default_label(option)
+    GroundEditor.default_option_label(option)
+  end
 
-  def option_label(option, code)
+  def label(option, code)
     GroundEditor.option(option, code)[:label]
   end
 
   def option_dropdown(option)
     find("a[data-dropdown='#{option.pluralize(2)}']")
-  end
-
-  def dropdown_closed?(option)
-    option_dropdown(option)['aria-expanded'] == 'false'
   end
 
   def editor_content
@@ -62,12 +84,6 @@ module GroundControls
     mode.gsub('ace/mode/', '')
   end
 
-  def editor_cursor_on_last_line?
-    pos = evaluate_script("#{EDITOR}.getCursorPosition();")
-    line = evaluate_script("#{EDITOR}.session.getLength();") - 1;
-    pos['row'].to_i == line
-  end
-
   def editor_theme
     theme = evaluate_script("#{EDITOR}.getTheme();")
     theme.gsub('ace/theme/', '')
@@ -75,10 +91,6 @@ module GroundControls
 
   def editor_tab_size
     evaluate_script("#{EDITOR}.getSession().getTabSize();")
-  end
-
-  def editor_use_soft_tabs?
-    evaluate_script("#{EDITOR}.getSession().getUseSoftTabs();")
   end
 
   def editor_keyboard

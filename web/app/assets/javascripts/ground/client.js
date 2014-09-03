@@ -5,11 +5,14 @@ function Client(endpoint) {
 }
 
 Client.prototype.connect = function() {
+  if (this.endpoint === null) return;
+
   this.socket = io.connect(this.endpoint);
   this.bindEvents();
 };
 
 Client.prototype.send = function(data) {
+  if (this.socket === null) return;
   this.console.startWaiting();
   this.socket.emit('run', data);
 };
