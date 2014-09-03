@@ -35,14 +35,6 @@ class Ground
     storage.del(@id)
   end
 
-  def generate_key
-    key = 'ground'
-    serializable_hash.each do |field, value|
-      key << "::#{field}:#{value.to_json}"
-    end
-    Digest::SHA256.hexdigest(key)
-  end
-
   def self.from_storage!(id)
     attributes = storage.hgetall(id)
     raise ActiveRecord::RecordNotFound if attributes.empty?
@@ -54,6 +46,14 @@ class Ground
   end
 
   private
+
+  def generate_key
+    key = 'ground'
+    serializable_hash.each do |field, value|
+      key << "::#{field}:#{value.to_json}"
+    end
+    Digest::SHA256.hexdigest(key)
+  end
 
   def self.storage
     $redis

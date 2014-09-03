@@ -8,20 +8,13 @@ describe Ground do
   it 'is convertible to an hash' do
     expected = {'language' => ground.language, 'code' => ground.code}
     expect(ground.serializable_hash).to eq(expected)
-  end
-
-  it 'generates a key' do
-    expected = '8aa8697c05f23db0083eb2114f83be44e8801929dbf78fb8d25b0f057a423fad'
-    expect(ground.generate_key).to eq(expected)
-  end
+  end 
   
   context 'when language is specified' do
     it 'is valid' do
       expect(ground).to be_valid
     end
   end
-  
-  # FIXME: TEST CONTROLLER
   
   context 'when language is not specified' do
     let(:invalid_ground) { FactoryGirl.build(:invalid_ground) }
@@ -45,9 +38,9 @@ describe Ground do
       ground.save
     end
 
-    it 'has an id equal to generated key' do
-      key = ground.generate_key
-      expect(ground.id).to eq(key)
+    it 'generates a key' do
+      expected = '8aa8697c05f23db0083eb2114f83be44e8801929dbf78fb8d25b0f057a423fad'
+      expect(ground.id).to eq(expected)
     end
     
     context 'when saved again' do
