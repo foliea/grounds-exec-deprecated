@@ -12,8 +12,12 @@ Client.prototype.connect = function() {
 };
 
 Client.prototype.send = function(data) {
-  if (this.socket === null) return;
   this.console.startWaiting();
+  
+  if (this.socket === null) {
+    this.console.error();
+    return;
+  }
   this.socket.emit('run', data);
 };
 

@@ -1,3 +1,3 @@
 gom 'github.com/fsouza/go-dockerclient'
 gom 'github.com/fsouza/go-dockerclient/testing'
-gom 'github.com/gorilla/websocket'
+gom 'github.com/googollee/go-socket.io'

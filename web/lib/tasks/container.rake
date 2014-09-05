@@ -1,21 +1,23 @@
-task :run => :environment do
-  redis_url    = ENV['REDIS_PORT'].gsub('tcp', 'redis')
-  run_endpoint = ENV['RUN_ENDPOINT']
-  port         = ENV['RAILS_PORT']
+REDIS_URL    = (ENV['REDIS_PORT']  || 'http://127.0.0.1:6379').gsub('tcp', 'redis')
+                                                              .gsub('http', 'redis')
+RUN_ENDPOINT = ENV['RUN_ENDPOINT'] || 'http://127.0.0.1:5000'
+PORT         = ENV['RAILS_PORT']   || 3000
 
-  run(redis_url, run_endpoint, port)
+task :run => :environment do
+  if production?
+    assets_precompile
+  end
+  sh "bundle exec rails server -p #{PORT}"
 end
 
 task :test => :environment do
   sh 'bundle exec rspec'
 end
 
-def run(redis_url, run_endpoint, port)
-  if ENV['RAILS_PORT'] == 'production'
-    sh 'bundle exec rake:assets precompile'
-  end
-  run_command = "REDIS_URL='#{redis_url}'"
-  run_command << " RUN_ENDPOINT='#{run_endpoint}'"
-  run_command << " bundle exec rails server -p #{port}"
-  sh run_command
+def assets_precompile
+  sh 'bundle exec rake assets:precompile'
+end
+
+def production?
+  ENV['RAILS_ENV'] == 'production'
 end

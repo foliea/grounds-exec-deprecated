@@ -59,18 +59,6 @@ module GroundControls
     page.get_rack_session_key(option)
   end
 
-  def default_code(option)
-    GroundEditor.default_option_code(option)
-  end
-  
-  def default_label(option)
-    GroundEditor.default_option_label(option)
-  end
-
-  def label(option, code)
-    GroundEditor.option(option, code)[:label]
-  end
-
   def option_dropdown(option)
     find("a[data-dropdown='#{option.pluralize(2)}']")
   end
@@ -105,5 +93,17 @@ module GroundControls
 
   def sample(language)
     evaluate_script("GetSample('#{language}');")
+  end
+  
+  def default_code(option)
+    GroundEditor.default_option_code(option)
+  end
+  
+  def default_label(option)
+    GroundEditor.default_option_label(option)
+  end
+
+  def label(option, code)
+    GroundEditor.option(option, code)[:label]
   end
 end
