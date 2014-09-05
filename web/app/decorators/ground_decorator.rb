@@ -5,7 +5,7 @@ class GroundDecorator < BaseDecorator
       indent: h.session[:indent] ||= GroundEditor.default_option_code(:indent),
       keyboard: h.session[:keyboard] ||= GroundEditor.default_option_code(:keyboard),
       language: self.language,
-      run_endpoint: WebSocket.run_endpoint
+      websocket: WebSocket.url
     }
   end
 
