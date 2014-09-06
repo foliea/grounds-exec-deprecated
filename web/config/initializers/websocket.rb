@@ -1,7 +1,7 @@
 module WebSocket
   extend self
 
-  def run_endpoint
-    ENV['RUN_ENDPOINT']
+  def url
+    ENV['WEBSOCKET_URL']
   end
 end

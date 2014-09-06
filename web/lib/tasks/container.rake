@@ -1,13 +1,13 @@
-REDIS_URL    = (ENV['REDIS_PORT']  || 'http://127.0.0.1:6379').gsub('tcp', 'redis')
-                                                              .gsub('http', 'redis')
-RUN_ENDPOINT = ENV['RUN_ENDPOINT'] || 'http://127.0.0.1:5000'
+REDIS_URL    = (ENV['REDIS_1_PORT']  || 'http://127.0.0.1:6379').gsub('tcp', 'redis')
+                                                                .gsub('http', 'redis')
+WEBSOCKET_URL = ENV['WEBSOCKET_URL'] || 'http://127.0.0.1:5000'
 PORT         = ENV['RAILS_PORT']   || 3000
 
 task :run => :environment do
   if production?
     assets_precompile
   end
-  sh "bundle exec rails server -p #{PORT}"
+  sh run 
 end
 
 task :test => :environment do
@@ -20,4 +20,12 @@ end
 
 def production?
   ENV['RAILS_ENV'] == 'production'
+end
+
+def run
+  cmd = ''
+  cmd << "REDIS_URL=#{REDIS_URL} "
+  cmd << "WEBSOCKET_URL=#{WEBSOCKET_URL} "
+
+  cmd << "bundle exec rails server -p #{PORT}"
 end

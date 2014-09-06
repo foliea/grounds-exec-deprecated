@@ -12,9 +12,9 @@ var loadGround = function() {
   var language = $groundEditor.data("language");
   var indent = $groundEditor.data("indent");
   var keyboard = $groundEditor.data("keyboard");
-  var run_endpoint = $groundEditor.data("run-endpoint");
+  var websocket = $groundEditor.data("websocket");
 
-  var client = new Client(run_endpoint);
+  var client = new Client(websocket);
   ground = new Ground(editor, language, theme, indent, keyboard, client);
 };
 
