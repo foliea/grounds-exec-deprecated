@@ -8,7 +8,10 @@ import (
 	docker "github.com/fsouza/go-dockerclient"
 )
 
-const programMaxSize = 65536
+const (
+	programMaxSize = 65536
+	memoryLimit    = 4194304
+)
 
 var (
 	ErrorLanguageNotSpecified = errors.New("Language not specified.")
@@ -85,6 +88,7 @@ func (c *Client) createContainer(image string, cmd []string) (*docker.Container,
 	config := &docker.Config{
 		Cmd:             cmd,
 		Image:           image,
+		Memory:          memoryLimit,
 		AttachStdout:    true,
 		AttachStderr:    true,
 		NetworkDisabled: true,

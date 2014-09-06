@@ -1,5 +1,5 @@
 redis:
-  image: dockerfiles/redis
+  image: dockerfile/redis
   ports:
     - "6379"
 
