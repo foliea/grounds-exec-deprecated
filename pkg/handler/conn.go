@@ -1,39 +1,27 @@
 package handler
 
-import "github.com/gorilla/websocket"
+import (
+	"fmt"	
+	socketio "github.com/googollee/go-socket.io"
+)
 
-type websocketConn interface {
-	ReadMessage() (messageType int, p []byte, err error)
-	WriteMessage(messageType int, data []byte) error
-	Close() error
+type Connection struct {
+	input 	chan []byte
+	output 	chan []byte
+	event 	string
+	so     	socketio.Socket
 }
 
-type connection struct {
-	ws websocketConn
+func (c *Connection) Read(msg string) {
+	fmt.Println(msg)
+	// There is a bug with go-socket-io, this is a trick to prevent it before it gets patched upstream
+	c.so.Emit("msg", msg)
 
-	// Buffered channel of inbound messages.
-	receive chan []byte
-	// Buffered channel of outbound messages.
-	send chan []byte
+	c.input <- []byte(msg)
 }
 
-func (c *connection) reader() {
-	for {
-		_, message, err := c.ws.ReadMessage()
-		if err != nil {
-			break
-		}
-		c.receive <- message
+func (c *Connection) Write() {
+	for msg := range c.output {
+		c.so.Emit(c.event, string(msg[0:len(msg)]))
 	}
-	close(c.receive)
-	c.ws.Close()
-}
-
-func (c *connection) writer() {
-	for message := range c.send {
-		if err := c.ws.WriteMessage(websocket.TextMessage, message); err != nil {
-			break
-		}
-	}
-	c.ws.Close()
 }
