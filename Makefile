@@ -1,7 +1,10 @@
-.PHONY: binary build-go build-web test test-binary test-unit test-web images images-push images-pull
+.PHONY: run binary build-go build-web test test-binary test-unit test-web images images-push images-pull
 
 binary:
 	hack/binary.sh
+
+run:
+	fig build ; fig up
 
 build: build-go build-web
 

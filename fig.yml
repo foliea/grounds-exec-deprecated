@@ -1,0 +1,22 @@
+redis:
+  image: dockerfiles/redis
+  ports:
+    - "6379"
+
+websocket:
+  build: .
+  command: hack/run.sh -e "http://192.168.59.103:2375" -a "http://192.168.59.103:3000"
+  ports:
+    - "8080:8080"
+
+web:
+  build: web
+  command: rake run
+  ports:
+    - "3000:3000"
+  links:
+    - redis
+  environment:
+    RAILS_PORT: 3000
+    WEBSOCKET_URL: "http://192.168.59.103:8080"
+
