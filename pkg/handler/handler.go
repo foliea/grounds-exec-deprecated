@@ -2,63 +2,59 @@ package handler
 
 import (
 	"log"
-	"net/http"
-
 	"github.com/folieadrien/grounds/pkg/runner"
-	"github.com/gorilla/websocket"
+	socketio "github.com/googollee/go-socket.io"
 )
 
-type RunHandler struct {
-	upgrader *websocket.Upgrader
-	client   *runner.Client
+type Handler struct {
+	Client *runner.Client
+	Server *socketio.Server
 }
 
-func NewRunHandler(debug bool, dockerAddr, dockerRepository string) *RunHandler {
-	client, err := runner.NewClient(dockerAddr, dockerRepository)
-	if err != nil {
-		return nil
-	}
-	upgrader := &websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-	}
-	if debug {
-		upgrader.CheckOrigin = func(r *http.Request) bool {
-			return true
-		}
-	}
-	return &RunHandler{
-		upgrader: upgrader,
-		client:   client,
-	}
+func (h *Handler) Bind() {
+	h.Server.On("connection", h.NewConnection)
+	h.Server.On("error", h.Error)
 }
 
-func (h *RunHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", 405)
-		return
-	}
-	ws, err := h.upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
+func (h *Handler) NewConnection(so socketio.Socket) {
+	log.Println("new connection")
+
 	runner := &runner.Runner{
-		Client: h.client,
+		Client: h.Client,
 		Input:  make(chan []byte),
 		Output: make(chan []byte),
 		Errs:   make(chan error),
 	}
-	conn := &connection{
-		ws:      ws,
-		receive: runner.Input,
-		send:    runner.Output,
-	}
-	go runner.Read()
-	go conn.reader()
-	go conn.writer()
+	go runner.Watch()
 
-	for err := range runner.Errs {
-		log.Println(err)
+	c := &Connection{
+		input: runner.Input, 
+		output: runner.Output,
+		event: "run",
+		so: so,
 	}
+	go c.Write()
+
+	so.On("run", c.Read)
+	so.On("disconnection", h.Disconnection)
+	
+	go LogErrors(runner.Errs)
+}
+
+func (h *Handler) Disconnection() {
+	log.Println("disconnection")
+}
+
+func (h *Handler) Error(so socketio.Socket, err error) {
+	LogError(err)
+}
+
+func LogErrors(errs chan error) {
+	for err := range errs {
+		LogError(err)
+	}
+}
+
+func LogError(err error) {
+	log.Println("error: ", err)
 }
