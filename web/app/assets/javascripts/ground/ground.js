@@ -53,7 +53,12 @@ Ground.prototype.setIndent = function() {
 };
 
 Ground.prototype.setKeyboard = function() {
-  this.editor.setKeyboardHandler(this.keybindings[this.keyboard]);
+  var keyboardHandler = null;
+
+  if (this.keyboard !== 'ace') {
+    keyboardHandler = "ace/keyboard/" + this.keyboard;
+  }
+  this.editor.setKeyboardHandler(keyboardHandler);
 };
 
 Ground.prototype.bindEvents = function() {
