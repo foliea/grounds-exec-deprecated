@@ -1,13 +1,14 @@
 function Client(endpoint) {
-  this.endpoint = endpoint;
   this.socket = null;
   this.console = new Console();
+
+  this.connect(endpoint);
 }
 
-Client.prototype.connect = function() {
-  if (this.endpoint === null) return;
+Client.prototype.connect = function(endpoint) {
+  if (endpoint === null) return;
 
-  this.socket = io.connect(this.endpoint);
+  this.socket = io.connect(endpoint);
   this.bindEvents();
 };
 

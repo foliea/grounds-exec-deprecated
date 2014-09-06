@@ -1,3 +1,4 @@
+var client = null;
 var ground = null;
 
 var loadGround = function() {
@@ -14,7 +15,8 @@ var loadGround = function() {
   var keyboard = $groundEditor.data("keyboard");
   var websocket = $groundEditor.data("websocket");
 
-  var client = new Client(websocket);
+  if (client === null)
+    client = new Client(websocket);
   ground = new Ground(editor, language, theme, indent, keyboard, client);
 };
 
