@@ -2,18 +2,18 @@
 
 set -e
 
-run="docker run -d --name"
+RUN_CMD="docker run -d --name"
 
 redis() {
-  $run groundsredis dockerfile/redis
+  ${RUN_CMD} groundsredis dockerfile/redis
 }
 
 websocket() {
-  $run groundsock "$GO_IMAGE" -p "$WEBSOCKET_PORT":"$WEBSOCKET_PORT"./hack/run.sh -d -p ":$WEBSOCKET_PORT"
+  ${RUN_CMD} groundsock "$GO_IMAGE" -p "$WEBSOCKET_PORT":"$WEBSOCKET_PORT"./hack/run.sh -d -p ":$WEBSOCKET_PORT"
 }
 
 web() {
-	$run groundsweb -p "$WEB_PORT":"$WEB_PORT" -e RAILS_PORT="$WEB_PORT" --link groundsredis:redis "$WEB_IMAGE" rake run
+	${RUN_CMD} groundsweb -p "$WEB_PORT":"$WEB_PORT" -e RAILS_PORT="$WEB_PORT" --link groundsredis:redis "$WEB_IMAGE" rake run
 }
 
 run() {

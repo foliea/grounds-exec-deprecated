@@ -2,14 +2,14 @@
 
 set -e
 
-build="docker build -t"
+BUILD_CMD="docker build -t"
 
 go() {
-  $build "$GO_IMAGE" .
+  ${BUILD_CMD} "$GO_IMAGE" .
 }
 
 web() {
-	$build "$WEB_IMAGE" web
+	${BUILD_CMD} "$WEB_IMAGE" web
 }
 
 build() {
