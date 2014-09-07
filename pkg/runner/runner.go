@@ -70,6 +70,9 @@ func (r *Runner) execute(containerID string, stop chan bool) {
 	select {
 	case <-stop:
 	default:
+		if status >= 128 {
+			status -= 256
+		}
 		r.write("status", strconv.Itoa(status))
 	}
 }
