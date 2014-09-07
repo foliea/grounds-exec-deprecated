@@ -1,15 +1,16 @@
 package handler
 
 import (
-	"fmt"	
+	"fmt"
+
 	socketio "github.com/googollee/go-socket.io"
 )
 
 type Connection struct {
-	input 	chan []byte
-	output 	chan []byte
-	event 	string
-	so     	socketio.Socket
+	input  chan []byte
+	output chan []byte
+	event  string
+	so     socketio.Socket
 }
 
 func (c *Connection) Read(msg string) {

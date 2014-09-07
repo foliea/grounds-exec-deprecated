@@ -2,19 +2,21 @@
 
 set -e
 
+run="docker run --rm"
+
 # Run binary compilation
 binary() {
-  docker run --rm "$GO_IMAGE" ./hack/binary.sh
+  $run "$GO_IMAGE" ./hack/binary.sh
 }
 
 # Run unit tests inside a docker container
 unit() {
-	docker run --rm "$GO_IMAGE" ./hack/test-unit.sh
+	$run "$GO_IMAGE" ./hack/test-unit.sh
 }
 
 # Run web tests inside a docker container
 web() {
-	docker run --rm -e "RAILS_ENV=test" "$WEB_IMAGE" rake test
+	$run -e "RAILS_ENV=test" "$WEB_IMAGE" rake test
 }
 
 test() {

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log"
+
 	"github.com/folieadrien/grounds/pkg/runner"
 	socketio "github.com/googollee/go-socket.io"
 )
@@ -28,16 +29,16 @@ func (h *Handler) NewConnection(so socketio.Socket) {
 	go runner.Watch()
 
 	c := &Connection{
-		input: runner.Input, 
+		input:  runner.Input,
 		output: runner.Output,
-		event: "run",
-		so: so,
+		event:  "run",
+		so:     so,
 	}
 	go c.Write()
 
 	so.On("run", c.Read)
 	so.On("disconnection", h.Disconnection)
-	
+
 	go LogErrors(runner.Errs)
 }
 

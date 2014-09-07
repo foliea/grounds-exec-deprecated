@@ -2,12 +2,14 @@
 
 set -e
 
+build="docker build -t"
+
 go() {
-	docker build -t "$GO_IMAGE" .
+  $build "$GO_IMAGE" .
 }
 
 web() {
-	docker build -t "$WEB_IMAGE" web
+	$build "$WEB_IMAGE" web
 }
 
 build() {
