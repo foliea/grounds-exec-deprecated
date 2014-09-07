@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ulimit -p 5
+ulimit -p 15
 
 echo "$1" > prog.cs
 mcs prog.cs
