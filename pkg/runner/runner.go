@@ -3,8 +3,10 @@ package runner
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"io"
 	"strconv"
+	"time"
 )
 
 type RunConfig struct {
@@ -24,6 +26,11 @@ type Runner struct {
 	Output chan []byte
 	Errs   chan error
 }
+
+var (
+	ErrorTimeoutExceed = errors.New("Timeout exceed.")
+	ExecutionTimeout   = 10 * time.Second
+)
 
 func (r *Runner) Watch() {
 	var (
@@ -46,14 +53,13 @@ func (r *Runner) Watch() {
 			continue
 		}
 		stop = make(chan bool, 3)
-		go r.execute(containerID, stop)
+		finished := make(chan bool, 1)
+		go r.timeout(containerID, finished, stop)
+		go r.execute(containerID, finished, stop)
 	}
-	r.stop(containerID, stop)
-	close(r.Output)
-	close(r.Errs)
 }
 
-func (r *Runner) execute(containerID string, stop chan bool) {
+func (r *Runner) execute(containerID string, finished, stop chan bool) {
 	defer func() {
 		if err := r.Client.Clean(containerID); err != nil {
 			r.Errs <- err
@@ -67,6 +73,7 @@ func (r *Runner) execute(containerID string, stop chan bool) {
 		r.notifyError(err)
 		return
 	}
+	finished <- true
 	select {
 	case <-stop:
 	default:
@@ -82,6 +89,16 @@ func (r *Runner) stop(containerID string, stop chan bool) {
 		stop <- true
 	}
 	r.Client.Interrupt(containerID)
+}
+
+func (r *Runner) timeout(containerID string, finished, stop chan bool) {
+	select {
+	case <-finished:
+		return
+	case <-time.After(ExecutionTimeout):
+		r.stop(containerID, stop)
+		r.notifyError(ErrorTimeoutExceed)
+	}
 }
 
 func (r *Runner) write(stream, chunk string) {
@@ -116,7 +133,7 @@ func (r *Runner) broadcast(stream string, output io.Reader, stop chan bool) {
 
 func (r *Runner) notifyError(err error) {
 	r.Errs <- err
-	if err == ErrorProgramTooLarge || err == ErrorLanguageNotSpecified {
+	if err == ErrorProgramTooLarge || err == ErrorLanguageNotSpecified || err == ErrorTimeoutExceed {
 		r.write("error", err.Error())
 	} else {
 		r.write("error", "An error occured.")
