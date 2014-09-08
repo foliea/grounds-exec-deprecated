@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	"log"
 
 	socketio "github.com/googollee/go-socket.io"
 )
@@ -14,15 +14,18 @@ type Connection struct {
 }
 
 func (c *Connection) Read(msg string) {
-	fmt.Println(msg)
 	// There is a bug with go-socket-io, this is a trick to prevent it before it gets patched upstream
 	c.so.Emit("msg", msg)
 
+	log.Println("received: ", msg)
 	c.input <- []byte(msg)
 }
 
 func (c *Connection) Write() {
 	for msg := range c.output {
-		c.so.Emit(c.event, string(msg[0:len(msg)]))
+		response := string(msg[0:len(msg)])
+
+		log.Println("sent: ", response)
+		c.so.Emit(c.event, response)
 	}
 }
