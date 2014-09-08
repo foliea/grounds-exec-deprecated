@@ -28,6 +28,10 @@ RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \
 
 COPY run.sh /home/dev/run.sh
 
+RUN useradd dev
+RUN chown -R dev: /home/dev
+
 WORKDIR /home/dev
+USER dev
 
 ENTRYPOINT ["/home/dev/run.sh"]
