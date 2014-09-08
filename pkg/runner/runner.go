@@ -28,8 +28,8 @@ type Runner struct {
 }
 
 var (
-	ErrorTimeoutExceed = errors.New("Timeout exceed.")
-	ExecutionTimeout   = 10 * time.Second
+	ErrorTimeoutExceeded = errors.New("Timeout exceeded.")
+	ExecutionTimeout     = 10 * time.Second
 )
 
 func (r *Runner) Watch() {
@@ -97,7 +97,7 @@ func (r *Runner) timeout(containerID string, finished, stop chan bool) {
 		return
 	case <-time.After(ExecutionTimeout):
 		r.stop(containerID, stop)
-		r.notifyError(ErrorTimeoutExceed)
+		r.notifyError(ErrorTimeoutExceeded)
 	}
 }
 
@@ -133,7 +133,7 @@ func (r *Runner) broadcast(stream string, output io.Reader, stop chan bool) {
 
 func (r *Runner) notifyError(err error) {
 	r.Errs <- err
-	if err == ErrorProgramTooLarge || err == ErrorLanguageNotSpecified || err == ErrorTimeoutExceed {
+	if err == ErrorProgramTooLarge || err == ErrorLanguageNotSpecified || err == ErrorTimeoutExceeded {
 		r.write("error", err.Error())
 	} else {
 		r.write("error", "An error occured.")
