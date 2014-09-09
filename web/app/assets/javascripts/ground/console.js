@@ -11,6 +11,8 @@ Console.prototype.clean = function() {
 };
 
 Console.prototype.startWaiting = function() {
+  if (this.waiting) return;
+
   this.clean();
   $("#waiting").show();
 };

@@ -92,9 +92,16 @@ Ground.prototype.bindEvents = function() {
   }); 
   // Form submit
   $("#run").on('click', function(event) {
+    $(this).attr("disabled", "disabled");
+    
+    setTimeout(function() {
+      $("#run").removeAttr("disabled");
+    }, 500);
+    
     var code = that.editor.getValue();
     var language = that.language;
     var data = JSON.stringify({ language: language, code: code });
+
     that.client.send(data);
   });
   // Share current snippet
