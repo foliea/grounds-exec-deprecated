@@ -1,4 +1,4 @@
-module GroundControls
+module GroundSupport
   EDITOR = 'ground.editor'
 
   def refresh

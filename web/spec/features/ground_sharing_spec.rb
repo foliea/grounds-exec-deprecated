@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'ground sharing' do
-  include GroundControls
+  include GroundSupport
   
   let(:storage) { $redis }
   let(:ground) { FactoryGirl.build(:ground) }
@@ -52,7 +52,7 @@ describe 'ground sharing' do
       expect(selected).to eq(shared)
     end
 
-    it 'generates the same shared url', js: :true do
+    it 'will share the same url', js: :true do
       share
       expect(URI(shared_url).path).to eq(ground_shared_path(ground))
     end

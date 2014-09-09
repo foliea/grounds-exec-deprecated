@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'footer' do
+  include HeaderFooterSupport
+  
   before(:each) do
     visit('/')
   end
@@ -12,21 +14,18 @@ describe 'footer' do
   end
 
   it 'has a link to contact project developers on github' do
-    expect_footer_external_url('https://github.com/folieadrien/grounds/issues/new')
+    s = ext_url_selector('https://github.com/folieadrien/grounds/issues/new')
+    expect(find('footer')).to have_selector(s)
   end
 
   it 'has a link to github project repository' do
-    expect_footer_external_url('https://github.com/folieadrien/grounds')
+    s = ext_url_selector('https://github.com/folieadrien/grounds')
+    expect(footer).to have_selector(s)
   end
 
   def click_footer_link(path)
     within(:css, 'footer') do
       find("a[href=\"#{path}\"]").click
     end
-  end
-  
-  def expect_footer_external_url(url)
-    footer = find('footer')
-    expect(footer).to have_selector("a[href=\"#{url}\"]")
   end
 end
