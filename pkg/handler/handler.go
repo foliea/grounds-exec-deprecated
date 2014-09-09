@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log"
+	"time"
 
 	"github.com/folieadrien/grounds/pkg/runner"
 	socketio "github.com/googollee/go-socket.io"
@@ -31,6 +32,7 @@ func (h *Handler) NewConnection(so socketio.Socket) {
 	c := &Connection{
 		input:  runner.Input,
 		output: runner.Output,
+		time: time.Now(),
 		event:  "run",
 		so:     so,
 	}
