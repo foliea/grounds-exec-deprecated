@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'ground editor' do
-  include GroundControls
+  include GroundSupport
 
   let(:options) { TestOptionsTable }
 

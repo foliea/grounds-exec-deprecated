@@ -11,13 +11,13 @@
     <li><%= t('site.copyright') %></li>
   
     <li>
-      <%= link_to('https://github.com/folieadrien/grounds/issues/new') do 
+      <%= link_to('https://github.com/folieadrien/grounds/issues/new', target: '_blank') do 
         content_tag(:span, fa_icon('envelope-o', text: t('site.contact')))
       end %>
     </li>
     
     <li>
-      <%= link_to('https://github.com/folieadrien/grounds') do 
+      <%= link_to('https://github.com/folieadrien/grounds', target: '_blank') do 
         content_tag(:span, fa_icon('github', text: t('site.sources')))
       end %>
     </li>

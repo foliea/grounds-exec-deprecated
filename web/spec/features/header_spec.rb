@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'header' do
+  include HeaderFooterSupport
+
   before(:each) do
     visit('/')
   end
@@ -18,17 +20,13 @@ describe 'header' do
   end
   
   it 'has a link to github project repository' do
-    expect_header_external_url('https://github.com/folieadrien/grounds')
+    s = ext_url_selector('https://github.com/folieadrien/grounds')
+    expect(header).to have_selector(s)
   end
 
   def click_header_link(path)
     within(:css, 'header') do
       find("a[href=\"#{path}\"]").click
     end
-  end
-
-  def expect_header_external_url(url)
-    header = find('header')
-    expect(header).to have_selector("a[href=\"#{url}\"]")
   end
 end
