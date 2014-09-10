@@ -1,6 +1,6 @@
 FROM ubuntu:14.04
 
-RUN apt-get update -qq && \
+RUN apt-get update -q && \
     apt-get install -qy \
     python \
     python-pip \ 

@@ -1,6 +1,6 @@
 FROM ubuntu:14.04
 
-RUN apt-get update -qq && \
+RUN apt-get update -q && \
     apt-get -qy install \
     git-core \
     curl \
