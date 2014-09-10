@@ -41,9 +41,21 @@ GUI.prototype.disableRunButtonFor = function(milliseconds) {
     }, milliseconds);
 };
 
-GUI.prototype.dropdownSelect = function(dropdown, value) {
-    $('a[data-dropdown="' + dropdown + 's"]').click();
-    $("#" + dropdown + "-name").text(value);
+GUI.prototype.dropdownUpdate = function(option, label) {
+    $('a[data-dropdown="' + option + 's"]').click();
+    $("#" + option + "-name").text(label);
+};
+
+GUI.prototype.scrollToTop = function() {
+    $("body").animate({scrollTop: 0}, 'fast');
+};
+
+GUI.prototype.switchToSelectedOption = function(option, link) {
+    var code = link.data(option);
+    var label = link.text();
+  
+    this._ground.set(option, code);
+    this.dropdownUpdate(option, label);
 };
 
 GUI.prototype.bindEvents = function() {
@@ -60,52 +72,29 @@ GUI.prototype.bindEvents = function() {
     
         var language = that._ground.getLanguage();
         var code = that._ground.getCode();
-        
-        // Move to client
-        var data = JSON.stringify({ language: language, code: code });
     
-        that._client.send(data);
+        that._client.send('run', { language: language, code: code });
     });
     
     this.button.back.on('click', function(event) {
-        $("body").animate({scrollTop: 0}, 'fast');
+        that.scrollToTop();
         that._ground._editor.focus(); 
     });
     
     this.link.language.on('click', function(event, date) {
-        var link = $(this);
-        var language = link.data('language');
-        var label = link.text();
-
-        that._ground.setLanguage(language);
-        that.dropdownSelect('language', label);
+        that.switchToSelectedOption('language', $(this));
     });
     
     this.link.theme.on('click', function(event, date) {
-        var link = $(this);
-        var theme = link.data('theme');
-        var label = link.text();
-
-        that._ground.setTheme(theme);
-        that.dropdownSelect('theme', label);
+        that.switchToSelectedOption('theme', $(this));
     });
     
     this.link.indent.on('click', function(event, date) {
-        var link = $(this);
-        var indent = link.data('indent');
-        var label = link.text();
-
-        that._ground.setIndent(indent);
-        that.dropdownSelect('indent', label);
+        that.switchToSelectedOption('indent', $(this));
     });
     
     this.link.keyboard.on('click', function(event, date) {
-        var link = $(this);
-        var keyboard = link.data('keyboard');
-        var label = link.text();
-
-        that._ground.setKeyboard(keyboard);
-        that.dropdownSelect('keyboard', label);
+        that.switchToSelectedOption('keyboard', $(this));
     });
     
     this.form.obj.on('ajax:success', function(data, response, xhr) {
@@ -116,4 +105,4 @@ GUI.prototype.bindEvents = function() {
     this._ground._editor.on('input', function() {
         that.sharedURL.hide();
     });
-}
+};

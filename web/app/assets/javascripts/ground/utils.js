@@ -1,5 +1,4 @@
 var utils = {
-
   getMode: function (language) {
     return this._getFor(language, 1);
   },

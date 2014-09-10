@@ -12,14 +12,16 @@ Client.prototype.connect = function(endpoint) {
   this.bindEvents();
 };
 
-Client.prototype.send = function(data) {
+Client.prototype.send = function(event, data) {
   this.console.startWaiting();
   
   if (this.socket === null) {
     this.console.error();
     return;
   }
-  this.socket.emit('run', data);
+  var request = JSON.stringify(data);
+
+  this.socket.emit(event, request);
 };
 
 Client.prototype.bindEvents = function() {
