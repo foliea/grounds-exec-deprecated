@@ -88,11 +88,11 @@ module GroundSupport
   end
 
   def mode(language)
-    evaluate_script("GetMode('#{language}');")
+    evaluate_script("utils.getMode('#{language}');")
   end
 
   def sample(language)
-    evaluate_script("GetSample('#{language}');")
+    evaluate_script("utils.getSample('#{language}');")
   end
   
   def default_code(option)

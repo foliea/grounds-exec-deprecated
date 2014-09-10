@@ -8,7 +8,7 @@ function Ground(editor, language, theme, indent, keyboard) {
 
     this.setTheme(theme);
     this.setIndent(indent);
-    this.setKeyboard(indent);
+    this.setKeyboard(keyboard);
 }
 
 Ground.prototype.getCode = function() {
@@ -31,9 +31,9 @@ Ground.prototype.setCode = function(code) {
 
 Ground.prototype.setLanguage = function(language, withoutSample) {
     this._language = language;
-    this._editor.getSession().setMode("ace/mode/" + GetMode(language));
+    this._editor.getSession().setMode("ace/mode/" + utils.getMode(language));
     if (!withoutSample)
-        this.setCode(GetSample(language));
+        this.setCode(utils.getSample(language));
     this.setCursor();
 };
 

@@ -2,7 +2,7 @@ function GUI(ground, client) {
     this._ground = ground;
     this._client = client;
 
-    this.sharedURL = $("#sharedURL");
+    this.sharedURL = $("#sharedURL").hide();
 
     this.button = {
         share: $("#share"),
@@ -23,7 +23,7 @@ function GUI(ground, client) {
         keyboard: $(".keyboard-link"),
     }
 
-    this.initialize();
+    this.bindEvents();
 }
 
 GUI.prototype.submitShareFormWith = function(language, code) {
@@ -46,7 +46,7 @@ GUI.prototype.dropdownSelect = function(dropdown, value) {
     $("#" + dropdown + "-name").text(value);
 };
 
-GUI.prototype.initialize = function() {
+GUI.prototype.bindEvents = function() {
     var that = this;
     this.button.share.on('click', function(event) {
         var language = that._ground.getLanguage();
@@ -108,7 +108,7 @@ GUI.prototype.initialize = function() {
         that.dropdownSelect('keyboard', label);
     });
     
-    this.form.obj.on("ajax:success", function(data, response, xhr) {
+    this.form.obj.on('ajax:success', function(data, response, xhr) {
         if (response.status !== 'ok') return;
         that.sharedURL.val(response.shared_url).show().focus().select();
     });

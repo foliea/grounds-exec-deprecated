@@ -1,24 +1,24 @@
 function Console() {
-  $("#sharedURL").hide();
+  this.output = $("#console");
+  this.error = $("#error");
+  this.waiting = $("#waiting");
 }
 
 Console.prototype.clean = function() {
-  $("#waiting").hide();
-  $("#error").hide();
-  $("#console").find("span").each(function() {
+  this.waiting.hide();
+  this.error.hide();
+  this.output.find("span").each(function() {
     this.remove();
   });
 };
 
 Console.prototype.startWaiting = function() {
-  if (this.waiting) return;
-
   this.clean();
-  $("#waiting").show();
+  this.waiting.show();
 };
 
 Console.prototype.stopWaiting = function() {
-  $("#waiting").hide();
+  this.waiting.hide();
 };
 
 Console.prototype.write = function(stream, chunk) {
@@ -32,10 +32,10 @@ Console.prototype.write = function(stream, chunk) {
       stream = 'stderr';
       break;
   }
-  $("#console").append($('<span class="' + stream + '">').text(chunk));
+  this.output.append($('<span class="' + stream + '">').text(chunk));
 };
 
 Console.prototype.error = function() {
   this.stopWaiting();
-  $("#error").show();
+  this.error.show();
 };
