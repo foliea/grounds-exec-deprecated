@@ -48,7 +48,3 @@ COPY . web
 
 # Set the final working dir to the Rails app's location.
 WORKDIR web
-
-
-
-
