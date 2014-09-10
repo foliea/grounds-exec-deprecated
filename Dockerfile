@@ -24,4 +24,3 @@ COPY . /grounds
 
 # Set the final working dir to the app's location.
 WORKDIR /grounds
-
