@@ -10,7 +10,7 @@ import (
 
 const (
 	programMaxSize = 65536
-	memoryLimit    = 33554432
+	memoryLimit    = 67108864
 )
 
 var (

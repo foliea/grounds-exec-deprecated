@@ -63,7 +63,7 @@ Copy the script `run.sh` inside the `/home/dev` directory:
 
     COPY run.sh /home/dev/run.sh
 
-Add a user and give it access to `/home/dev`
+Add a user and give him access to `/home/dev`
 
     RUN useradd dev
     RUN chown -R dev: /home/dev
@@ -76,9 +76,9 @@ Add:
     ENTRYPOINT ["/home/dev/run.sh"]
 
 When you run a `docker` container with this image:
-- The default `pwd` of the container will be `/home/dev`.
-- The user of the container will be `dev`
-- The container will run `run.sh` with parameters received from the CLI.
+- The default `pwd` of this container will be `/home/dev`.
+- The user of this container will be `dev`
+- This container will run `run.sh` and takes as parameter a string whith arbitrary code inside.
 
 ### Inside the shell script:
 
