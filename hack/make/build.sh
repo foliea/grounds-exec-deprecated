@@ -5,7 +5,7 @@ set -e
 BUILD_CMD="docker build -t"
 
 go() {
-  ${BUILD_CMD} "$GO_IMAGE" .
+	${BUILD_CMD} "$GO_IMAGE" .
 }
 
 web() {
