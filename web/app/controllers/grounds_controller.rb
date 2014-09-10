@@ -35,8 +35,6 @@ class GroundsController < ApplicationController
     params.require(:ground).permit(:language, :code)
   end
   
-  private
-  
   def selected_language
     session[:language] || GroundEditor.default_option_code(:language)
   end
