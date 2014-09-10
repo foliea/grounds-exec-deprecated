@@ -6,7 +6,7 @@ RUN_CMD="docker run --rm"
 
 # Run binary compilation
 binary() {
-  ${RUN_CMD} "$GO_IMAGE" ./hack/binary.sh
+	${RUN_CMD} "$GO_IMAGE" ./hack/binary.sh
 }
 
 # Run unit tests inside a docker container
