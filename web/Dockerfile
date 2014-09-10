@@ -1,5 +1,9 @@
 FROM ubuntu:14.04
 
+# Ruby version
+ENV RUBY_MAJOR 2.1
+ENV RUBY_MINOR 2.1.2
+
 # Install dependencies.
 RUN apt-get update -q && \
     apt-get -qy install \
@@ -20,14 +24,14 @@ RUN apt-get update -q && \
     phantomjs
 
 # Install ruby-2.1.2.
-RUN curl -O http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz && \
-    tar -xzvf ruby-2.1.2.tar.gz && \
-    cd ruby-2.1.2 && \
+RUN curl -O http://ftp.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$RUBY_MINOR.tar.gz && \
+    tar -xzvf ruby-$RUBY_MINOR.tar.gz && \
+    cd ruby-$RUBY_MINOR && \
     ./configure --disable-install-doc && \
     make && \
     make install && \
     cd .. && \
-    rm -r ruby-2.1.2 ruby-2.1.2.tar.gz && \
+    rm -r ruby-$RUBY_MINOR ruby-$RUBY_MINOR.tar.gz && \
     echo 'gem: --no-document' > /usr/local/etc/gemrc
 
 # Install bundler
