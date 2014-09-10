@@ -17,7 +17,10 @@ var loadGround = function() {
 
   if (client === null)
     client = new Client(websocket);
-  ground = new Ground(editor, language, theme, indent, keyboard, client);
+  
+  ground = new Ground(editor, language, theme, indent, keyboard);
+
+  var gui = new GUI(ground, client);
 };
 
 $(document).ready(loadGround);
