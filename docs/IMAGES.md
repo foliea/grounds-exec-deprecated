@@ -80,6 +80,23 @@ When you run a `docker` container with this image:
 - The user of this container will be `dev`
 - This container will run `run.sh` and takes as parameter a string whith arbitrary code inside.
 
+Nb: Checkout first [here](https://github.com/docker-library) if there is an official image for the language
+stack you are trying to add.
+
+If this is the case, just inherit from the latest tag of the official image:
+
+    FROM python:latest
+
+    COPY run.sh /home/dev/run.sh
+
+    RUN useradd dev
+    RUN chown -R dev: /home/dev
+
+    WORKDIR /home/dev
+    USER dev
+
+    ENTRYPOINT ["/home/dev/run.sh"]
+
 ### Inside the shell script:
 
 First make it a shell script:

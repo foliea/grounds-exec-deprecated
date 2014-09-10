@@ -1,10 +1,4 @@
-FROM ubuntu:14.04
-
-RUN apt-get update -q && \
-    apt-get install -qy \
-    python \
-    python-pip \ 
-    python-dev
+FROM python:latest
 
 COPY run.sh /home/dev/run.sh
 

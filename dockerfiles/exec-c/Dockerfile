@@ -1,9 +1,4 @@
-FROM ubuntu:14.04
-
-RUN apt-get update -q && \
-    apt-get -qy install \
-    build-essential \
-    gcc
+FROM gcc:latest 
 
 COPY run.sh /home/dev/run.sh
 
