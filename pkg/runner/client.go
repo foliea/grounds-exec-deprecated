@@ -73,7 +73,7 @@ func (c *Client) Execute(containerID string, attach func(stdout, stderr io.Reade
 	if err != nil {
 		return 0, err
 	}
-	return status, nil
+	return utils.FormatStatus(status), nil
 }
 
 func (c *Client) Clean(containerID string) error {

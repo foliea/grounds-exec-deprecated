@@ -32,3 +32,10 @@ func FormatCode(code string) string {
 	}
 	return code
 }
+
+func FormatStatus(status int) int {
+	if status >= 128 {
+		return status - 256
+	}
+	return status;
+}
