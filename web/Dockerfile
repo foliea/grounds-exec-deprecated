@@ -1,6 +1,6 @@
 FROM ubuntu:14.04
 
-# Ruby version
+# Set ruby version.
 ENV RUBY_MAJOR 2.1
 ENV RUBY_MINOR 2.1.2
 
@@ -23,7 +23,7 @@ RUN apt-get update -q && \
     nodejs \
     phantomjs
 
-# Install ruby-2.1.2.
+# Install ruby.
 RUN curl -O http://ftp.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$RUBY_MINOR.tar.gz && \
     tar -xzvf ruby-$RUBY_MINOR.tar.gz && \
     cd ruby-$RUBY_MINOR && \
@@ -32,9 +32,9 @@ RUN curl -O http://ftp.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$RUBY_MINOR.tar.g
     make install && \
     cd .. && \
     rm -r ruby-$RUBY_MINOR ruby-$RUBY_MINOR.tar.gz && \
-    echo 'gem: --no-document' > /usr/local/etc/gemrc
+    echo "gem: --no-document" > /usr/local/etc/gemrc
 
-# Install bundler
+# Install bundler.
 RUN gem install bundler
 
 # Copy the Gemfile and Gemfile.lock into the image.
