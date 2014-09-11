@@ -1,9 +1,13 @@
 function Client(endpoint) {
     this.socket = null;
-    this.console = new Console();
   
     this.connect(endpoint);
+    this.reload();
 }
+
+Client.prototype.reload = function() {
+    this.console = new Console();
+};
 
 Client.prototype.connect = function(endpoint) {
     if (endpoint === null) return;

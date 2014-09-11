@@ -17,6 +17,8 @@ var loadGround = function() {
 
   if (client === null)
     client = new Client(websocket);
+  else
+    client.reload();
   
   ground = new Ground(editor, language, theme, indent, keyboard);
 
