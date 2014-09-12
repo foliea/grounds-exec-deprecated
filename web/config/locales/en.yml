@@ -7,7 +7,7 @@ en:
     copyright: '© 2014 Adrien Folie'
   editor:
     error:
-      connect: 'Connection with remote server failed.'
+      connect: 'Connection with remote server failed. Attempting to reconnect...'
     waiting: 'Waiting for remote server...'
     run: 'Run'
     back: 'Back to editor'

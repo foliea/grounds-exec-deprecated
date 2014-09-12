@@ -35,6 +35,7 @@ Client.prototype.bindEvents = function() {
     });
     this._socket.on('connect', function(data) {
         that._connected = true;
+        that._console.clean();
     });
     this._socket.on('connect_error', function() {
         that._connected = false;
