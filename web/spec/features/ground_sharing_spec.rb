@@ -19,6 +19,10 @@ describe 'ground sharing' do
     it 'has a visible link to this ground shared url', js: :true do
       expect(shared_url_visible?).to be true
     end
+    
+    it 'has focus on this visible link', js: :true do
+      expect(shared_url_has_focus?).to be true
+    end
 
     context 'when selecting another language' do
       it 'has no visible link to this ground shared url', js: :true do

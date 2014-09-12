@@ -44,11 +44,18 @@ module GroundSupport
   end
   
   def shared_url_visible?
-    true if find('#sharedURL', visible: true)
+    !find('#sharedURL', visible: true).nil?
+  end
+  
+  def shared_url_has_focus?
+    # Capybara need to wait that shared url is visible first
+    shared_url_visible?
+
+    evaluate_script('document.activeElement.id') == 'sharedURL'
   end
   
   def shared_url_not_visible?
-    true if find('#sharedURL', visible: false)
+    !find('#sharedURL', visible: false).nil?
   end
 
   def selected_label(option)

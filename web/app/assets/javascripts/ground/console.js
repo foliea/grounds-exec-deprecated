@@ -1,5 +1,5 @@
 function Console() {
-    this.output = $("#console");
+    this.output = $("#output");
     this.error = $("#error");
     this.waiting = $("#waiting");
 }
@@ -28,6 +28,7 @@ Console.prototype.write = function(stream, chunk) {
             chunk = '[Program exited with status: ' + chunk + ']';
             break;
         case "error":
+            this.clean();
             this.stopWaiting();
             stream = 'stderr';
             break;
