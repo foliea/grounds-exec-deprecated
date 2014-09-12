@@ -65,6 +65,7 @@ func (r *Runner) execute(containerID string, finished, stop chan bool) {
 			r.Errs <- err
 		}
 	}()
+	r.write("start", "")
 	status, err := r.Client.Execute(containerID, func(stdout, stderr io.Reader) {
 		go r.broadcast("stdout", stdout, stop)
 		r.broadcast("stderr", stderr, stop)

@@ -1,6 +1,7 @@
 function Client(endpoint) {
     this.socket = null;
-  
+    this.connected = false;
+ 
     this.connect(endpoint);
     this.reload();
 }
@@ -17,12 +18,10 @@ Client.prototype.connect = function(endpoint) {
 };
 
 Client.prototype.send = function(event, data) {
+    if (this.connected === false) return;
+
     this.console.startWaiting();
-    
-    if (this.socket === null) {
-        this.console.error();
-        return;
-    }
+     
     var request = JSON.stringify(data);
   
     this.socket.emit(event, request);
@@ -33,5 +32,12 @@ Client.prototype.bindEvents = function() {
     this.socket.on('run', function(data) {
         var response = JSON.parse(data);
         that.console.write(response.stream, response.chunk);
+    });
+    this.socket.on('connect', function(data) {
+        that.connected = true;
+    });
+    this.socket.on('connect_error', function() {
+        that.connected = false;
+        that.console.error();
     });
 };
