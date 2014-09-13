@@ -39,6 +39,7 @@ func (r *Runner) Watch() {
 		err         error
 	)
 	for input := range r.Input {
+		r.write("start", "")
 		var config RunConfig
 		if err := json.Unmarshal(input, &config); err != nil {
 			r.notifyError(err)
@@ -65,7 +66,6 @@ func (r *Runner) execute(containerID string, finished, stop chan bool) {
 			r.Errs <- err
 		}
 	}()
-	r.write("start", "")
 	status, err := r.Client.Execute(containerID, func(stdout, stderr io.Reader) {
 		go r.broadcast("stdout", stdout, stop)
 		r.broadcast("stderr", stderr, stop)
