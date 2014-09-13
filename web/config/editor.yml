@@ -3,13 +3,13 @@ themes:
   textmate: 'Textmate'
   monokai: 'Monokai'
   github: 'GitHub'
- 
+
 indents:
   '2': '2 spaces'
   '4': '4 spaces'
   '8': '8 spaces'
   tab: 'Tabs'
- 
+
 languages:
   ruby: 'Ruby'
   golang: 'Go'
@@ -18,7 +18,7 @@ languages:
   c: 'C'
   cpp: 'C++'
   csharp: 'C#'
-  
+
 keyboards:
   ace: 'Ace'
   vim: 'Vim'
