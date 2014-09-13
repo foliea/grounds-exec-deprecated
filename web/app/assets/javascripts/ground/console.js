@@ -29,6 +29,7 @@ Console.prototype.write = function(stream, chunk) {
             chunk = '[Program exited with status: ' + chunk + ']';
             break;
         case 'error':
+            stream = 'stderr';
             this.stopWaiting();
             this.clean();
             break;
