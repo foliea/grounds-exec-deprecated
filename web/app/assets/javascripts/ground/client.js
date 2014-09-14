@@ -27,21 +27,18 @@ Client.prototype.send = function(event, data) {
 
     this._console.startWaiting();
 
-    var request = JSON.stringify(data);
-
-    this._socket.emit(event, request);
+    this._socket.emit(event, data);
 };
 
 Client.prototype.bindEvents = function() {
-    var that = this;
+    var self = this;
     this._socket.on('run', function(data) {
-        var response = JSON.parse(data);
-        that._console.write(response.stream, response.chunk);
+        self._console.write(data.stream, data.chunk);
     });
     this._socket.on('connect', function(data) {
-        that._console.clean();
+        self._console.clean();
     });
     this._socket.on('connect_error', function() {
-        that._console.error();
+        self._console.error();
     });
 };

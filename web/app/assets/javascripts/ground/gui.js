@@ -9,13 +9,13 @@ function GUI(ground, client) {
         run: $("#run"),
         back: $("#back"),
     };
-    
+
     this.form = {
         obj: $("#share_ground"),
         code: $("#ground_code"),
         language: $("#ground_language"),
     };
-    
+
     this.link = {
         language: $(".language-link"),
         theme: $(".theme-link"),
@@ -35,9 +35,9 @@ GUI.prototype.submitShareFormWith = function(language, code) {
 GUI.prototype.disableRunButtonFor = function(milliseconds) {
     this.button.run.attr('disabled', 'disabled');
 
-    var that = this;
+    var self = this;
     setTimeout(function() {
-      that.button.run.removeAttr('disabled');
+        self.button.run.removeAttr('disabled');
     }, milliseconds);
 };
 
@@ -53,56 +53,57 @@ GUI.prototype.scrollToTop = function() {
 GUI.prototype.switchToSelectedOption = function(option, link) {
     var code = link.data(option);
     var label = link.text();
-  
+
     this._ground.set(option, code);
     this.dropdownUpdate(option, label);
 };
 
 GUI.prototype.bindEvents = function() {
-    var that = this;
+    var self = this;
     this.button.share.on('click', function(event) {
-        var language = that._ground.getLanguage();
-        var code = that._ground.getCode();
+        var language = self._ground.getLanguage();
+        var code = self._ground.getCode();
       
-        that.submitShareFormWith(language, code);
+        self.submitShareFormWith(language, code);
     });
     
     this.button.run.on('click', function(event) {
-        that.disableRunButtonFor(500);
-    
-        var language = that._ground.getLanguage();
-        var code = that._ground.getCode();
-    
-        that._client.send('run', { language: language, code: code });
+        self.disableRunButtonFor(500);
+
+        var language = self._ground.getLanguage();
+        var code = self._ground.getCode();
+
+        self._client.send('run', { language: language, code: code });
     });
-    
+
     this.button.back.on('click', function(event) {
-        that.scrollToTop();
-        that._ground._editor.focus(); 
+        self.scrollToTop();
+        self._ground._editor.focus(); 
     });
-    
+
     this.link.language.on('click', function(event, date) {
-        that.switchToSelectedOption('language', $(this));
+        self.switchToSelectedOption('language', $(this));
     });
-    
+
     this.link.theme.on('click', function(event, date) {
-        that.switchToSelectedOption('theme', $(this));
+        self.switchToSelectedOption('theme', $(this));
     });
-    
+
     this.link.indent.on('click', function(event, date) {
-        that.switchToSelectedOption('indent', $(this));
+        self.switchToSelectedOption('indent', $(this));
     });
-    
+
     this.link.keyboard.on('click', function(event, date) {
-        that.switchToSelectedOption('keyboard', $(this));
+        self.switchToSelectedOption('keyboard', $(this));
     });
-    
+
     this.form.obj.on('ajax:success', function(data, response, xhr) {
         if (response.status !== 'ok') return;
-        that.sharedURL.val(response.shared_url).show().focus().select();
+
+        self.sharedURL.val(response.shared_url).show().focus().select();
     });
 
     this._ground._editor.on('input', function() {
-        that.sharedURL.hide();
+        self.sharedURL.hide();
     });
 };
