@@ -67,7 +67,7 @@ module GroundSupport
   end
 
   def option_dropdown(option)
-    find("a[data-dropdown='#{option.pluralize(2)}']")
+    find("a[data-dropdown='#{option}-dropdown']")
   end
 
   def editor_content
@@ -103,14 +103,20 @@ module GroundSupport
   end
   
   def default_code(option)
-    GroundEditor.default_option_code(option)
+    geditor.default_option_code(option)
   end
   
   def default_label(option)
-    GroundEditor.default_option_label(option)
+    geditor.default_option_label(option)
   end
 
   def label(option, code)
-    GroundEditor.option(option, code)[:label]
+    geditor.option(option, code)[:label]
+  end
+  
+  private
+  
+  def geditor
+    GroundEditor
   end
 end
