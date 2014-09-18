@@ -1,5 +1,5 @@
 var loadFoundation = function() {
-  $(document).foundation();
+    $(document).foundation();
 }
 $(document).ready(loadFoundation);
 $(document).on("page:load", loadFoundation);

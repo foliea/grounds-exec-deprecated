@@ -1,19 +1,17 @@
 function Console() {
     this.output = $("#output");
-    this.error = $("#error");
+    this.connectError = $("#connect_error");
     this.waiting = $("#waiting");
 }
 
 Console.prototype.clean = function() {
-    this.waiting.hide();
-    this.error.hide();
+    this.connectError.hide();
     this.output.find("span").each(function() {
         this.remove();
     });
 };
 
 Console.prototype.startWaiting = function() {
-    this.clean();
     this.waiting.show();
 };
 
@@ -22,21 +20,25 @@ Console.prototype.stopWaiting = function() {
 };
 
 Console.prototype.write = function(stream, chunk) {
-    switch(stream) {
-        case "status":
+    switch (stream) {
+        case 'start':
+            this.clean();
+            return;
+        case 'status':
             this.stopWaiting();
             chunk = '[Program exited with status: ' + chunk + ']';
             break;
-        case "error":
-            this.clean();
-            this.stopWaiting();
+        case 'error':
             stream = 'stderr';
+            this.stopWaiting();
+            this.clean();
             break;
     }
     this.output.append($('<span class="' + stream + '">').text(chunk));
 };
 
-Console.prototype.error = function() {
+Console.prototype.error = function(error) {
     this.stopWaiting();
-    this.error.show();
+    this.clean();
+    this.connectError.show();
 };

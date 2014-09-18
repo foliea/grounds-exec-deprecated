@@ -39,6 +39,7 @@ func (r *Runner) Watch() {
 		err         error
 	)
 	for input := range r.Input {
+		r.write("start", "")
 		var config RunConfig
 		if err := json.Unmarshal(input, &config); err != nil {
 			r.notifyError(err)

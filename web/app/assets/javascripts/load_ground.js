@@ -15,15 +15,18 @@ var loadGround = function() {
   var keyboard = $groundEditor.data("keyboard");
   var websocket = $groundEditor.data("websocket");
 
-  if (client === null)
-    client = new Client(websocket);
-  else
-    client.reload();
-  
+  client = new Client(websocket);
   ground = new Ground(editor, language, theme, indent, keyboard);
 
   var gui = new GUI(ground, client);
 };
 
+function leaveGround() {
+    if (client === null) return;
+
+    client.disconnect();
+}
+
 $(document).ready(loadGround);
 $(document).on("page:load", loadGround);
+$(document).on("page:fetch", leaveGround);

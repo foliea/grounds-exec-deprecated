@@ -6,7 +6,8 @@ en:
     about: 'About'
     copyright: '© 2014 Adrien Folie'
   editor:
-    error: 'An error occurred.'
+    error:
+      connect: 'Connection with remote server failed. Trying to reconnect...'
     waiting: 'Waiting for remote server...'
     run: 'Run'
     back: 'Back to editor'

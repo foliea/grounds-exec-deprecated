@@ -12,7 +12,7 @@ var requestDelay = 500 * time.Millisecond
 type Connection struct {
 	input  chan []byte
 	output chan []byte
-	time   time.Time		
+	time   time.Time
 	event  string
 	so     socketio.Socket
 }
