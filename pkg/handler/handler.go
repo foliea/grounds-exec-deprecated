@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/folieadrien/grounds/pkg/runner"
+	"github.com/foliea/grounds/pkg/runner"
 	socketio "github.com/googollee/go-socket.io"
 )
 
