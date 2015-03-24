@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/folieadrien/grounds/pkg/handler"
-	"github.com/folieadrien/grounds/pkg/runner"
+	"github.com/foliea/grounds/pkg/handler"
+	"github.com/foliea/grounds/pkg/runner"
 	socketio "github.com/googollee/go-socket.io"
 )
 
