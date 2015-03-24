@@ -10,8 +10,8 @@ RUN go get github.com/mattn/gom
 COPY Gomfile /grounds/Gomfile
 
 # Link app's location to gopath
-RUN mkdir -p gopath/src/github.com/folieadrien
-RUN ln -s /grounds gopath/src/github.com/folieadrien/grounds
+RUN mkdir -p gopath/src/github.com/foliea
+RUN ln -s /grounds gopath/src/github.com/foliea/grounds
 
 # Gom install inside app's location
 RUN cd /grounds && gom install
